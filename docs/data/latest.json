@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-16T10:32:59Z",
+  "generated_at": "2026-04-16T11:08:48Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -16,14 +16,57 @@
     "1y": 24.1
   },
   "primary_score": 38.9,
-  "headline": "Balanced but fragile backdrop: broad em stress with try vulnerability while domestic policy and reserves are supportive.",
+  "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
+  "briefing": {
+    "stance": "Balanced but fragile",
+    "probability": 38.9,
+    "primary_horizon": "1m",
+    "confidence": "medium",
+    "caveat_severity": "high",
+    "caveat_message": "Global rates and dollar feeds were incomplete, so the external macro read is less certain than the market and domestic read.",
+    "house_call": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete."
+  },
   "summary": {
-    "deck": "This lean browser edition scores Turkish lira depreciation risk from public market, rates, reserve, and headline signals, then publishes a static snapshot that opens directly on GitHub Pages.",
-    "primary_message": "Balanced but fragile backdrop: broad em stress with try vulnerability while domestic policy and reserves are supportive.",
+    "deck": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
+    "primary_message": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "market_message": "USD/TRY is +1.19% over 20 sessions, with TRY vs peers at +6.03%.",
     "macro_message": "Global-rates feeds were incomplete in this snapshot, so the model used a neutral global backdrop while still tracking CBRT policy and reserve data.",
     "news_message": "2 Google News items and 0 social-chatter items landed in the last 14 days."
   },
+  "why_read": [
+    {
+      "label": "Pressure",
+      "title": "Spot pressure is still live",
+      "detail": "TRY is +6.03% weaker than the peer basket over 20 sessions, while USD/TRY is +1.19% over the same window."
+    },
+    {
+      "label": "Support",
+      "title": "Domestic cushion is still there",
+      "detail": "CBRT policy rate is 37.00%, and official reserves are +4.06% over the latest reserve window."
+    },
+    {
+      "label": "Unclear",
+      "title": "External macro is still cloudy",
+      "detail": "Global rates and dollar feeds were incomplete, so the external macro read is less certain than the market and domestic read."
+    }
+  ],
+  "trigger_cards": [
+    {
+      "title": "TRY vs peers",
+      "detail": "If TRY keeps lagging the peer basket beyond the current +6.03% gap, the read should move more bearish.",
+      "now": "Now +6.03% over 20 sessions"
+    },
+    {
+      "title": "Reserve trend",
+      "detail": "If reserve momentum rolls over from the current supportive trend, the domestic cushion gets thinner.",
+      "now": "Now +4.06% over 4 weeks"
+    },
+    {
+      "title": "Global macro clarity",
+      "detail": "If the missing global-rates and dollar feeds come back showing stronger USD pressure, the current neutral external read should move higher.",
+      "now": "Now external macro read is neutralized by missing feeds"
+    }
+  ],
   "market": {
     "regime_label": "Broad EM stress with TRY vulnerability",
     "usd_try": {
@@ -135,13 +178,13 @@
   ],
   "warnings": [
     "FRED FEDFUNDS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS: The read operation timed out",
-    "FRED DGS10: [WinError 10054] An existing connection was forcibly closed by the remote host",
+    "FRED DGS10: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: The read operation timed out",
     "FRED DGS2: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2: The read operation timed out",
     "FRED DTWEXBGS: [WinError 10054] An existing connection was forcibly closed by the remote host",
     "Reddit RSS: Fetch failed for https://www.reddit.com/search.rss?q=(Turkish%20lira%20OR%20USDTRY%20OR%20CBRT)&sort=new: HTTP Error 403: Blocked"
   ],
   "history_entry": {
-    "as_of": "2026-04-16T10:32:59Z",
+    "as_of": "2026-04-16T11:08:48Z",
     "primary_horizon": "1m",
     "primary_score": 38.9,
     "curve": {
@@ -153,6 +196,8 @@
     },
     "market_regime": "Broad EM stress with TRY vulnerability",
     "macro_regime": "Domestic policy and reserves are supportive",
-    "headline": "Balanced but fragile backdrop: broad em stress with try vulnerability while domestic policy and reserves are supportive."
+    "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
+    "stance": "Balanced but fragile",
+    "confidence": "medium"
   }
 }

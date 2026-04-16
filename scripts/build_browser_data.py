@@ -202,6 +202,9 @@ def build_snapshot() -> dict:
     curve = build_risk_curve(market, macro, news)
     primary_horizon = "1m"
     primary_score = curve[primary_horizon]
+    briefing = build_briefing(primary_horizon, primary_score, market, macro, news, warnings)
+    why_read = build_why_read(market, macro, news, briefing)
+    trigger_cards = build_trigger_cards(market, macro, news)
     history_entry = {
         "as_of": generated_at,
         "primary_horizon": primary_horizon,
@@ -209,7 +212,9 @@ def build_snapshot() -> dict:
         "curve": curve,
         "market_regime": market["regime_label"],
         "macro_regime": macro["regime_label"],
-        "headline": build_headline(primary_score, market["regime_label"], macro["regime_label"]),
+        "headline": briefing["house_call"],
+        "stance": briefing["stance"],
+        "confidence": briefing["confidence"],
     }
     return {
         "generated_at": generated_at,
@@ -217,8 +222,11 @@ def build_snapshot() -> dict:
         "thresholds": THRESHOLDS,
         "curve": curve,
         "primary_score": primary_score,
-        "headline": build_headline(primary_score, market["regime_label"], macro["regime_label"]),
-        "summary": build_summary(primary_score, market, macro, news),
+        "headline": briefing["house_call"],
+        "briefing": briefing,
+        "summary": build_summary(primary_score, market, macro, news, briefing),
+        "why_read": why_read,
+        "trigger_cards": trigger_cards,
         "market": market,
         "macro": macro,
         "news": news,
@@ -429,29 +437,15 @@ def build_risk_curve(market: dict, macro: dict, news: dict) -> dict[str, float]:
 
 
 def build_headline(primary_score: float, market_regime: str, macro_regime: str) -> str:
-    if primary_score >= 70:
-        level = "High depreciation risk"
-    elif primary_score >= 50:
-        level = "Elevated depreciation risk"
-    elif primary_score >= 35:
-        level = "Balanced but fragile backdrop"
-    else:
-        level = "Contained depreciation risk"
-    return f"{level}: {market_regime.lower()} while {macro_regime.lower()}."
+    return (
+        f"{risk_band_label(primary_score)}: {market_regime.lower()} while {macro_regime.lower()}."
+    )
 
 
-def build_summary(primary_score: float, market: dict, macro: dict, news: dict) -> dict:
+def build_summary(primary_score: float, market: dict, macro: dict, news: dict, briefing: dict) -> dict:
     return {
-        "deck": (
-            "This lean browser edition scores Turkish lira depreciation risk from public "
-            "market, rates, reserve, and headline signals, then publishes a static snapshot "
-            "that opens directly on GitHub Pages."
-        ),
-        "primary_message": build_headline(
-            primary_score,
-            market["regime_label"],
-            macro["regime_label"],
-        ),
+        "deck": briefing["house_call"],
+        "primary_message": briefing["house_call"],
         "market_message": (
             f"USD/TRY is {format_change(market['usd_try']['change_20d'])} over 20 sessions, "
             f"with TRY vs peers at {format_change(market['try_gap_20d'])}."
@@ -462,6 +456,111 @@ def build_summary(primary_score: float, market: dict, macro: dict, news: dict) -
             "social-chatter items landed in the last 14 days."
         ),
     }
+
+
+def build_briefing(
+    primary_horizon: str,
+    primary_score: float,
+    market: dict,
+    macro: dict,
+    news: dict,
+    warnings: list[str],
+) -> dict:
+    stance = risk_band_label(primary_score).replace(" risk", "").replace(" backdrop", "")
+    confidence = infer_confidence(market, macro, warnings)
+    caveat = build_caveat_summary(macro, warnings)
+    return {
+        "stance": stance,
+        "probability": round(primary_score, 1),
+        "primary_horizon": primary_horizon,
+        "confidence": confidence,
+        "caveat_severity": caveat["severity"],
+        "caveat_message": caveat["message"],
+        "house_call": build_house_call(primary_score, market, macro, news, caveat),
+    }
+
+
+def build_why_read(market: dict, macro: dict, news: dict, briefing: dict) -> list[dict]:
+    return [
+        {
+            "label": "Pressure",
+            "title": "Spot pressure is still live",
+            "detail": (
+                f"TRY is {format_change(market['try_gap_20d'])} weaker than the peer basket over 20 sessions, "
+                f"while USD/TRY is {format_change(market['usd_try']['change_20d'])} over the same window."
+            ),
+        },
+        {
+            "label": "Support",
+            "title": "Domestic cushion is still there",
+            "detail": (
+                f"CBRT policy rate is {format_number(macro['turkey']['policy_rate'])}%, and official reserves are "
+                f"{format_change(macro['turkey']['official_reserve_assets_change_4w'])} over the latest reserve window."
+            ),
+        },
+        {
+            "label": "Unclear",
+            "title": "External macro is still cloudy",
+            "detail": build_unclear_message(macro, news, briefing),
+        },
+    ]
+
+
+def build_trigger_cards(market: dict, macro: dict, news: dict) -> list[dict]:
+    triggers = [
+        {
+            "title": "TRY vs peers",
+            "detail": (
+                f"If TRY keeps lagging the peer basket beyond the current {format_change(market['try_gap_20d'])} gap, "
+                "the read should move more bearish."
+            ),
+            "now": f"Now {format_change(market['try_gap_20d'])} over 20 sessions",
+        },
+        {
+            "title": "Reserve trend",
+            "detail": (
+                "If reserve momentum rolls over from the current supportive trend, the domestic cushion gets thinner."
+            ),
+            "now": f"Now {format_change(macro['turkey']['official_reserve_assets_change_4w'])} over 4 weeks",
+        },
+    ]
+
+    if macro["global"]["broad_dollar_change_20d"] is None and macro["global"]["us_2y"] is None:
+        triggers.append(
+            {
+                "title": "Global macro clarity",
+                "detail": (
+                    "If the missing global-rates and dollar feeds come back showing stronger USD pressure, the current "
+                    "neutral external read should move higher."
+                ),
+                "now": "Now external macro read is neutralized by missing feeds",
+            }
+        )
+    else:
+        triggers.append(
+            {
+                "title": "Volatility regime",
+                "detail": (
+                    "If global and EM volatility break higher together, shorter-horizon TRY risk should rise quickly."
+                ),
+                "now": (
+                    f"Now VIX/VXEEM are {format_number(market['volatility']['VIX'])}/"
+                    f"{format_number(market['volatility']['VXEEM'])}"
+                ),
+            }
+        )
+
+    if news["headline_count_14d"] >= 6:
+        triggers[2] = {
+            "title": "Headline intensity",
+            "detail": (
+                "If policy, inflation, or sanctions headlines start clustering more aggressively, the read should turn "
+                "less patient."
+            ),
+            "now": f"Now {news['headline_count_14d']} news items in 14 days",
+        }
+
+    return triggers
 
 
 def build_reasons(market: dict, macro: dict, news: dict) -> list[dict]:
@@ -524,6 +623,93 @@ def build_watchlist(market: dict, macro: dict, news: dict) -> list[str]:
             f"{news['headline_count_14d']} news items."
         ),
     ]
+
+
+def risk_band_label(primary_score: float) -> str:
+    if primary_score >= 70:
+        return "High depreciation risk"
+    if primary_score >= 50:
+        return "Elevated depreciation risk"
+    if primary_score >= 35:
+        return "Balanced but fragile backdrop"
+    return "Contained depreciation risk"
+
+
+def build_house_call(primary_score: float, market: dict, macro: dict, news: dict, caveat: dict) -> str:
+    if caveat["severity"] == "high":
+        return (
+            "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete."
+        )
+    if news["headline_count_14d"] >= 6:
+        return "TRY is under pressure, but the domestic cushion still matters and the headline backdrop is getting busier."
+    if primary_score >= 50:
+        return "TRY is under visible pressure, though policy and reserve support still stop this from looking fully one-way."
+    return "TRY is under pressure, but policy and reserve support still keep the overall read from turning cleaner bearish."
+
+
+def infer_confidence(market: dict, macro: dict, warnings: list[str]) -> str:
+    score = 0
+    if market["usd_try"]["latest"] is not None:
+        score += 2
+    if market["try_gap_20d"] is not None:
+        score += 1
+    if market["volatility"]["VIX"] is not None and market["volatility"]["VXEEM"] is not None:
+        score += 1
+    if macro["turkey"]["policy_rate"] is not None:
+        score += 1
+    if macro["turkey"]["official_reserve_assets"] is not None:
+        score += 1
+    if any(
+        value is not None
+        for value in (
+            macro["global"]["fed_funds"],
+            macro["global"]["us_2y"],
+            macro["global"]["broad_dollar_change_20d"],
+        )
+    ):
+        score += 1
+    score -= min(len(warnings), 4) * 0.5
+
+    if score >= 5.5:
+        return "high"
+    if score >= 3.5:
+        return "medium"
+    return "low"
+
+
+def build_caveat_summary(macro: dict, warnings: list[str]) -> dict:
+    global_missing = (
+        macro["global"]["fed_funds"] is None
+        and macro["global"]["us_2y"] is None
+        and macro["global"]["broad_dollar_change_20d"] is None
+    )
+    if global_missing or len(warnings) >= 4:
+        return {
+            "severity": "high",
+            "message": (
+                "Global rates and dollar feeds were incomplete, so the external macro read is less certain than the "
+                "market and domestic read."
+            ),
+        }
+    if warnings:
+        return {
+            "severity": "medium",
+            "message": "A few public feeds were noisy, but the core spot and domestic signals still landed.",
+        }
+    return {
+        "severity": "low",
+        "message": "Public feeds landed cleanly in this snapshot.",
+    }
+
+
+def build_unclear_message(macro: dict, news: dict, briefing: dict) -> str:
+    if briefing["caveat_severity"] == "high":
+        return briefing["caveat_message"]
+    if news["headline_count_14d"] == 0 and news["chatter_count_14d"] == 0:
+        return "Headline flow is quiet, so the model leans more on market and macro signals than on narrative stress."
+    if macro["global"]["broad_dollar_change_20d"] is None:
+        return "The external macro read is still softer than the market read because key global-rate feeds were incomplete."
+    return briefing["caveat_message"]
 
 
 def update_history(snapshot: dict) -> list[dict]:

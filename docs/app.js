@@ -35,6 +35,13 @@ function formatChange(value, digits = 2) {
   return `${value > 0 ? "+" : ""}${value.toFixed(digits)}%`;
 }
 
+function capitalizeWord(value) {
+  if (typeof value !== "string" || !value.length) {
+    return "n/a";
+  }
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 function normalizeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -78,13 +85,13 @@ function renderCurve(snapshot) {
   });
 }
 
-function renderReasons(snapshot) {
+function renderReasonList(snapshot) {
   const container = document.getElementById("reasons");
   clearNode(container);
 
   const reasons = normalizeArray(snapshot.reasons);
   if (!reasons.length) {
-    appendTextElement(container, "p", "No pressure points were published for this snapshot.");
+    appendTextElement(container, "p", "No supporting reasons were published for this snapshot.");
     return;
   }
 
@@ -108,7 +115,7 @@ function renderWatchlist(snapshot) {
 
   const items = normalizeArray(snapshot.watchlist);
   if (!items.length) {
-    appendTextElement(container, "li", "No watch items were published for this snapshot.");
+    appendTextElement(container, "li", "No additional watch items were published for this snapshot.");
     return;
   }
 
@@ -128,6 +135,23 @@ function renderMetricGrid(targetId, items) {
     appendTextElement(article, "strong", item.value);
     appendTextElement(article, "p", item.detail);
     container.appendChild(article);
+  });
+}
+
+function renderBriefingGrid(targetId, items, valueClass = "") {
+  const container = document.getElementById(targetId);
+  clearNode(container);
+
+  normalizeArray(items).forEach((item) => {
+    const card = document.createElement("article");
+    card.className = "brief-card";
+    appendTextElement(card, "span", item.label ?? "", "eyebrow");
+    appendTextElement(card, "h3", item.title ?? "Untitled card");
+    if (item.now) {
+      appendTextElement(card, "p", item.now, valueClass || "brief-now");
+    }
+    appendTextElement(card, "p", item.detail ?? "No detail provided.", "brief-detail");
+    container.appendChild(card);
   });
 }
 
@@ -201,6 +225,10 @@ function renderWarnings(snapshot) {
   const section = document.getElementById("caveats");
   const list = document.getElementById("warning-list");
   clearNode(list);
+
+  document.getElementById("caveat-message").textContent =
+    snapshot.briefing?.caveat_message ??
+    "The model still publishes a usable estimate, but these source issues can make the read more neutral than usual.";
 
   const warnings = normalizeArray(snapshot.warnings);
   if (!warnings.length) {
@@ -279,23 +307,31 @@ function wireNoteActions(snapshot) {
 }
 
 function renderSnapshot(snapshot, history) {
-  document.getElementById("deck").textContent = snapshot.summary.deck;
-  document.getElementById("primary-score").textContent = formatNumber(snapshot.primary_score);
+  const briefing = snapshot.briefing ?? {};
+  const threshold = snapshot.thresholds[snapshot.primary_horizon];
+
+  document.getElementById("house-call-title").textContent = briefing.stance ?? "Snapshot unavailable";
+  document.getElementById("house-call-text").textContent =
+    briefing.house_call ?? snapshot.headline ?? "No house call was published.";
+  document.getElementById("briefing-horizon").textContent = briefing.primary_horizon ?? "n/a";
+  document.getElementById("briefing-confidence").textContent = capitalizeWord(
+    briefing.confidence ?? "n/a",
+  );
+  document.getElementById("briefing-caveat").textContent = capitalizeWord(
+    briefing.caveat_severity ?? "n/a",
+  );
+
+  document.getElementById("primary-score").textContent = formatNumber(
+    briefing.probability ?? snapshot.primary_score,
+  );
   document.getElementById("primary-meta").textContent =
-    `${snapshot.primary_horizon} primary horizon | ${snapshot.headline}`;
+    `Chance TRY weakens more than ${threshold}% over ${snapshot.primary_horizon}. Confidence ${briefing.confidence ?? "n/a"}.`;
   document.getElementById("generated-at").textContent =
     `Last built ${snapshot.generated_at.replace("T", " ").replace("Z", " UTC")}`;
 
+  renderBriefingGrid("why-read-grid", snapshot.why_read);
+  renderBriefingGrid("trigger-grid", snapshot.trigger_cards);
   renderCurve(snapshot);
-  renderReasons(snapshot);
-  renderWatchlist(snapshot);
-  renderHistory(history);
-  renderHeadlines(snapshot);
-  renderWarnings(snapshot);
-
-  document.getElementById("market-regime").textContent = snapshot.market.regime_label;
-  document.getElementById("macro-regime").textContent = snapshot.macro.regime_label;
-
   renderMetricGrid("market-metrics", [
     {
       label: "USD/TRY",
@@ -318,7 +354,6 @@ function renderSnapshot(snapshot, history) {
       detail: "Price-action score / volatility score",
     },
   ]);
-
   renderMetricGrid("macro-metrics", [
     {
       label: "Fed / US 2Y",
@@ -342,6 +377,15 @@ function renderSnapshot(snapshot, history) {
     },
   ]);
 
+  document.getElementById("market-regime").textContent = snapshot.market.regime_label;
+  document.getElementById("macro-regime").textContent = snapshot.macro.regime_label;
+
+  renderReasonList(snapshot);
+  renderWatchlist(snapshot);
+  renderHistory(history);
+  renderHeadlines(snapshot);
+  renderWarnings(snapshot);
+
   restoreNote();
   wireNoteActions(snapshot);
 }
@@ -354,7 +398,8 @@ async function main() {
     ]);
     renderSnapshot(snapshot, history);
   } catch (error) {
-    document.getElementById("deck").textContent =
+    document.getElementById("house-call-title").textContent = "Snapshot unavailable";
+    document.getElementById("house-call-text").textContent =
       "The browser snapshot could not be loaded. If you are previewing locally, use start-browser.ps1 or a simple HTTP server instead of opening index.html directly.";
     document.getElementById("primary-meta").textContent = "Snapshot unavailable";
     console.error(error);

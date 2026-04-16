@@ -14,55 +14,78 @@
   <body>
     <main class="shell">
       <section class="hero">
-        <div>
+        <div class="hero-copy">
           <p class="eyebrow">TRY Depreciation Risk Monitor</p>
           <h1>FX TRY Risk Lab</h1>
-          <p class="deck" id="deck" aria-live="polite">
+          <p class="eyebrow">House Call</p>
+          <h2 id="house-call-title">Loading...</h2>
+          <p class="deck" id="house-call-text" aria-live="polite">
             Loading the latest browser snapshot...
           </p>
+
+          <div class="pill-row">
+            <article class="pill">
+              <span class="eyebrow">Primary horizon</span>
+              <strong id="briefing-horizon">--</strong>
+            </article>
+            <article class="pill">
+              <span class="eyebrow">Confidence</span>
+              <strong id="briefing-confidence">--</strong>
+            </article>
+            <article class="pill">
+              <span class="eyebrow">Caveat load</span>
+              <strong id="briefing-caveat">--</strong>
+            </article>
+          </div>
+
           <div class="hero-actions">
             <a
-              class="button primary"
+              class="button ghost"
               href="./data/latest.json"
               target="_blank"
               rel="noopener noreferrer"
             >
               Open raw snapshot
             </a>
-            <button class="button ghost" type="button" data-export-note>
-              Export my notes
-            </button>
           </div>
         </div>
+
         <aside class="hero-score">
-          <span class="eyebrow">Primary Horizon</span>
+          <span class="eyebrow">Primary Probability</span>
           <strong id="primary-score">--</strong>
           <p id="primary-meta">Loading...</p>
         </aside>
       </section>
 
-      <section class="curve" aria-labelledby="curve-title">
+      <section class="card" aria-labelledby="why-title">
         <div class="section-head">
           <div>
-            <p class="eyebrow">Probability Curve</p>
-            <h2 id="curve-title">Chance TRY weakens beyond the threshold</h2>
+            <p class="eyebrow">Why This Read</p>
+            <h2 id="why-title">The three things driving today's call</h2>
           </div>
           <p class="stamp" id="generated-at">Waiting for data...</p>
         </div>
-        <div class="curve-grid" id="curve-grid"></div>
+        <div class="briefing-grid" id="why-read-grid"></div>
       </section>
 
-      <section class="grid">
-        <article class="card">
-          <p class="eyebrow">Why It Moved</p>
-          <h3>Top pressure points</h3>
-          <div id="reasons"></div>
-        </article>
-        <article class="card">
-          <p class="eyebrow">Watch Next</p>
-          <h3>What to keep an eye on</h3>
-          <ul id="watchlist" class="list"></ul>
-        </article>
+      <section class="card" aria-labelledby="trigger-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">What Would Change It</p>
+            <h2 id="trigger-title">Three triggers that would move the read</h2>
+          </div>
+        </div>
+        <div class="briefing-grid" id="trigger-grid"></div>
+      </section>
+
+      <section class="curve" id="full-brief" aria-labelledby="curve-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Full Brief</p>
+            <h2 id="curve-title">Probability curve across the full horizon set</h2>
+          </div>
+        </div>
+        <div class="curve-grid" id="curve-grid"></div>
       </section>
 
       <section class="grid">
@@ -75,6 +98,19 @@
           <p class="eyebrow">Macro Lens</p>
           <h3 id="macro-regime">Loading...</h3>
           <div class="metric-grid" id="macro-metrics"></div>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <p class="eyebrow">Supporting Reasons</p>
+          <h3>How the model is ranking the evidence</h3>
+          <div id="reasons"></div>
+        </article>
+        <article class="card">
+          <p class="eyebrow">Extended Watchlist</p>
+          <h3>Additional items worth following</h3>
+          <ul id="watchlist" class="list"></ul>
         </article>
       </section>
 
@@ -112,6 +148,7 @@
           <textarea id="local-note" rows="8" placeholder="Write here..."></textarea>
           <div class="hero-actions">
             <button class="button primary" type="button" data-save-note>Save note</button>
+            <button class="button ghost" type="button" data-export-note>Export note</button>
             <span class="stamp" id="note-status">Nothing saved yet.</span>
           </div>
         </article>
@@ -127,15 +164,15 @@
           intensity.
         </p>
         <p>
-          It is meant to be easy to open and easy to understand. It is not a trading instruction
-          engine and it does not promise perfect forecasts.
+          The goal is to lead with one clear read first, then show the evidence below it. It is
+          not a trading instruction engine and it does not promise perfect forecasts.
         </p>
       </section>
 
       <section class="card caveats" id="caveats" hidden>
         <p class="eyebrow">Data Caveats</p>
         <h3>Some public feeds were incomplete in this snapshot</h3>
-        <p class="deck">
+        <p class="deck" id="caveat-message">
           The model still publishes a usable estimate, but these source issues can make the read
           more neutral than usual.
         </p>

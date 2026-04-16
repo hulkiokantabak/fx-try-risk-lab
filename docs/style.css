@@ -1,6 +1,7 @@
 :root {
   --bg: #f3ecdf;
-  --paper: rgba(255, 250, 240, 0.92);
+  --paper: rgba(255, 250, 240, 0.94);
+  --paper-strong: rgba(255, 253, 247, 0.98);
   --ink: #1e2522;
   --muted: #61706a;
   --line: rgba(30, 37, 34, 0.12);
@@ -16,7 +17,7 @@
 body {
   margin: 0;
   color: var(--ink);
-  line-height: 1.5;
+  line-height: 1.55;
   font-family: Georgia, "Times New Roman", serif;
   background:
     radial-gradient(circle at top left, rgba(183, 106, 43, 0.14), transparent 32%),
@@ -45,7 +46,7 @@ a {
 
 .hero {
   display: grid;
-  grid-template-columns: 1.5fr 320px;
+  grid-template-columns: 1.6fr 320px;
   gap: 1.5rem;
   padding: 1.75rem;
 }
@@ -55,7 +56,9 @@ a {
 .curve,
 .card,
 .metric,
-.curve-card {
+.curve-card,
+.brief-card,
+.pill {
   min-width: 0;
 }
 
@@ -82,11 +85,14 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(1.4rem, 2vw, 2rem);
+  margin-bottom: 0.6rem;
+  font-size: clamp(1.5rem, 2.2vw, 2.2rem);
+  line-height: 1.05;
 }
 
 h3 {
   font-size: 1.2rem;
+  line-height: 1.2;
 }
 
 .deck,
@@ -94,7 +100,8 @@ h3 {
 .reason-detail,
 .metric p,
 .note-label,
-textarea {
+textarea,
+.brief-detail {
   color: var(--muted);
 }
 
@@ -103,8 +110,35 @@ textarea {
 .metric p,
 #primary-meta,
 .list li,
-.history-table td {
+.history-table td,
+.brief-detail,
+.brief-now {
   overflow-wrap: anywhere;
+}
+
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.pill-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.pill {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.pill strong {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 1.15rem;
 }
 
 .hero-score {
@@ -117,7 +151,7 @@ textarea {
 .hero-score strong {
   display: block;
   margin-top: 0.35rem;
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
 }
 
 .hero-actions {
@@ -173,19 +207,43 @@ a:focus-visible {
 }
 
 .curve-grid,
-.metric-grid {
+.metric-grid,
+.briefing-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
   gap: 0.85rem;
   margin-top: 1rem;
 }
 
+.curve-grid,
+.metric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+}
+
+.briefing-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .curve-card,
-.metric {
+.metric,
+.brief-card {
   border: 1px solid var(--line);
   border-radius: 22px;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.brief-card {
+  background: var(--paper-strong);
+}
+
+.brief-card h3 {
+  margin-bottom: 0.55rem;
+}
+
+.brief-now {
+  margin-bottom: 0.5rem;
+  color: var(--signal);
+  font-weight: 700;
 }
 
 .curve-card.primary {
@@ -299,7 +357,9 @@ textarea {
 
 @media (max-width: 900px) {
   .hero,
-  .grid {
+  .grid,
+  .briefing-grid,
+  .pill-row {
     grid-template-columns: 1fr;
   }
 

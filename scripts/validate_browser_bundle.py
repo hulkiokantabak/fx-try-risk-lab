@@ -35,7 +35,10 @@ def main() -> None:
         "curve",
         "primary_score",
         "headline",
+        "briefing",
         "summary",
+        "why_read",
+        "trigger_cards",
         "market",
         "macro",
         "news",
@@ -57,6 +60,24 @@ def main() -> None:
         {"deck", "primary_message", "market_message", "macro_message", "news_message"}.issubset(summary),
         "latest.json summary is missing required keys",
     )
+    briefing = latest["briefing"]
+    require(
+        {
+            "stance",
+            "probability",
+            "primary_horizon",
+            "confidence",
+            "caveat_severity",
+            "caveat_message",
+            "house_call",
+        }.issubset(briefing),
+        "latest.json briefing is missing required keys",
+    )
+    require(isinstance(latest["why_read"], list) and len(latest["why_read"]) == 3, "why_read must contain exactly three briefing cards")
+    require(
+        isinstance(latest["trigger_cards"], list) and len(latest["trigger_cards"]) == 3,
+        "trigger_cards must contain exactly three trigger cards",
+    )
     require(isinstance(latest["reasons"], list) and latest["reasons"], "latest.json reasons must be non-empty")
     require(isinstance(latest["watchlist"], list) and latest["watchlist"], "latest.json watchlist must be non-empty")
 
@@ -70,6 +91,9 @@ def main() -> None:
     require("./style.css" in index_html, "index.html must load the browser stylesheet")
     require("./app.js" in index_html, "index.html must load the browser script")
     require('name="theme-color"' in index_html, "index.html must define a theme color")
+    require('id="house-call-title"' in index_html, "index.html must include the house-call title")
+    require('id="why-read-grid"' in index_html, "index.html must include the why-read grid")
+    require('id="trigger-grid"' in index_html, "index.html must include the trigger grid")
     require("./data/latest.json" in app_js, "app.js must request the latest snapshot JSON")
     require("./data/history.json" in app_js, "app.js must request the history JSON")
     require(".innerHTML =" not in app_js, "app.js should avoid raw innerHTML assignments")
