@@ -9,6 +9,7 @@ This app is designed to run well as a public local workstation first, and then m
 - Set a strong `FX_SESSION_SECRET`.
 - Keep storage local for `v1` unless you truly need shared multi-device access.
 - Use the included `compose.yaml` plus `deploy/Caddyfile` if you want the smallest "usable from anywhere" setup.
+- Remember that GitHub hosts the repository, not the running FastAPI service. A real browser link only exists after deployment or while the app is being tunneled from a live machine.
 
 ## Minimal Environment
 
@@ -19,7 +20,7 @@ FX_ALLOWED_HOSTS=your-domain.com,127.0.0.1,localhost
 FX_HOST=0.0.0.0
 FX_PORT=8000
 FX_RELOAD=false
-FX_FORWARDED_ALLOW_IPS=127.0.0.1
+FX_FORWARDED_ALLOW_IPS=*
 FX_SECURE_COOKIES=true
 ```
 
@@ -41,6 +42,13 @@ The app now runs publicly by default.
 - `/healthz` and `/readyz` remain public for monitoring
 
 If you ever want to add restrictions later, the clean place to do it is at the reverse proxy or host layer rather than inside the app itself.
+
+## GitHub Repo vs Live Browser URL
+
+- The GitHub repository is the source-code home.
+- A browser-use link appears only after you deploy the app to a host, or while you expose a running local copy through a tunnel.
+
+GitHub Pages is not enough for this app because the workstation is server-backed FastAPI, not a static site.
 
 ## Local Run
 
@@ -87,6 +95,8 @@ This stack keeps the architecture intentionally small:
 - `caddy`: HTTPS termination and reverse proxy
 
 Your persistent app state stays in the mounted `data/` folder.
+
+`FX_FORWARDED_ALLOW_IPS=*` is appropriate in this bundled compose setup because the FastAPI app is only exposed behind the local Caddy reverse proxy, not directly to the public internet.
 
 ## Reverse Proxy Notes
 

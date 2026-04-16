@@ -11,7 +11,7 @@ FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira
 - runs the `FX Experts` debate workflow across Rounds 1-4
 - produces a house view, disagreement range, stress flags, and backtesting
 - exports PDF-first assessment briefs with an HTML twin
-- runs publicly by default for local and GitHub-based use
+- runs publicly by default once deployed; the GitHub repo hosts the code, not the live app
 
 ## Core Features
 
@@ -35,6 +35,13 @@ FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira
 2. Set your domain and session secret
 3. Update `deploy/Caddyfile` with your real domain
 4. Run `docker compose up -d --build`
+
+## GitHub vs Browser Link
+
+- GitHub repo: where people read, download, and contribute to the code
+- deployed app URL: the real browser link people use to run the workstation
+
+This project is a dynamic FastAPI app, so GitHub alone does not create the live browser URL. You still need to deploy it to a host or run it from your own machine.
 
 ## Public Repo Notes
 
