@@ -91,6 +91,11 @@ def main() -> None:
     require("./style.css" in index_html, "index.html must load the browser stylesheet")
     require("./app.js" in index_html, "index.html must load the browser script")
     require('name="theme-color"' in index_html, "index.html must define a theme color")
+    require('name="referrer"' in index_html, "index.html must define a referrer policy")
+    require(
+        'http-equiv="Content-Security-Policy"' in index_html,
+        "index.html must define a content security policy",
+    )
     require('id="house-call-title"' in index_html, "index.html must include the house-call title")
     require('id="why-read-grid"' in index_html, "index.html must include the why-read grid")
     require('id="trigger-grid"' in index_html, "index.html must include the trigger grid")
