@@ -1,5 +1,8 @@
 # FX TRY Risk Lab
 
+[![CI](https://github.com/hulkiokantabak/fx-try-risk-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/hulkiokantabak/fx-try-risk-lab/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+
 FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira depreciation risk with public macro, market, news, and debate-driven evidence.
 
 ## What It Does
@@ -9,6 +12,15 @@ FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira
 - produces a house view, disagreement range, stress flags, and backtesting
 - exports PDF-first assessment briefs with an HTML twin
 - runs publicly by default for local and GitHub-based use
+
+## Core Features
+
+- public-source ingestion across CBRT, ECB, IMF, FRED, and market-volatility feeds
+- frozen assessment cycles with replayable Round 0 evidence packs
+- multi-agent `FX Experts` debate rounds with disagreement preserved instead of flattened
+- follow-up cycle lineage, delta summaries, and realized-outcome backtesting
+- analyst briefing mode with `Quick Read / Full Workup`
+- PDF-first exports with HTML twins
 
 ## Local Quick Start
 
@@ -23,6 +35,12 @@ FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira
 2. Set your domain and session secret
 3. Update `deploy/Caddyfile` with your real domain
 4. Run `docker compose up -d --build`
+
+## Public Repo Notes
+
+- the app is public-by-default and does not require an internal password wall
+- local/dev data stays out of Git via `.gitignore`
+- production-only secrets belong in `.env.production`, not in the repo
 
 ## Main Entry Points
 
@@ -48,3 +66,11 @@ The default production path is intentionally simple:
 - one persistent `data/` volume
 
 That keeps the app usable from anywhere without forcing a separate database or a complicated cloud stack on day one.
+
+## Contributing
+
+Contributions are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md) for workflow notes and [SECURITY.md](./SECURITY.md) for responsible disclosure guidance.
+
+## License
+
+This project is released under the [MIT License](./LICENSE).
