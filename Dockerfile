@@ -25,6 +25,6 @@ USER appuser
 EXPOSE 8000
 VOLUME ["/app/data"]
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD python -c "import sys, urllib.request; response = urllib.request.urlopen('http://127.0.0.1:8000/readyz', timeout=4); sys.exit(0 if response.status == 200 else 1)"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD python -c "import os, sys, urllib.request; port = os.environ.get('FX_PORT', '8000'); response = urllib.request.urlopen(f'http://127.0.0.1:{port}/readyz', timeout=4); sys.exit(0 if response.status == 200 else 1)"
 
 CMD ["python", "-m", "app.serve"]

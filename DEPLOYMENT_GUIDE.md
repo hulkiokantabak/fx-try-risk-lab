@@ -50,6 +50,28 @@ If you ever want to add restrictions later, the clean place to do it is at the r
 
 GitHub Pages is not enough for this app because the workstation is server-backed FastAPI, not a static site.
 
+## Recommended Permanent Host
+
+The cleanest permanent-host path for this project is Render using the included `render.yaml` Blueprint:
+
+- it can deploy directly from the GitHub repo
+- it gives the app a stable public URL
+- it supports a persistent disk, which this app needs for SQLite data and stored reports
+
+Use the repo's `Deploy to Render` button or open:
+
+`https://render.com/deploy?repo=https://github.com/hulkiokantabak/fx-try-risk-lab`
+
+The blueprint is set up for:
+
+- `starter` web service plan
+- Frankfurt region
+- persistent disk mounted at `/app/data`
+- generated session secret
+- `/readyz` health checks
+
+The blueprint currently uses `FX_ALLOWED_HOSTS=*` for first-deploy simplicity. Once the permanent Render URL or your custom domain is set, you can tighten that environment variable to the exact hostname.
+
 ## Local Run
 
 From the project root:
