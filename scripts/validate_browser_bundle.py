@@ -16,11 +16,23 @@ def require(condition: bool, message: str) -> None:
 def main() -> None:
     latest_path = DOCS / "data" / "latest.json"
     history_path = DOCS / "data" / "history.json"
+    source_cache_path = DOCS / "data" / "source_cache.json"
     index_path = DOCS / "index.html"
+    methodology_path = DOCS / "methodology.html"
     app_js_path = DOCS / "app.js"
     style_path = DOCS / "style.css"
+    changelog_path = ROOT / "CHANGELOG.md"
 
-    for path in [latest_path, history_path, index_path, app_js_path, style_path]:
+    for path in [
+        latest_path,
+        history_path,
+        source_cache_path,
+        index_path,
+        methodology_path,
+        app_js_path,
+        style_path,
+        changelog_path,
+    ]:
         require(path.exists(), f"Missing required browser file: {path}")
 
     latest = json.loads(latest_path.read_text(encoding="utf-8"))
@@ -39,6 +51,7 @@ def main() -> None:
         "summary",
         "why_read",
         "trigger_cards",
+        "charts",
         "market",
         "macro",
         "news",
@@ -78,6 +91,10 @@ def main() -> None:
         isinstance(latest["trigger_cards"], list) and len(latest["trigger_cards"]) == 3,
         "trigger_cards must contain exactly three trigger cards",
     )
+    require(
+        {"market_trend", "score_history"}.issubset(latest["charts"]),
+        "latest.json charts must include market_trend and score_history",
+    )
     require(isinstance(latest["reasons"], list) and latest["reasons"], "latest.json reasons must be non-empty")
     require(isinstance(latest["watchlist"], list) and latest["watchlist"], "latest.json watchlist must be non-empty")
 
@@ -99,9 +116,13 @@ def main() -> None:
     require('id="house-call-title"' in index_html, "index.html must include the house-call title")
     require('id="why-read-grid"' in index_html, "index.html must include the why-read grid")
     require('id="trigger-grid"' in index_html, "index.html must include the trigger grid")
+    require('id="market-chart"' in index_html, "index.html must include the market chart")
+    require('id="score-chart"' in index_html, "index.html must include the score chart")
+    require("./methodology.html" in index_html, "index.html must link to the methodology page")
     require("./data/latest.json" in app_js, "app.js must request the latest snapshot JSON")
     require("./data/history.json" in app_js, "app.js must request the history JSON")
     require(".innerHTML =" not in app_js, "app.js should avoid raw innerHTML assignments")
+    require("renderLineChart(" in app_js, "app.js must render the lightweight charts")
 
     print("Browser bundle validation passed.")
 

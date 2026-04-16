@@ -10,7 +10,9 @@ FX TRY Risk Lab is a lean browser app for tracking Turkish lira depreciation ris
 
 - Live site: [https://hulkiokantabak.github.io/fx-try-risk-lab/](https://hulkiokantabak.github.io/fx-try-risk-lab/)
 - Latest raw snapshot: [https://hulkiokantabak.github.io/fx-try-risk-lab/data/latest.json](https://hulkiokantabak.github.io/fx-try-risk-lab/data/latest.json)
+- Methodology: [https://hulkiokantabak.github.io/fx-try-risk-lab/methodology.html](https://hulkiokantabak.github.io/fx-try-risk-lab/methodology.html)
 - Repo: [https://github.com/hulkiokantabak/fx-try-risk-lab](https://github.com/hulkiokantabak/fx-try-risk-lab)
+- Changelog: [./CHANGELOG.md](./CHANGELOG.md)
 
 The repo is structured so normal use is simple: open the browser link and read the latest published view. No codespaces, server startup, or login wall is required.
 
@@ -27,6 +29,7 @@ It does that with a simple briefing-first structure:
 - `Why This Read`: the three main forces shaping the view
 - `What Would Change It`: the key triggers that would materially shift the call
 - `Full Brief`: the deeper curve, supporting evidence, caveats, history, headlines, and notes
+- `Methodology`: a plain-language page explaining how the score is formed
 
 ## What You See In The Browser
 
@@ -63,6 +66,7 @@ These are the main watch triggers that would meaningfully move the view. This se
 The lower sections keep the research depth available:
 
 - horizon curve
+- lightweight market and score-history charts
 - market and macro context
 - caveats and warnings
 - headline flow
@@ -97,6 +101,10 @@ Main source families:
 - optional social-chatter RSS fallback when available
 
 The latest snapshot always carries caveats and warnings when the data picture is incomplete.
+
+## Reliability Notes
+
+The snapshot builder now keeps a last-good source cache for key public feeds. If a live feed times out or gets blocked during a refresh, the build can fall back to the most recent successful data instead of dropping that lens immediately. The site still surfaces warnings when that happens.
 
 ## Trust Model And Limitations
 
@@ -146,6 +154,7 @@ There is also a scheduled refresh workflow that updates `docs/data` on weekday m
 - `docs/`: public browser app and published data
 - `docs/data/latest.json`: latest published snapshot
 - `docs/data/history.json`: published estimate history
+- `docs/data/source_cache.json`: last-good cached source payloads for flaky public feeds
 - `scripts/build_browser_data.py`: snapshot builder
 - `scripts/validate_browser_bundle.py`: static bundle validator
 - `.github/workflows/ci.yml`: main validation workflow
@@ -175,6 +184,10 @@ The older FastAPI workstation, design specs, and skill-pack material still exist
 ## Contributing
 
 Contributions are welcome. Start with [CONTRIBUTING.md](./CONTRIBUTING.md) for workflow notes and [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for the browser publishing model.
+
+## Changelog
+
+For release notes and recent project changes, see [CHANGELOG.md](./CHANGELOG.md).
 
 ## License
 

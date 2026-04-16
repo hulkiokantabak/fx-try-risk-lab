@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-16T11:08:48Z",
+  "generated_at": "2026-04-16T11:58:57Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -42,7 +42,7 @@
     {
       "label": "Support",
       "title": "Domestic cushion is still there",
-      "detail": "CBRT policy rate is 37.00%, and official reserves are +4.06% over the latest reserve window."
+      "detail": "CBRT policy rate is 37.00%, and official reserves are +5.74% over the latest reserve window."
     },
     {
       "label": "Unclear",
@@ -59,7 +59,7 @@
     {
       "title": "Reserve trend",
       "detail": "If reserve momentum rolls over from the current supportive trend, the domestic cushion gets thinner.",
-      "now": "Now +4.06% over 4 weeks"
+      "now": "Now +5.74% over 4 weeks"
     },
     {
       "title": "Global macro clarity",
@@ -67,6 +67,202 @@
       "now": "Now external macro read is neutralized by missing feeds"
     }
   ],
+  "charts": {
+    "market_trend": {
+      "title": "USD/TRY vs peer basket",
+      "subtitle": "Last 20 sessions, normalized to 0% at the start of the window.",
+      "unit": "Percent change from start",
+      "series": [
+        {
+          "label": "USD/TRY",
+          "points": [
+            {
+              "date": "2026-03-17",
+              "value": 0.0
+            },
+            {
+              "date": "2026-03-18",
+              "value": 0.04
+            },
+            {
+              "date": "2026-03-19",
+              "value": 0.26
+            },
+            {
+              "date": "2026-03-20",
+              "value": 0.23
+            },
+            {
+              "date": "2026-03-23",
+              "value": 0.26
+            },
+            {
+              "date": "2026-03-24",
+              "value": 0.32
+            },
+            {
+              "date": "2026-03-25",
+              "value": 0.34
+            },
+            {
+              "date": "2026-03-26",
+              "value": 0.37
+            },
+            {
+              "date": "2026-03-27",
+              "value": 0.57
+            },
+            {
+              "date": "2026-03-30",
+              "value": 0.57
+            },
+            {
+              "date": "2026-03-31",
+              "value": 0.62
+            },
+            {
+              "date": "2026-04-01",
+              "value": 0.59
+            },
+            {
+              "date": "2026-04-02",
+              "value": 0.65
+            },
+            {
+              "date": "2026-04-07",
+              "value": 0.91
+            },
+            {
+              "date": "2026-04-08",
+              "value": 0.63
+            },
+            {
+              "date": "2026-04-09",
+              "value": 0.87
+            },
+            {
+              "date": "2026-04-10",
+              "value": 1.05
+            },
+            {
+              "date": "2026-04-13",
+              "value": 1.16
+            },
+            {
+              "date": "2026-04-14",
+              "value": 1.18
+            },
+            {
+              "date": "2026-04-15",
+              "value": 1.14
+            }
+          ]
+        },
+        {
+          "label": "Peer basket",
+          "points": [
+            {
+              "date": "2026-03-17",
+              "value": 0.0
+            },
+            {
+              "date": "2026-03-18",
+              "value": 0.91
+            },
+            {
+              "date": "2026-03-19",
+              "value": 1.77
+            },
+            {
+              "date": "2026-03-20",
+              "value": 0.84
+            },
+            {
+              "date": "2026-03-23",
+              "value": 0.23
+            },
+            {
+              "date": "2026-03-24",
+              "value": 0.95
+            },
+            {
+              "date": "2026-03-25",
+              "value": 0.36
+            },
+            {
+              "date": "2026-03-26",
+              "value": 0.79
+            },
+            {
+              "date": "2026-03-27",
+              "value": 1.34
+            },
+            {
+              "date": "2026-03-30",
+              "value": 1.39
+            },
+            {
+              "date": "2026-03-31",
+              "value": 0.79
+            },
+            {
+              "date": "2026-04-01",
+              "value": -0.66
+            },
+            {
+              "date": "2026-04-02",
+              "value": 0.3
+            },
+            {
+              "date": "2026-04-07",
+              "value": -0.35
+            },
+            {
+              "date": "2026-04-08",
+              "value": -2.72
+            },
+            {
+              "date": "2026-04-09",
+              "value": -2.26
+            },
+            {
+              "date": "2026-04-10",
+              "value": -2.65
+            },
+            {
+              "date": "2026-04-13",
+              "value": -3.02
+            },
+            {
+              "date": "2026-04-14",
+              "value": -4.3
+            },
+            {
+              "date": "2026-04-15",
+              "value": -4.01
+            }
+          ]
+        }
+      ]
+    },
+    "score_history": {
+      "title": "Primary score history",
+      "subtitle": "Recent published primary-horizon reads.",
+      "unit": "Probability score",
+      "series": [
+        {
+          "label": "Primary score",
+          "points": [
+            {
+              "date": "2026-04-16",
+              "value": 38.9,
+              "stance": "Balanced but fragile"
+            }
+          ]
+        }
+      ]
+    }
+  },
   "market": {
     "regime_label": "Broad EM stress with TRY vulnerability",
     "usd_try": {
@@ -121,10 +317,10 @@
     },
     "turkey": {
       "policy_rate": 37.0,
-      "official_reserve_assets": 161645.0,
-      "fx_reserves": 50729.0,
-      "official_reserve_assets_change_4w": 4.06,
-      "fx_reserves_change_4w": 6.594
+      "official_reserve_assets": 170915.0,
+      "fx_reserves": 56331.0,
+      "official_reserve_assets_change_4w": 5.735,
+      "fx_reserves_change_4w": 11.043
     },
     "scores": {
       "global_pressure": 50.0,
@@ -166,13 +362,13 @@
     },
     {
       "title": "Turkey policy and reserves",
-      "detail": "Policy rate is 37.00%, official reserves are +4.06% over the latest reserve window.",
+      "detail": "Policy rate is 37.00%, official reserves are +5.74% over the latest reserve window.",
       "score": 10.8
     }
   ],
   "watchlist": [
     "Watch whether USD/TRY keeps outrunning the peer basket; current 20-session gap is +6.03%.",
-    "Watch reserve trend updates from CBRT; official reserve assets are +4.06% over the latest reserve window.",
+    "Watch reserve trend updates from CBRT; official reserve assets are +5.74% over the latest reserve window.",
     "Watch global volatility proxies; VIX/VXEEM are 18.17/27.40.",
     "Watch headline intensity; the current 14-day count is 2 news items."
   ],
@@ -180,11 +376,10 @@
     "FRED FEDFUNDS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS: The read operation timed out",
     "FRED DGS10: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: The read operation timed out",
     "FRED DGS2: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2: The read operation timed out",
-    "FRED DTWEXBGS: [WinError 10054] An existing connection was forcibly closed by the remote host",
-    "Reddit RSS: Fetch failed for https://www.reddit.com/search.rss?q=(Turkish%20lira%20OR%20USDTRY%20OR%20CBRT)&sort=new: HTTP Error 403: Blocked"
+    "FRED DTWEXBGS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
   ],
   "history_entry": {
-    "as_of": "2026-04-16T11:08:48Z",
+    "as_of": "2026-04-16T11:58:57Z",
     "primary_horizon": "1m",
     "primary_score": 38.9,
     "curve": {

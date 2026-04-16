@@ -236,6 +236,52 @@ a:focus-visible {
   background: var(--paper-strong);
 }
 
+.chart-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-shell {
+  margin-top: 0.85rem;
+  padding: 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.chart-shell svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-guide {
+  stroke: rgba(30, 37, 34, 0.14);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+}
+
+.legend-swatch {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
 .brief-card h3 {
   margin-bottom: 0.55rem;
 }
@@ -349,6 +395,46 @@ textarea {
   margin-top: 0.8rem;
 }
 
+.prose-shell {
+  max-width: 1080px;
+}
+
+.prose-card h2,
+.prose-card h3 {
+  margin-bottom: 0.6rem;
+}
+
+.prose-card p:last-child,
+.prose-card ul:last-child {
+  margin-bottom: 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-table th,
+.info-table td {
+  padding: 0.85rem 0.7rem;
+  text-align: left;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.info-table thead th {
+  border-top: 0;
+  color: var(--signal);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .caveats {
   border-color: rgba(183, 106, 43, 0.28);
   background:
@@ -401,8 +487,15 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .chart-legend {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .history-table th,
-  .history-table td {
+  .history-table td,
+  .info-table th,
+  .info-table td {
     padding: 0.75rem 0.5rem;
     font-size: 0.92rem;
   }

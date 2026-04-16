@@ -52,6 +52,15 @@
             >
               Open raw snapshot
             </a>
+            <a class="button ghost" href="./methodology.html">Read methodology</a>
+            <a
+              class="button ghost"
+              href="https://github.com/hulkiokantabak/fx-try-risk-lab/blob/main/CHANGELOG.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View changelog
+            </a>
           </div>
         </div>
 
@@ -91,6 +100,27 @@
           </div>
         </div>
         <div class="curve-grid" id="curve-grid"></div>
+      </section>
+
+      <section class="grid" aria-label="Charts">
+        <article class="card chart-card">
+          <p class="eyebrow">Market Trend</p>
+          <h3>USD/TRY vs peer basket</h3>
+          <p class="deck" id="market-chart-meta">Loading market trend...</p>
+          <div class="chart-shell">
+            <svg id="market-chart" viewBox="0 0 360 180" role="img" aria-label="USD/TRY and peer basket trend chart"></svg>
+          </div>
+          <div class="chart-legend" id="market-chart-legend"></div>
+        </article>
+        <article class="card chart-card">
+          <p class="eyebrow">Score History</p>
+          <h3>Primary score over time</h3>
+          <p class="deck" id="score-chart-meta">Loading score history...</p>
+          <div class="chart-shell">
+            <svg id="score-chart" viewBox="0 0 360 180" role="img" aria-label="Primary risk score history chart"></svg>
+          </div>
+          <div class="chart-legend" id="score-chart-legend"></div>
+        </article>
       </section>
 
       <section class="grid">
@@ -172,6 +202,17 @@
           The goal is to lead with one clear read first, then show the evidence below it. It is
           not a trading instruction engine and it does not promise perfect forecasts.
         </p>
+        <div class="hero-actions">
+          <a class="button ghost" href="./methodology.html">Methodology page</a>
+          <a
+            class="button ghost"
+            href="https://github.com/hulkiokantabak/fx-try-risk-lab/blob/main/CHANGELOG.md"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Project changelog
+          </a>
+        </div>
       </section>
 
       <section class="card caveats" id="caveats" hidden>

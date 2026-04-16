@@ -1,4 +1,6 @@
 const noteKey = "fx-try-risk-lab-note";
+const SVG_NS = "http://www.w3.org/2000/svg";
+const chartPalette = ["#1d5c4b", "#b76a2b", "#6b7f78"];
 
 async function loadJson(path) {
   const response = await fetch(path, { cache: "no-store" });
@@ -61,6 +63,100 @@ function safeExternalHref(value) {
   }
 
   return null;
+}
+
+function createSvgElement(tagName) {
+  return document.createElementNS(SVG_NS, tagName);
+}
+
+function formatChartValue(value, suffix = "") {
+  return `${formatNumber(value, 2)}${suffix}`;
+}
+
+function flattenChartPoints(chartData) {
+  return normalizeArray(chartData?.series).flatMap((series) => normalizeArray(series.points));
+}
+
+function buildLinePoints(points, bounds) {
+  if (!points.length) {
+    return "";
+  }
+
+  const { minValue, maxValue, width, height, padding } = bounds;
+  const range = maxValue - minValue || 1;
+  const xStep = points.length > 1 ? (width - padding * 2) / (points.length - 1) : 0;
+
+  return points
+    .map((point, index) => {
+      const x = padding + xStep * index;
+      const y = height - padding - ((point.value - minValue) / range) * (height - padding * 2);
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .join(" ");
+}
+
+function renderLineChart(chartId, legendId, metaId, chartData, suffix = "") {
+  const svg = document.getElementById(chartId);
+  const legend = document.getElementById(legendId);
+  const meta = document.getElementById(metaId);
+  clearNode(svg);
+  clearNode(legend);
+
+  const allPoints = flattenChartPoints(chartData);
+  if (!allPoints.length) {
+    meta.textContent = "Chart unavailable in this snapshot.";
+    const fallback = document.createElement("span");
+    fallback.className = "stamp";
+    fallback.textContent = "No chart data";
+    legend.appendChild(fallback);
+    return;
+  }
+
+  const values = allPoints.map((point) => point.value);
+  const minValue = Math.min(...values);
+  const maxValue = Math.max(...values);
+  const bounds = { minValue, maxValue, width: 360, height: 180, padding: 18 };
+
+  [0.2, 0.5, 0.8].forEach((fraction) => {
+    const guide = createSvgElement("line");
+    const y = bounds.padding + (bounds.height - bounds.padding * 2) * fraction;
+    guide.setAttribute("x1", String(bounds.padding));
+    guide.setAttribute("x2", String(bounds.width - bounds.padding));
+    guide.setAttribute("y1", y.toFixed(2));
+    guide.setAttribute("y2", y.toFixed(2));
+    guide.setAttribute("class", "chart-guide");
+    svg.appendChild(guide);
+  });
+
+  normalizeArray(chartData?.series).forEach((series, index) => {
+    const polyline = createSvgElement("polyline");
+    polyline.setAttribute("fill", "none");
+    polyline.setAttribute("stroke", chartPalette[index % chartPalette.length]);
+    polyline.setAttribute("stroke-width", "3");
+    polyline.setAttribute("stroke-linecap", "round");
+    polyline.setAttribute("stroke-linejoin", "round");
+    polyline.setAttribute("points", buildLinePoints(normalizeArray(series.points), bounds));
+    svg.appendChild(polyline);
+
+    const legendItem = document.createElement("div");
+    legendItem.className = "chart-legend-item";
+    const swatch = document.createElement("span");
+    swatch.className = "legend-swatch";
+    swatch.style.backgroundColor = chartPalette[index % chartPalette.length];
+    legendItem.appendChild(swatch);
+    appendTextElement(
+      legendItem,
+      "span",
+      `${series.label ?? "Series"} ${formatChartValue(normalizeArray(series.points).at(-1)?.value, suffix)}`,
+    );
+    legend.appendChild(legendItem);
+  });
+
+  const firstPoint = allPoints[0];
+  const lastPoint = allPoints[allPoints.length - 1];
+  meta.textContent =
+    `${chartData?.subtitle ?? "Chart"} Range ${formatChartValue(minValue, suffix)} to ${formatChartValue(maxValue, suffix)}. ` +
+    `${firstPoint.date ?? "start"} to ${lastPoint.date ?? "end"}.`;
 }
 
 function renderCurve(snapshot) {
@@ -380,6 +476,8 @@ function renderSnapshot(snapshot, history) {
   document.getElementById("market-regime").textContent = snapshot.market.regime_label;
   document.getElementById("macro-regime").textContent = snapshot.macro.regime_label;
 
+  renderLineChart("market-chart", "market-chart-legend", "market-chart-meta", snapshot.charts?.market_trend, "%");
+  renderLineChart("score-chart", "score-chart-legend", "score-chart-meta", snapshot.charts?.score_history);
   renderReasonList(snapshot);
   renderWatchlist(snapshot);
   renderHistory(history);

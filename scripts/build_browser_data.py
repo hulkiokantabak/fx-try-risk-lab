@@ -12,6 +12,7 @@ from html.parser import HTMLParser
 from io import BytesIO, StringIO
 from pathlib import Path
 from statistics import mean
+from time import sleep
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urljoin
 from urllib.request import Request, urlopen
@@ -23,6 +24,7 @@ DOCS_DIR = ROOT / "docs"
 DATA_DIR = DOCS_DIR / "data"
 LATEST_PATH = DATA_DIR / "latest.json"
 HISTORY_PATH = DATA_DIR / "history.json"
+SOURCE_CACHE_PATH = DATA_DIR / "source_cache.json"
 
 THRESHOLDS = {
     "1w": 2,
@@ -139,42 +141,109 @@ class AnchorCollector(HTMLParser):
 
 def main() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
-    snapshot = build_snapshot()
-    LATEST_PATH.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
+    source_cache = load_source_cache()
+    snapshot = build_snapshot(source_cache)
     history = update_history(snapshot)
+    snapshot.setdefault("charts", {})["score_history"] = build_score_history_chart(history)
+    LATEST_PATH.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
     HISTORY_PATH.write_text(json.dumps(history, indent=2), encoding="utf-8")
+    SOURCE_CACHE_PATH.write_text(json.dumps(source_cache, indent=2), encoding="utf-8")
     print(f"Wrote {LATEST_PATH}")
     print(f"Wrote {HISTORY_PATH}")
+    print(f"Wrote {SOURCE_CACHE_PATH}")
 
 
-def build_snapshot() -> dict:
+def build_snapshot(source_cache: dict[str, object]) -> dict:
     generated_at = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     warnings: list[str] = []
 
-    eur_try = try_fetch("ECB EUR/TRY", lambda: fetch_ecb_series(ECB_SERIES["EURTRY"]), [], warnings)
-    eur_usd = try_fetch("ECB EUR/USD", lambda: fetch_ecb_series(ECB_SERIES["EURUSD"]), [], warnings)
+    eur_try = try_fetch(
+        "ECB EUR/TRY",
+        lambda: fetch_ecb_series(ECB_SERIES["EURTRY"]),
+        [],
+        warnings,
+        source_cache,
+        "ecb_eurtry",
+        serialize_series,
+        deserialize_series,
+    )
+    eur_usd = try_fetch(
+        "ECB EUR/USD",
+        lambda: fetch_ecb_series(ECB_SERIES["EURUSD"]),
+        [],
+        warnings,
+        source_cache,
+        "ecb_eurusd",
+        serialize_series,
+        deserialize_series,
+    )
     peer_pairs = {
         "USD/ZAR": derive_usd_cross(
-            try_fetch("ECB EUR/ZAR", lambda: fetch_ecb_series(ECB_SERIES["EURZAR"]), [], warnings),
+            try_fetch(
+                "ECB EUR/ZAR",
+                lambda: fetch_ecb_series(ECB_SERIES["EURZAR"]),
+                [],
+                warnings,
+                source_cache,
+                "ecb_eurzar",
+                serialize_series,
+                deserialize_series,
+            ),
             eur_usd,
         ),
         "USD/BRL": derive_usd_cross(
-            try_fetch("ECB EUR/BRL", lambda: fetch_ecb_series(ECB_SERIES["EURBRL"]), [], warnings),
+            try_fetch(
+                "ECB EUR/BRL",
+                lambda: fetch_ecb_series(ECB_SERIES["EURBRL"]),
+                [],
+                warnings,
+                source_cache,
+                "ecb_eurbrl",
+                serialize_series,
+                deserialize_series,
+            ),
             eur_usd,
         ),
         "USD/HUF": derive_usd_cross(
-            try_fetch("ECB EUR/HUF", lambda: fetch_ecb_series(ECB_SERIES["EURHUF"]), [], warnings),
+            try_fetch(
+                "ECB EUR/HUF",
+                lambda: fetch_ecb_series(ECB_SERIES["EURHUF"]),
+                [],
+                warnings,
+                source_cache,
+                "ecb_eurhuf",
+                serialize_series,
+                deserialize_series,
+            ),
             eur_usd,
         ),
         "USD/PLN": derive_usd_cross(
-            try_fetch("ECB EUR/PLN", lambda: fetch_ecb_series(ECB_SERIES["EURPLN"]), [], warnings),
+            try_fetch(
+                "ECB EUR/PLN",
+                lambda: fetch_ecb_series(ECB_SERIES["EURPLN"]),
+                [],
+                warnings,
+                source_cache,
+                "ecb_eurpln",
+                serialize_series,
+                deserialize_series,
+            ),
             eur_usd,
         ),
     }
     usd_try = derive_usd_cross(eur_try, eur_usd)
 
     fred = {
-        code: try_fetch(f"FRED {code}", lambda code=code: fetch_fred_series(code), [], warnings)
+        code: try_fetch(
+            f"FRED {code}",
+            lambda code=code: fetch_fred_series(code),
+            [],
+            warnings,
+            source_cache,
+            f"fred_{code.casefold()}",
+            serialize_series,
+            deserialize_series,
+        )
         for code in FRED_SERIES
     }
     cboe = {
@@ -183,18 +252,53 @@ def build_snapshot() -> dict:
             lambda symbol=symbol: fetch_cboe_series(symbol),
             [],
             warnings,
+            source_cache,
+            f"cboe_{symbol.casefold()}",
+            serialize_series,
+            deserialize_series,
         )
         for symbol in CBOE_SERIES
     }
-    policy_rate = try_fetch("CBRT policy rate", fetch_cbrt_policy_rate, [], warnings)
+    policy_rate = try_fetch(
+        "CBRT policy rate",
+        fetch_cbrt_policy_rate,
+        [],
+        warnings,
+        source_cache,
+        "cbrt_policy_rate",
+        serialize_series,
+        deserialize_series,
+    )
     reserves = try_fetch(
         "CBRT reserves",
         fetch_cbrt_reserves,
         {"official_reserve_assets": [], "fx_reserves": []},
         warnings,
+        source_cache,
+        "cbrt_reserves",
+        serialize_series_map,
+        deserialize_series_map,
     )
-    headlines = try_fetch("Google News RSS", lambda: fetch_rss_entries(GOOGLE_RSS_URL), [], warnings)
-    chatter = try_fetch("Reddit RSS", lambda: fetch_rss_entries(REDDIT_RSS_URL), [], warnings)
+    headlines = try_fetch(
+        "Google News RSS",
+        lambda: fetch_rss_entries(GOOGLE_RSS_URL),
+        [],
+        warnings,
+        source_cache,
+        "google_news_rss",
+        serialize_feed,
+        deserialize_feed,
+    )
+    chatter = try_fetch(
+        "Reddit RSS",
+        lambda: fetch_rss_entries(REDDIT_RSS_URL),
+        [],
+        warnings,
+        source_cache,
+        "reddit_rss",
+        serialize_feed,
+        deserialize_feed,
+    )
 
     market = build_market_section(usd_try, peer_pairs, cboe)
     macro = build_macro_section(fred, policy_rate, reserves)
@@ -227,6 +331,9 @@ def build_snapshot() -> dict:
         "summary": build_summary(primary_score, market, macro, news, briefing),
         "why_read": why_read,
         "trigger_cards": trigger_cards,
+        "charts": {
+            "market_trend": build_market_trend_chart(usd_try, peer_pairs),
+        },
         "market": market,
         "macro": macro,
         "news": news,
@@ -237,10 +344,30 @@ def build_snapshot() -> dict:
     }
 
 
-def try_fetch(label: str, fetcher, fallback, warnings: list[str]):
+def try_fetch(
+    label: str,
+    fetcher,
+    fallback,
+    warnings: list[str],
+    source_cache: dict[str, object] | None = None,
+    cache_key: str | None = None,
+    serializer=None,
+    deserializer=None,
+):
     try:
-        return fetcher()
+        value = fetcher()
+        if source_cache is not None and cache_key and serializer is not None:
+            source_cache[cache_key] = serializer(value)
+        return value
     except Exception as exc:  # noqa: BLE001
+        if source_cache is not None and cache_key and cache_key in source_cache and deserializer is not None:
+            try:
+                cached = deserializer(source_cache[cache_key])
+            except Exception as cache_exc:  # noqa: BLE001
+                warnings.append(f"{label}: {exc}; cached fallback also failed: {cache_exc}")
+            else:
+                warnings.append(f"{label}: {exc}; using cached last-good data")
+                return cached
         warnings.append(f"{label}: {exc}")
         return fallback
 
@@ -407,6 +534,83 @@ def build_news_section(headlines: list[FeedEntry], chatter: list[FeedEntry]) -> 
             for entry in headline_recent[:6]
         ],
     }
+
+
+def build_market_trend_chart(
+    usd_try: list[SeriesPoint],
+    peer_pairs: dict[str, list[SeriesPoint]],
+    lookback: int = 20,
+) -> dict:
+    usd_path = normalized_change_points(usd_try, lookback)
+    peer_path = build_peer_basket_path(peer_pairs, lookback)
+    return {
+        "title": "USD/TRY vs peer basket",
+        "subtitle": "Last 20 sessions, normalized to 0% at the start of the window.",
+        "unit": "Percent change from start",
+        "series": [
+            {"label": "USD/TRY", "points": usd_path},
+            {"label": "Peer basket", "points": peer_path},
+        ],
+    }
+
+
+def build_score_history_chart(history: list[dict], lookback: int = 30) -> dict:
+    points = [
+        {
+            "date": entry.get("as_of", "")[:10],
+            "value": round(entry.get("primary_score", 0.0), 1),
+            "stance": entry.get("stance", "n/a"),
+        }
+        for entry in history[-lookback:]
+        if entry.get("as_of") and entry.get("primary_score") is not None
+    ]
+    return {
+        "title": "Primary score history",
+        "subtitle": "Recent published primary-horizon reads.",
+        "unit": "Probability score",
+        "series": [
+            {
+                "label": "Primary score",
+                "points": points,
+            }
+        ],
+    }
+
+
+def build_peer_basket_path(peer_pairs: dict[str, list[SeriesPoint]], lookback: int) -> list[dict]:
+    normalized_paths = [
+        normalized_change_points(points, lookback)
+        for points in peer_pairs.values()
+    ]
+    usable_paths = [path for path in normalized_paths if len(path) >= 2]
+    if not usable_paths:
+        return []
+
+    common_length = min(len(path) for path in usable_paths)
+    trimmed = [path[-common_length:] for path in usable_paths]
+    return [
+        {
+            "date": trimmed[0][index]["date"],
+            "value": round(mean(path[index]["value"] for path in trimmed), 2),
+        }
+        for index in range(common_length)
+    ]
+
+
+def normalized_change_points(points: list[SeriesPoint], lookback: int) -> list[dict]:
+    if len(points) < 2:
+        return []
+    trimmed = points[-lookback:]
+    base_value = trimmed[0].value
+    if base_value == 0:
+        return []
+    return [
+        {
+            "date": format_date(point.observed_at),
+            "value": round(((point.value - base_value) / base_value) * 100.0, 2),
+        }
+        for point in trimmed
+    ]
 
 
 def build_risk_curve(market: dict, macro: dict, news: dict) -> dict[str, float]:
@@ -712,6 +916,79 @@ def build_unclear_message(macro: dict, news: dict, briefing: dict) -> str:
     return briefing["caveat_message"]
 
 
+def load_source_cache() -> dict[str, object]:
+    if not SOURCE_CACHE_PATH.exists():
+        return {}
+    try:
+        return json.loads(SOURCE_CACHE_PATH.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def serialize_series(points: list[SeriesPoint]) -> list[dict]:
+    return [
+        {
+            "observed_at": point.observed_at.isoformat(),
+            "value": point.value,
+        }
+        for point in points
+    ]
+
+
+def deserialize_series(payload: object) -> list[SeriesPoint]:
+    if not isinstance(payload, list):
+        return []
+    return [
+        SeriesPoint(
+            observed_at=datetime.fromisoformat(str(item["observed_at"])),
+            value=float(item["value"]),
+        )
+        for item in payload
+        if isinstance(item, dict) and "observed_at" in item and "value" in item
+    ]
+
+
+def serialize_series_map(series_map: dict[str, list[SeriesPoint]]) -> dict[str, list[dict]]:
+    return {
+        key: serialize_series(points)
+        for key, points in series_map.items()
+    }
+
+
+def deserialize_series_map(payload: object) -> dict[str, list[SeriesPoint]]:
+    if not isinstance(payload, dict):
+        return {}
+    return {
+        str(key): deserialize_series(value)
+        for key, value in payload.items()
+    }
+
+
+def serialize_feed(entries: list[FeedEntry]) -> list[dict]:
+    return [
+        {
+            "title": entry.title,
+            "link": entry.link,
+            "published_at": entry.published_at.isoformat(),
+        }
+        for entry in entries
+    ]
+
+
+def deserialize_feed(payload: object) -> list[FeedEntry]:
+    if not isinstance(payload, list):
+        return []
+    return [
+        FeedEntry(
+            title=str(item["title"]),
+            link=str(item["link"]) if item.get("link") is not None else None,
+            published_at=datetime.fromisoformat(str(item["published_at"])),
+        )
+        for item in payload
+        if isinstance(item, dict) and "title" in item and "published_at" in item
+    ]
+
+
 def update_history(snapshot: dict) -> list[dict]:
     if HISTORY_PATH.exists():
         history = json.loads(HISTORY_PATH.read_text(encoding="utf-8"))
@@ -834,32 +1111,56 @@ def derive_usd_cross(series_in_quote: list[SeriesPoint], eur_usd: list[SeriesPoi
 
 def fetch_text(url: str, *, accept: str | None = None) -> str:
     last_error: Exception | None = None
-    for _attempt in range(2):
+    user_agents = [
+        (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0 Safari/537.36"
+        ),
+        "Mozilla/5.0",
+    ]
+    for attempt in range(2):
         request = Request(
             url,
             headers={
-                "User-Agent": "Mozilla/5.0",
+                "User-Agent": user_agents[attempt % len(user_agents)],
                 "Connection": "close",
                 **({"Accept": accept} if accept else {}),
             },
         )
         try:
-            with urlopen(request, timeout=45) as response:
+            with urlopen(request, timeout=15) as response:
                 return response.read().decode("utf-8", errors="replace")
         except (HTTPError, URLError, TimeoutError) as exc:
             last_error = exc
+            if attempt < 1:
+                sleep(1)
     raise RuntimeError(f"Fetch failed for {url}: {last_error}") from last_error
 
 
 def fetch_bytes(url: str) -> bytes:
     last_error: Exception | None = None
-    for _attempt in range(2):
-        request = Request(url, headers={"User-Agent": "Mozilla/5.0", "Connection": "close"})
+    user_agents = [
+        (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0 Safari/537.36"
+        ),
+        "Mozilla/5.0",
+    ]
+    for attempt in range(2):
+        request = Request(
+            url,
+            headers={
+                "User-Agent": user_agents[attempt % len(user_agents)],
+                "Connection": "close",
+            },
+        )
         try:
-            with urlopen(request, timeout=45) as response:
+            with urlopen(request, timeout=15) as response:
                 return response.read()
         except (HTTPError, URLError, TimeoutError) as exc:
             last_error = exc
+            if attempt < 1:
+                sleep(1)
     raise RuntimeError(f"Fetch failed for {url}: {last_error}") from last_error
 
 

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FX TRY Risk Lab Methodology</title>
+    <meta name="theme-color" content="#1d5c4b" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+    />
+    <meta
+      name="description"
+      content="Plain-language methodology for the FX TRY Risk Lab browser app."
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="shell prose-shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Methodology</p>
+          <h1>How the browser score is built</h1>
+          <p class="deck">
+            FX TRY Risk Lab is meant to be readable first and technical second. This page explains
+            what the public score means, what goes into it, and where the main limits are.
+          </p>
+          <div class="hero-actions">
+            <a class="button ghost" href="./index.html">Back to the app</a>
+            <a
+              class="button ghost"
+              href="https://github.com/hulkiokantabak/fx-try-risk-lab/blob/main/CHANGELOG.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View changelog
+            </a>
+          </div>
+        </div>
+        <aside class="hero-score">
+          <span class="eyebrow">In Plain English</span>
+          <strong>5 lenses</strong>
+          <p>
+            Price action, volatility, global macro, Turkey policy and reserves, and headline flow
+            are blended into a simple probability-style read.
+          </p>
+        </aside>
+      </section>
+
+      <section class="card prose-card">
+        <p class="eyebrow">What The Score Means</p>
+        <h2>It is a probability-style read, not a trading command</h2>
+        <p>
+          The app publishes a score for each horizon that is meant to represent the chance that
+          TRY weakens beyond the threshold for that horizon. The score is designed for disciplined
+          public monitoring, not for automatic trading.
+        </p>
+        <div class="table-wrap">
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>Horizon</th>
+                <th>Threshold</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1w</td><td>2%</td></tr>
+              <tr><td>1m</td><td>5%</td></tr>
+              <tr><td>3m</td><td>10%</td></tr>
+              <tr><td>6m</td><td>15%</td></tr>
+              <tr><td>1y</td><td>25%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="card prose-card">
+          <p class="eyebrow">Lens 1</p>
+          <h3>Price action</h3>
+          <p>
+            The browser model tracks USD/TRY directly and compares TRY to a simple peer basket
+            including ZAR, BRL, HUF, and PLN. This keeps the read from confusing broad EM moves
+            with TRY-specific weakness.
+          </p>
+        </article>
+        <article class="card prose-card">
+          <p class="eyebrow">Lens 2</p>
+          <h3>Volatility</h3>
+          <p>
+            Public Cboe volatility proxies such as VIX, VXEEM, VVIX, OVX, and GVZ are used to
+            catch risk-off episodes, EM stress, and commodity-volatility spikes that can intensify
+            shorter-horizon TRY pressure.
+          </p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="card prose-card">
+          <p class="eyebrow">Lens 3</p>
+          <h3>Global macro</h3>
+          <p>
+            The model looks at public US rates and broad dollar proxies when those feeds are
+            available. If they are incomplete, the global lens is neutralized and the caveat load
+            is raised instead of pretending confidence that is not there.
+          </p>
+        </article>
+        <article class="card prose-card">
+          <p class="eyebrow">Lens 4</p>
+          <h3>Turkey policy and reserves</h3>
+          <p>
+            The domestic layer uses public CBRT policy-rate and reserve information to estimate
+            whether the local cushion is supportive, mixed, or thin.
+          </p>
+        </article>
+      </section>
+
+      <section class="card prose-card">
+        <p class="eyebrow">Lens 5</p>
+        <h2>Headline flow</h2>
+        <p>
+          The app also counts public news and chatter intensity. This is deliberately a lighter
+          signal than market and macro inputs, but it helps the browser brief reflect whether the
+          narrative environment is quiet or busy.
+        </p>
+      </section>
+
+      <section class="card prose-card">
+        <p class="eyebrow">Horizon Weighting</p>
+        <h2>How the blend changes across time</h2>
+        <p>
+          Shorter horizons lean more on spot behavior and volatility. Longer horizons lean more on
+          macro and domestic policy or reserve conditions.
+        </p>
+        <div class="table-wrap">
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>Horizon</th>
+                <th>Market</th>
+                <th>Vol</th>
+                <th>Global macro</th>
+                <th>Turkey domestic</th>
+                <th>Headlines</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1w</td><td>40%</td><td>35%</td><td>15%</td><td>5%</td><td>5%</td></tr>
+              <tr><td>1m</td><td>30%</td><td>25%</td><td>20%</td><td>20%</td><td>5%</td></tr>
+              <tr><td>3m</td><td>20%</td><td>15%</td><td>25%</td><td>30%</td><td>10%</td></tr>
+              <tr><td>6m</td><td>15%</td><td>10%</td><td>25%</td><td>35%</td><td>15%</td></tr>
+              <tr><td>1y</td><td>10%</td><td>5%</td><td>25%</td><td>40%</td><td>20%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card prose-card">
+        <p class="eyebrow">Redundancy And Reliability</p>
+        <h2>What happens when public feeds wobble</h2>
+        <p>
+          This browser edition now keeps a last-good local source cache for important public feeds.
+          If a live request times out or gets blocked, the build can fall back to the most recent
+          successful data rather than dropping that lens entirely.
+        </p>
+        <p>
+          That does not remove uncertainty. Instead, the app keeps publishing warnings and caveats
+          so the user can see when the read is leaning on cached public data.
+        </p>
+      </section>
+
+      <section class="card prose-card">
+        <p class="eyebrow">Limits</p>
+        <h2>What this project is not</h2>
+        <ul class="list">
+          <li>It is not a trading instruction engine.</li>
+          <li>It is not a live institutional market-data terminal.</li>
+          <li>It does not guarantee predictive accuracy.</li>
+          <li>It is best used as a transparent public-monitoring tool.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
