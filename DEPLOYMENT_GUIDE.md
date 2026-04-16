@@ -28,6 +28,7 @@ Once GitHub Pages is enabled for the repository, the browser link is:
 - `docs/data/latest.json`: latest published risk snapshot
 - `docs/data/history.json`: published estimate history
 - `scripts/build_browser_data.py`: snapshot generator
+- `scripts/validate_browser_bundle.py`: lightweight static validator
 - `.github/workflows/refresh-browser-data.yml`: scheduled data refresh
 
 ## Daily Refresh Flow
@@ -36,9 +37,10 @@ The scheduled workflow:
 
 - runs on weekday mornings
 - rebuilds the static data files
+- validates the browser bundle
 - commits `docs/data` changes back to `main`
 
-The normal CI workflow ignores `docs/data` updates, so routine snapshot refreshes do not create noisy full test runs.
+The normal CI workflow stays intentionally lean and validates the published browser bundle instead of booting the older server stack.
 
 ## Local Preview
 
@@ -69,4 +71,4 @@ GitHub Pages cannot host the older FastAPI server directly. That is why the prod
 
 ## Legacy Server Path
 
-The older FastAPI workstation still exists in the repo for advanced local work, but it is no longer required for normal browser use.
+The older FastAPI workstation and earlier product-design material still exist in `legacy/`, but they are archived there so the main repository surface stays browser-first and easy to understand.

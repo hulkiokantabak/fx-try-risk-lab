@@ -47,9 +47,10 @@ This repo now treats GitHub Pages as the primary product surface. Anyone should 
 
 - `docs/`: the browser app and published data
 - `scripts/build_browser_data.py`: the snapshot builder
+- `scripts/validate_browser_bundle.py`: the lightweight browser check
 - `.github/workflows/refresh-browser-data.yml`: the scheduled refresh job
 - `start-browser.ps1`: local one-command preview
-- `app/`: the older server-first workbench, now secondary
+- `legacy/`: archived server-first and design material, no longer needed for normal use
 
 ## Public Repo Notes
 
@@ -57,9 +58,9 @@ This repo now treats GitHub Pages as the primary product surface. Anyone should 
 - routine data refreshes commit only `docs/data`
 - CI ignores `docs/data` pushes so scheduled refreshes stay quiet
 
-## Advanced Path
+## Archived Material
 
-The older FastAPI workstation is still in the repo for deeper local development, but it is no longer the main browser-delivery path.
+The older FastAPI workstation, product specs, and skill-pack material were moved under `legacy/` so the root of the repository stays focused on the public browser app.
 
 ## Contributing
 

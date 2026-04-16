@@ -7,8 +7,8 @@ Thanks for contributing to FX TRY Risk Lab.
 1. Fork the repo or create a feature branch from `main`.
 2. Make focused changes with clear reasoning.
 3. Run:
-   - `python -m ruff check app tests`
-   - `python -m pytest -q`
+   - `python scripts/validate_browser_bundle.py`
+   - `python scripts/build_browser_data.py`
 4. Open a pull request with:
    - what changed
    - why it changed
@@ -16,17 +16,17 @@ Thanks for contributing to FX TRY Risk Lab.
 
 ## Development Notes
 
-- Keep the app local-first.
+- Keep the browser experience simple.
 - Prefer public data sources over premium assumptions.
-- Preserve the evidence-first, dissent-friendly `FX Experts` workflow.
-- Avoid committing local secrets, `.env.production`, or generated `data/`.
+- Preserve the static GitHub Pages delivery path.
+- Avoid committing local secrets or random machine-specific files.
 
 ## Scope
 
 Good contributions include:
 
 - new public-source adapters
-- better reporting/export polish
-- backtesting and calibration improvements
-- UI clarity improvements that preserve analyst workflow
-- deployment/docs improvements
+- better browser readability and explanation
+- stronger snapshot validation or resilience
+- UI clarity improvements that keep the one-link browser workflow simple
+- docs improvements

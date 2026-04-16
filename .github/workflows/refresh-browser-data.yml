@@ -23,6 +23,9 @@ jobs:
       - name: Build browser snapshot
         run: python scripts/build_browser_data.py
 
+      - name: Validate browser bundle
+        run: python scripts/validate_browser_bundle.py
+
       - name: Commit updated browser data
         run: |
           if git diff --quiet -- docs/data; then

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-16T10:10:05Z",
+  "generated_at": "2026-04-16T10:32:59Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -134,14 +134,14 @@
     "Watch headline intensity; the current 14-day count is 2 news items."
   ],
   "warnings": [
-    "FRED FEDFUNDS: [WinError 10054] An existing connection was forcibly closed by the remote host",
-    "FRED DGS10: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: The read operation timed out",
-    "FRED DGS2: [WinError 10054] An existing connection was forcibly closed by the remote host",
+    "FRED FEDFUNDS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS: The read operation timed out",
+    "FRED DGS10: [WinError 10054] An existing connection was forcibly closed by the remote host",
+    "FRED DGS2: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2: The read operation timed out",
     "FRED DTWEXBGS: [WinError 10054] An existing connection was forcibly closed by the remote host",
     "Reddit RSS: Fetch failed for https://www.reddit.com/search.rss?q=(Turkish%20lira%20OR%20USDTRY%20OR%20CBRT)&sort=new: HTTP Error 403: Blocked"
   ],
   "history_entry": {
-    "as_of": "2026-04-16T10:10:05Z",
+    "as_of": "2026-04-16T10:32:59Z",
     "primary_horizon": "1m",
     "primary_score": 38.9,
     "curve": {
