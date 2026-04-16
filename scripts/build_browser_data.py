@@ -925,13 +925,14 @@ def load_source_cache() -> dict[str, object]:
         return {}
 
 
-def serialize_series(points: list[SeriesPoint]) -> list[dict]:
+def serialize_series(points: list[SeriesPoint], keep: int = 80) -> list[dict]:
+    trimmed = points[-keep:]
     return [
         {
             "observed_at": point.observed_at.isoformat(),
             "value": point.value,
         }
-        for point in points
+        for point in trimmed
     ]
 
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-16T11:58:57Z",
+  "generated_at": "2026-04-16T12:02:48Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -379,7 +379,7 @@
     "FRED DTWEXBGS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
   ],
   "history_entry": {
-    "as_of": "2026-04-16T11:58:57Z",
+    "as_of": "2026-04-16T12:02:48Z",
     "primary_horizon": "1m",
     "primary_score": 38.9,
     "curve": {
