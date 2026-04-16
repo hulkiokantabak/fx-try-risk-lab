@@ -1,28 +1,37 @@
 # Deployment Guide
 
-This app is designed to run well as a public local workstation first, and then move to a small deployment with minimal extra infrastructure.
+This app is designed to run well as a public local workstation first, and to stay easy to open from GitHub through Codespaces.
 
-## Recommended Deployment Profile
+## Recommended GitHub-Native Browser Path
 
-- Keep the app behind HTTPS.
-- Set `FX_ENVIRONMENT=production`.
-- Set a strong `FX_SESSION_SECRET`.
-- Keep storage local for `v1` unless you truly need shared multi-device access.
-- Use the included `compose.yaml` plus `deploy/Caddyfile` if you want the smallest "usable from anywhere" setup.
-- Remember that GitHub hosts the repository, not the running FastAPI service. A real browser link only exists after deployment or while the app is being tunneled from a live machine.
+The simplest way to use this app from GitHub, in a browser, is GitHub Codespaces.
 
-## Minimal Environment
+The repo includes:
 
-```env
-FX_ENVIRONMENT=production
-FX_SESSION_SECRET=replace-with-a-long-random-secret
-FX_ALLOWED_HOSTS=your-domain.com,127.0.0.1,localhost
-FX_HOST=0.0.0.0
-FX_PORT=8000
-FX_RELOAD=false
-FX_FORWARDED_ALLOW_IPS=*
-FX_SECURE_COOKIES=true
-```
+- `.devcontainer/devcontainer.json`
+- `.devcontainer/start-app.sh`
+
+Those files tell GitHub Codespaces how to:
+
+- build a Python environment
+- install the app and dev tools
+- forward port `8000`
+- start the workstation automatically
+
+Open:
+
+`https://codespaces.new/hulkiokantabak/fx-try-risk-lab?quickstart=1`
+
+Then wait for Codespaces to finish setup and open the forwarded port preview.
+
+## What GitHub Can And Cannot Do
+
+- GitHub repository: stores the code
+- GitHub Actions: runs CI
+- GitHub Codespaces: runs the app in a browser-based workspace
+- GitHub Pages: not suitable for this app, because Pages is for static sites and this project is a server-backed FastAPI app
+
+If you ever want a 24/7 permanent public URL for anyone on the internet, that still requires a real host outside the repository itself.
 
 ## Health Endpoints
 
@@ -33,45 +42,16 @@ FX_SECURE_COOKIES=true
 
 These endpoints stay public so a reverse proxy or host platform can monitor the service.
 
-## Public Access
+## Codespaces Runtime Notes
 
-The app now runs publicly by default.
+The dev container sets:
 
-- browser users open the root URL directly
-- reports open directly from the app
-- `/healthz` and `/readyz` remain public for monitoring
+- `FX_HOST=0.0.0.0`
+- `FX_PORT=8000`
+- `FX_ALLOWED_HOSTS=*`
+- `FX_SECURE_COOKIES=false`
 
-If you ever want to add restrictions later, the clean place to do it is at the reverse proxy or host layer rather than inside the app itself.
-
-## GitHub Repo vs Live Browser URL
-
-- The GitHub repository is the source-code home.
-- A browser-use link appears only after you deploy the app to a host, or while you expose a running local copy through a tunnel.
-
-GitHub Pages is not enough for this app because the workstation is server-backed FastAPI, not a static site.
-
-## Recommended Permanent Host
-
-The cleanest permanent-host path for this project is Render using the included `render.yaml` Blueprint:
-
-- it can deploy directly from the GitHub repo
-- it gives the app a stable public URL
-- it supports a persistent disk, which this app needs for SQLite data and stored reports
-
-Use the repo's `Deploy to Render` button or open:
-
-`https://render.com/deploy?repo=https://github.com/hulkiokantabak/fx-try-risk-lab`
-
-The blueprint is set up for:
-
-- `starter` web service plan
-- Frankfurt region
-- persistent disk mounted at `/app/data`
-- generated session secret
-- auto-deploy off by default for the first hosted setup
-- `/readyz` health checks
-
-The blueprint currently uses `FX_ALLOWED_HOSTS=*` for first-deploy simplicity. Once the permanent Render URL or your custom domain is set, you can tighten that environment variable to the exact hostname.
+Those defaults are appropriate for the GitHub Codespaces browser-preview flow.
 
 ## Local Run
 
@@ -101,7 +81,7 @@ Then open:
 http://127.0.0.1:8000
 ```
 
-## Container Deployment
+## Optional Self-Hosting
 
 1. Copy `.env.production.example` to `.env.production`
 2. Set `FX_SESSION_SECRET` and `FX_ALLOWED_HOSTS`

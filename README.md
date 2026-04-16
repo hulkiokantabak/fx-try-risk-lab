@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/hulkiokantabak/fx-try-risk-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/hulkiokantabak/fx-try-risk-lab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/hulkiokantabak/fx-try-risk-lab)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hulkiokantabak/fx-try-risk-lab?quickstart=1)
 
 FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira depreciation risk with public macro, market, news, and debate-driven evidence.
 
@@ -37,25 +37,26 @@ FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira
 3. Update `deploy/Caddyfile` with your real domain
 4. Run `docker compose up -d --build`
 
-## One-Click Permanent Hosting
+## Use It From GitHub
 
-The repo now includes a `render.yaml` blueprint for the simplest permanent public deployment path:
+The simplest GitHub-native browser workflow is now built in:
 
-1. Open the `Deploy to Render` button above
-2. Sign in to Render
-3. Approve the service and persistent disk
-4. Wait for the first deploy to finish
+1. Click the `Open in GitHub Codespaces` button above
+2. GitHub creates a browser-based development environment for the repo
+3. The app installs automatically and starts on port `8000`
+4. Codespaces opens the forwarded browser preview for you
 
-That creates a real hosted browser URL on Render instead of a temporary tunnel link. Because this app stores SQLite data and exported reports on disk, truly permanent hosting requires a service with persistent storage.
+This makes the program usable directly from GitHub, in a browser, without adding Render or another external app platform.
 
-The included blueprint starts with automatic redeploys off. Once the first permanent deployment is up, you can turn auto-deploy on in Render if you want GitHub pushes to roll out automatically.
+The repo includes a ready-made dev container so Codespaces knows how to install and run the workstation automatically.
 
-## GitHub vs Browser Link
+## GitHub Limits
 
 - GitHub repo: where people read, download, and contribute to the code
-- deployed app URL: the real browser link people use to run the workstation
+- GitHub Codespaces: the GitHub-native way to run this app in a browser
+- permanent public website: still requires a real host outside plain GitHub repository storage
 
-This project is a dynamic FastAPI app, so GitHub alone does not create the live browser URL. You still need to deploy it to a host or run it from your own machine.
+This project is a dynamic FastAPI app, so a repository by itself cannot become a 24/7 public website. GitHub can host the code, run CI, and launch the app in Codespaces, but it does not turn the repo itself into a permanent server.
 
 ## Public Repo Notes
 

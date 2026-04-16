@@ -1,0 +1,34 @@
+{
+  "name": "FX TRY Risk Lab",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "postCreateCommand": "pip install -e .[dev]",
+  "postAttachCommand": "bash .devcontainer/start-app.sh",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "FX TRY Risk Lab",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "containerEnv": {
+    "FX_APP_NAME": "FX TRY Risk Lab",
+    "FX_ENVIRONMENT": "development",
+    "FX_HOST": "0.0.0.0",
+    "FX_PORT": "8000",
+    "FX_RELOAD": "false",
+    "FX_ALLOWED_HOSTS": "*",
+    "FX_SECURE_COOKIES": "false"
+  },
+  "customizations": {
+    "codespaces": {
+      "openFiles": [
+        "README.md"
+      ]
+    },
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  }
+}
