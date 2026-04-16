@@ -4,7 +4,7 @@ services:
     runtime: docker
     plan: starter
     region: frankfurt
-    autoDeploy: true
+    autoDeploy: false
     healthCheckPath: /readyz
     envVars:
       - key: FX_APP_NAME

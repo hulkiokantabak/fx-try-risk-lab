@@ -68,6 +68,7 @@ The blueprint is set up for:
 - Frankfurt region
 - persistent disk mounted at `/app/data`
 - generated session secret
+- auto-deploy off by default for the first hosted setup
 - `/readyz` health checks
 
 The blueprint currently uses `FX_ALLOWED_HOSTS=*` for first-deploy simplicity. Once the permanent Render URL or your custom domain is set, you can tighten that environment variable to the exact hostname.

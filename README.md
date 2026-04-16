@@ -48,6 +48,8 @@ The repo now includes a `render.yaml` blueprint for the simplest permanent publi
 
 That creates a real hosted browser URL on Render instead of a temporary tunnel link. Because this app stores SQLite data and exported reports on disk, truly permanent hosting requires a service with persistent storage.
 
+The included blueprint starts with automatic redeploys off. Once the first permanent deployment is up, you can turn auto-deploy on in Render if you want GitHub pushes to roll out automatically.
+
 ## GitHub vs Browser Link
 
 - GitHub repo: where people read, download, and contribute to the code
