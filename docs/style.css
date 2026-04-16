@@ -1,0 +1,283 @@
+:root {
+  --bg: #f3ecdf;
+  --paper: rgba(255, 250, 240, 0.92);
+  --ink: #1e2522;
+  --muted: #61706a;
+  --line: rgba(30, 37, 34, 0.12);
+  --accent: #1d5c4b;
+  --signal: #b76a2b;
+  --shadow: 0 20px 45px rgba(29, 44, 38, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(circle at top left, rgba(183, 106, 43, 0.14), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(29, 92, 75, 0.18), transparent 26%),
+    linear-gradient(135deg, #eee4d3 0%, var(--bg) 55%, #efe8dc 100%);
+}
+
+a {
+  color: inherit;
+}
+
+.shell {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.hero,
+.card,
+.curve {
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.5fr 320px;
+  gap: 1.5rem;
+  padding: 1.75rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.55rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+h2 {
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
+.deck,
+.stamp,
+.reason-detail,
+.metric p,
+.note-label,
+textarea {
+  color: var(--muted);
+}
+
+.hero-score {
+  align-self: stretch;
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(29, 92, 75, 0.14), rgba(29, 92, 75, 0.04));
+}
+
+.hero-score strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
+.button.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: rgba(29, 92, 75, 0.35);
+}
+
+.button.ghost {
+  background: transparent;
+}
+
+.curve,
+.card {
+  margin-top: 1.25rem;
+  padding: 1.35rem;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.curve-grid,
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.curve-card,
+.metric {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.curve-card.primary {
+  background: linear-gradient(180deg, rgba(29, 92, 75, 0.14), rgba(255, 255, 255, 0.92));
+  border-color: rgba(29, 92, 75, 0.25);
+}
+
+.curve-card strong,
+.metric strong {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 1.8rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.reason {
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.reason:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.reason-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  font-weight: 700;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(183, 106, 43, 0.12);
+  color: var(--signal);
+  font-size: 0.85rem;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.list li + li {
+  margin-top: 0.75rem;
+}
+
+.history-wrap {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 0.85rem 0.7rem;
+  text-align: left;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.history-table thead th {
+  border-top: 0;
+  color: var(--signal);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+textarea {
+  width: 100%;
+  margin-top: 0.7rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  font: inherit;
+  resize: vertical;
+}
+
+.method p + p {
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-head {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding: 1rem 0.85rem 3rem;
+  }
+
+  .hero,
+  .card,
+  .curve {
+    border-radius: 22px;
+  }
+}

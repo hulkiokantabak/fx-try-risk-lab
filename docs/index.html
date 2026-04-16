@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FX TRY Risk Lab</title>
+    <meta
+      name="description"
+      content="A lean browser-based monitor for Turkish lira depreciation risk."
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">TRY Depreciation Risk Monitor</p>
+          <h1>FX TRY Risk Lab</h1>
+          <p class="deck" id="deck">
+            Loading the latest browser snapshot...
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="./data/latest.json" target="_blank" rel="noreferrer">
+              Open raw snapshot
+            </a>
+            <button class="button ghost" type="button" data-export-note>
+              Export my notes
+            </button>
+          </div>
+        </div>
+        <aside class="hero-score">
+          <span class="eyebrow">Primary Horizon</span>
+          <strong id="primary-score">--</strong>
+          <p id="primary-meta">Loading...</p>
+        </aside>
+      </section>
+
+      <section class="curve" aria-labelledby="curve-title">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Probability Curve</p>
+            <h2 id="curve-title">Chance TRY weakens beyond the threshold</h2>
+          </div>
+          <p class="stamp" id="generated-at">Waiting for data...</p>
+        </div>
+        <div class="curve-grid" id="curve-grid"></div>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <p class="eyebrow">Why It Moved</p>
+          <h3>Top pressure points</h3>
+          <div id="reasons"></div>
+        </article>
+        <article class="card">
+          <p class="eyebrow">Watch Next</p>
+          <h3>What to keep an eye on</h3>
+          <ul id="watchlist" class="list"></ul>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <p class="eyebrow">Market Lens</p>
+          <h3 id="market-regime">Loading...</h3>
+          <div class="metric-grid" id="market-metrics"></div>
+        </article>
+        <article class="card">
+          <p class="eyebrow">Macro Lens</p>
+          <h3 id="macro-regime">Loading...</h3>
+          <div class="metric-grid" id="macro-metrics"></div>
+        </article>
+      </section>
+
+      <section class="card">
+        <p class="eyebrow">History</p>
+        <h3>Previous published estimates</h3>
+        <div class="history-wrap">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Primary horizon</th>
+                <th>Primary score</th>
+                <th>Market regime</th>
+                <th>Macro regime</th>
+              </tr>
+            </thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <p class="eyebrow">Recent Headlines</p>
+          <h3>Context, not commands</h3>
+          <ul id="headline-list" class="list"></ul>
+        </article>
+        <article class="card">
+          <p class="eyebrow">My Notes</p>
+          <h3>Saved only in this browser</h3>
+          <label class="note-label" for="local-note">
+            Add your own observations or trade-desk notes.
+          </label>
+          <textarea id="local-note" rows="8" placeholder="Write here..."></textarea>
+          <div class="hero-actions">
+            <button class="button primary" type="button" data-save-note>Save note</button>
+            <span class="stamp" id="note-status">Nothing saved yet.</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="card method">
+        <p class="eyebrow">Method</p>
+        <h3>What this lean browser edition does</h3>
+        <p>
+          This site is a static GitHub Pages app. It publishes a prebuilt daily snapshot using
+          public ECB, FRED, Cboe, CBRT, and RSS data, then scores TRY depreciation risk from five
+          lenses: price action, volatility, global macro, Turkey policy/reserves, and headline
+          intensity.
+        </p>
+        <p>
+          It is meant to be easy to open and easy to understand. It is not a trading instruction
+          engine and it does not promise perfect forecasts.
+        </p>
+      </section>
+    </main>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

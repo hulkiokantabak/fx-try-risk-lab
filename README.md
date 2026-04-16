@@ -2,92 +2,64 @@
 
 [![CI](https://github.com/hulkiokantabak/fx-try-risk-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/hulkiokantabak/fx-try-risk-lab/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/hulkiokantabak/fx-try-risk-lab?quickstart=1)
 
-FX TRY Risk Lab is a local-first research workstation for assessing Turkish lira depreciation risk with public macro, market, news, and debate-driven evidence.
+FX TRY Risk Lab is a lean browser app for tracking Turkish lira depreciation risk from public macro, market, reserve, and headline signals.
+
+## Open In A Browser
+
+- Live site: `https://hulkiokantabak.github.io/fx-try-risk-lab/`
+- Repo: `https://github.com/hulkiokantabak/fx-try-risk-lab`
+
+This repo now treats GitHub Pages as the primary product surface. Anyone should be able to open the browser link without spinning up a server, creating a codespace, or installing Python.
 
 ## What It Does
 
-- builds frozen assessment cycles with Round 0 evidence packs
-- runs the `FX Experts` debate workflow across Rounds 1-4
-- produces a house view, disagreement range, stress flags, and backtesting
-- exports PDF-first assessment briefs with an HTML twin
-- runs publicly by default once deployed; the GitHub repo hosts the code, not the live app
+- publishes a static browser snapshot of TRY depreciation risk
+- shows the full horizon curve for `1w / 1m / 3m / 6m / 1y`
+- explains the top pressure points and watch items in plain English
+- stores your personal notes locally in your browser
+- keeps a published history of previous model estimates
 
 ## Core Features
 
-- public-source ingestion across CBRT, ECB, IMF, FRED, and market-volatility feeds
-- frozen assessment cycles with replayable Round 0 evidence packs
-- multi-agent `FX Experts` debate rounds with disagreement preserved instead of flattened
-- follow-up cycle lineage, delta summaries, and realized-outcome backtesting
-- analyst briefing mode with `Quick Read / Full Workup`
-- PDF-first exports with HTML twins
+- GitHub Pages static app in `docs/`
+- public-source snapshot builder in `scripts/build_browser_data.py`
+- scheduled browser-data refresh workflow
+- daily snapshot history in `docs/data/history.json`
+- simple local notes with no login and no backend
 
 ## Local Quick Start
 
-1. Create and activate a local virtual environment.
-2. Install the project: `pip install -e .[dev]`
-3. Start the app: `.\start.ps1`
-4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000)
+1. Run `.\start-browser.ps1`
+2. Open `http://127.0.0.1:8080`
+3. Or push to GitHub and use the Pages URL
 
-## Deployment Quick Start
+## Data Sources
 
-1. Copy `.env.production.example` to `.env.production`
-2. Set your domain and session secret
-3. Update `deploy/Caddyfile` with your real domain
-4. Run `docker compose up -d --build`
+- ECB exchange rates
+- Cboe volatility indices
+- FRED rates and dollar series when available
+- CBRT policy-rate and reserve pages
+- Google News RSS
+- optional social-chatter RSS fallback when available
 
-## Use It From GitHub
+## Lean Structure
 
-The simplest GitHub-native browser workflow is now built in:
-
-1. Click the `Open in GitHub Codespaces` button above
-2. GitHub creates a browser-based development environment for the repo
-3. The app installs automatically and starts on port `8000`
-4. Codespaces opens the forwarded browser preview for you
-
-This makes the program usable directly from GitHub, in a browser, without adding Render or another external app platform.
-
-The repo includes a ready-made dev container so Codespaces knows how to install and run the workstation automatically.
-
-## GitHub Limits
-
-- GitHub repo: where people read, download, and contribute to the code
-- GitHub Codespaces: the GitHub-native way to run this app in a browser
-- permanent public website: still requires a real host outside plain GitHub repository storage
-
-This project is a dynamic FastAPI app, so a repository by itself cannot become a 24/7 public website. GitHub can host the code, run CI, and launch the app in Codespaces, but it does not turn the repo itself into a permanent server.
+- `docs/`: the browser app and published data
+- `scripts/build_browser_data.py`: the snapshot builder
+- `.github/workflows/refresh-browser-data.yml`: the scheduled refresh job
+- `start-browser.ps1`: local one-command preview
+- `app/`: the older server-first workbench, now secondary
 
 ## Public Repo Notes
 
-- the app is public-by-default and does not require an internal password wall
-- local/dev data stays out of Git via `.gitignore`
-- production-only secrets belong in `.env.production`, not in the repo
+- the browser app is static and public
+- routine data refreshes commit only `docs/data`
+- CI ignores `docs/data` pushes so scheduled refreshes stay quiet
 
-## Main Entry Points
+## Advanced Path
 
-- App runner: `python -m app.serve`
-- Local dev: `.\start.ps1`
-- Local production-mode smoke run: `.\start-production.ps1`
-- Deployment guide: [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
-
-## Current Product Shape
-
-- local-first SQLite storage
-- public CBRT, ECB, IMF, FRED, and market-volatility ingestion
-- follow-up cycle lineage and delta analysis
-- analyst briefing mode with `Quick Read / Full Workup`
-- health endpoints at `/healthz` and `/readyz`
-
-## Deployment Model
-
-The default production path is intentionally simple:
-
-- one app container
-- one Caddy reverse proxy for HTTPS
-- one persistent `data/` volume
-
-That keeps the app usable from anywhere without forcing a separate database or a complicated cloud stack on day one.
+The older FastAPI workstation is still in the repo for deeper local development, but it is no longer the main browser-delivery path.
 
 ## Contributing
 

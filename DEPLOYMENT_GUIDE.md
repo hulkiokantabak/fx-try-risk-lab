@@ -1,133 +1,72 @@
 # Deployment Guide
 
-This app is designed to run well as a public local workstation first, and to stay easy to open from GitHub through Codespaces.
+This project now has one primary delivery model:
 
-## Recommended GitHub-Native Browser Path
+- a static GitHub Pages site for normal browser use
 
-The simplest way to use this app from GitHub, in a browser, is GitHub Codespaces.
+The goal is to keep operation simple. Users should open one browser link and read the latest published TRY risk snapshot without spinning up a server.
 
-The repo includes:
+## Primary Browser Link
 
-- `.devcontainer/devcontainer.json`
-- `.devcontainer/start-app.sh`
+Once GitHub Pages is enabled for the repository, the browser link is:
 
-Those files tell GitHub Codespaces how to:
+`https://hulkiokantabak.github.io/fx-try-risk-lab/`
 
-- build a Python environment
-- install the app and dev tools
-- forward port `8000`
-- start the workstation automatically
+## How The Lean Browser Model Works
 
-Open:
+1. `scripts/build_browser_data.py` fetches public data from the current source list.
+2. It writes the latest snapshot to `docs/data/latest.json`.
+3. It appends or updates the published estimate history in `docs/data/history.json`.
+4. The static site in `docs/` reads those files in the browser.
+5. GitHub Pages serves the `docs/` folder as a normal website.
 
-`https://codespaces.new/hulkiokantabak/fx-try-risk-lab?quickstart=1`
+## Main Files
 
-Then wait for Codespaces to finish setup and open the forwarded port preview.
+- `docs/index.html`: browser app shell
+- `docs/style.css`: browser styling
+- `docs/app.js`: client-side rendering and local notes
+- `docs/data/latest.json`: latest published risk snapshot
+- `docs/data/history.json`: published estimate history
+- `scripts/build_browser_data.py`: snapshot generator
+- `.github/workflows/refresh-browser-data.yml`: scheduled data refresh
 
-## What GitHub Can And Cannot Do
+## Daily Refresh Flow
 
-- GitHub repository: stores the code
-- GitHub Actions: runs CI
-- GitHub Codespaces: runs the app in a browser-based workspace
-- GitHub Pages: not suitable for this app, because Pages is for static sites and this project is a server-backed FastAPI app
+The scheduled workflow:
 
-If you ever want a 24/7 permanent public URL for anyone on the internet, that still requires a real host outside the repository itself.
+- runs on weekday mornings
+- rebuilds the static data files
+- commits `docs/data` changes back to `main`
 
-## Health Endpoints
+The normal CI workflow ignores `docs/data` updates, so routine snapshot refreshes do not create noisy full test runs.
 
-- `GET /healthz`
-  Returns a lightweight liveness check.
-- `GET /readyz`
-  Returns readiness state for storage and database access.
+## Local Preview
 
-These endpoints stay public so a reverse proxy or host platform can monitor the service.
+You can preview the browser version locally without running FastAPI:
 
-## Codespaces Runtime Notes
+1. Run `.\start-browser.ps1`
+2. Open `http://127.0.0.1:8080`
 
-The dev container sets:
+That script rebuilds the snapshot first, then serves `docs/` through a tiny local HTTP server so the browser app can load its JSON correctly.
 
-- `FX_HOST=0.0.0.0`
-- `FX_PORT=8000`
-- `FX_ALLOWED_HOSTS=*`
-- `FX_SECURE_COOKIES=false`
+## Source Strategy
 
-Those defaults are appropriate for the GitHub Codespaces browser-preview flow.
+The lean browser edition prefers simple public feeds:
 
-## Local Run
+- ECB exchange rates
+- Cboe volatility CSV files
+- FRED graph CSV files when available
+- CBRT public policy-rate and reserve pages
+- Google News RSS
 
-From the project root:
+Some public feeds may be slow, partially unavailable, or temporarily blocked. The snapshot builder is designed to degrade gracefully and publish a usable neutral fallback instead of failing the whole site.
 
-```powershell
-.\start.ps1
-```
+## GitHub Reality Check
 
-For a local production-mode smoke test:
+GitHub Pages can host this project because the browser app is now static.
 
-```powershell
-.\start-production.ps1
-```
+GitHub Pages cannot host the older FastAPI server directly. That is why the product was restructured around prebuilt JSON snapshots and a static browser interface.
 
-If you are testing over plain `http://127.0.0.1` instead of local HTTPS, set:
+## Legacy Server Path
 
-```env
-FX_SECURE_COOKIES=false
-```
-
-Only use that override for local smoke testing. Keep it `true` for deployed HTTPS usage.
-
-Then open:
-
-```text
-http://127.0.0.1:8000
-```
-
-## Optional Self-Hosting
-
-1. Copy `.env.production.example` to `.env.production`
-2. Set `FX_SESSION_SECRET` and `FX_ALLOWED_HOSTS`
-3. Change `deploy/Caddyfile` from `your-domain.example.com` to your real domain
-4. Start the stack:
-
-```powershell
-docker compose up -d --build
-```
-
-This stack keeps the architecture intentionally small:
-
-- `app`: the FastAPI workstation with SQLite and local artifacts
-- `caddy`: HTTPS termination and reverse proxy
-
-Your persistent app state stays in the mounted `data/` folder.
-
-`FX_FORWARDED_ALLOW_IPS=*` is appropriate in this bundled compose setup because the FastAPI app is only exposed behind the local Caddy reverse proxy, not directly to the public internet.
-
-## Reverse Proxy Notes
-
-- Caddy will terminate TLS and proxy traffic to the app on port `8000`.
-- Keep `FX_ALLOWED_HOSTS` aligned with the public domain you place in `deploy/Caddyfile`.
-- If you later use a different reverse proxy, keep `/healthz` and `/readyz` public for monitoring.
-
-## Deployment Notes
-
-- SQLite is fine for `v1` public use.
-- Keep the `data/` directory on persistent storage.
-- If you later need shared access across devices, move the data layer behind a managed database only when that overhead is justified.
-- If you place the app behind a reverse proxy, preserve the host header and terminate TLS at the proxy.
-
-## Cross-Device QA Checklist
-
-- phone width: landing and cycle pages stay readable without horizontal scroll
-- tablet width: sidebar compresses cleanly and the briefing rail still wraps
-- desktop width: follow-up delta and trust sections stay readable side by side
-- `Quick Read`: hides heavy workup sections but keeps the answer, watchlist, glossary, and trust cards visible
-- `Full Workup`: restores evidence, rounds, and operations without layout breakage
-- PDF and HTML reports both open directly from the app
-
-## Final Pre-Deploy Checklist
-
-- `ruff check app tests`
-- `pytest -q`
-- confirm `/readyz` reports `ready`
-- confirm the homepage opens directly
-- confirm PDF and HTML reports open correctly
-- confirm mobile browser layout still reads well in `Quick Read`
+The older FastAPI workstation still exists in the repo for advanced local work, but it is no longer required for normal browser use.
