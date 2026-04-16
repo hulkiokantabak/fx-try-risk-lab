@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>FX TRY Risk Lab</title>
+    <meta name="theme-color" content="#1d5c4b" />
     <meta
       name="description"
       content="A lean browser-based monitor for Turkish lira depreciation risk."
@@ -16,11 +17,16 @@
         <div>
           <p class="eyebrow">TRY Depreciation Risk Monitor</p>
           <h1>FX TRY Risk Lab</h1>
-          <p class="deck" id="deck">
+          <p class="deck" id="deck" aria-live="polite">
             Loading the latest browser snapshot...
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="./data/latest.json" target="_blank" rel="noreferrer">
+            <a
+              class="button primary"
+              href="./data/latest.json"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Open raw snapshot
             </a>
             <button class="button ghost" type="button" data-export-note>
@@ -124,6 +130,16 @@
           It is meant to be easy to open and easy to understand. It is not a trading instruction
           engine and it does not promise perfect forecasts.
         </p>
+      </section>
+
+      <section class="card caveats" id="caveats" hidden>
+        <p class="eyebrow">Data Caveats</p>
+        <h3>Some public feeds were incomplete in this snapshot</h3>
+        <p class="deck">
+          The model still publishes a usable estimate, but these source issues can make the read
+          more neutral than usual.
+        </p>
+        <ul id="warning-list" class="list"></ul>
       </section>
     </main>
     <script src="./app.js" defer></script>

@@ -69,8 +69,10 @@ def main() -> None:
 
     require("./style.css" in index_html, "index.html must load the browser stylesheet")
     require("./app.js" in index_html, "index.html must load the browser script")
+    require('name="theme-color"' in index_html, "index.html must define a theme color")
     require("./data/latest.json" in app_js, "app.js must request the latest snapshot JSON")
     require("./data/history.json" in app_js, "app.js must request the history JSON")
+    require(".innerHTML =" not in app_js, "app.js should avoid raw innerHTML assignments")
 
     print("Browser bundle validation passed.")
 

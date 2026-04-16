@@ -16,6 +16,7 @@
 body {
   margin: 0;
   color: var(--ink);
+  line-height: 1.5;
   font-family: Georgia, "Times New Roman", serif;
   background:
     radial-gradient(circle at top left, rgba(183, 106, 43, 0.14), transparent 32%),
@@ -47,6 +48,15 @@ a {
   grid-template-columns: 1.5fr 320px;
   gap: 1.5rem;
   padding: 1.75rem;
+}
+
+.hero > *,
+.grid > *,
+.curve,
+.card,
+.metric,
+.curve-card {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -86,6 +96,15 @@ h3 {
 .note-label,
 textarea {
   color: var(--muted);
+}
+
+.deck,
+.reason-detail,
+.metric p,
+#primary-meta,
+.list li,
+.history-table td {
+  overflow-wrap: anywhere;
 }
 
 .hero-score {
@@ -131,6 +150,13 @@ textarea {
 
 .button.ghost {
   background: transparent;
+}
+
+.button:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(29, 92, 75, 0.55);
+  outline-offset: 3px;
 }
 
 .curve,
@@ -219,6 +245,12 @@ textarea {
   margin-top: 0.75rem;
 }
 
+.disabled-link {
+  opacity: 0.72;
+  text-decoration: none;
+  cursor: default;
+}
+
 .history-wrap {
   overflow-x: auto;
 }
@@ -259,6 +291,12 @@ textarea {
   margin-top: 0.8rem;
 }
 
+.caveats {
+  border-color: rgba(183, 106, 43, 0.28);
+  background:
+    linear-gradient(180deg, rgba(183, 106, 43, 0.08), rgba(255, 250, 240, 0.92));
+}
+
 @media (max-width: 900px) {
   .hero,
   .grid {
@@ -279,5 +317,33 @@ textarea {
   .card,
   .curve {
     border-radius: 22px;
+  }
+
+  .hero {
+    padding: 1.1rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .button {
+    width: 100%;
+  }
+
+  .hero-actions .stamp {
+    width: 100%;
+  }
+
+  .curve-grid,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.92rem;
   }
 }
