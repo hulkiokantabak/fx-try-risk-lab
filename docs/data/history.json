@@ -1,0 +1,17 @@
+[
+  {
+    "as_of": "2026-04-16T10:10:05Z",
+    "primary_horizon": "1m",
+    "primary_score": 38.9,
+    "curve": {
+      "1w": 44.4,
+      "1m": 38.9,
+      "3m": 32.7,
+      "6m": 28.4,
+      "1y": 24.1
+    },
+    "market_regime": "Broad EM stress with TRY vulnerability",
+    "macro_regime": "Domestic policy and reserves are supportive",
+    "headline": "Balanced but fragile backdrop: broad em stress with try vulnerability while domestic policy and reserves are supportive."
+  }
+]
