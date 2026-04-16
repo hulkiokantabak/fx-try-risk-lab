@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }} | {{ app_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/app.css') }}" />
+  </head>
+  <body data-view-mode="quick">
+    <div class="page-shell">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <p class="eyebrow">TRY Research Engine</p>
+          <h1>{{ app_name }}</h1>
+          <p class="brand-copy">
+            A local-first TRY risk workstation built around public CBRT, ECB, IMF, and market
+            evidence, with expert rounds and PDF-first reporting.
+          </p>
+        </div>
+
+        <nav class="nav-list">
+          <a href="/" class="nav-link {{ 'active' if request.url.path == '/' else '' }}">Dashboard</a>
+          <a href="/assessments/new" class="nav-link {{ 'active' if request.url.path == '/assessments/new' else '' }}">New Assessment</a>
+          <a href="/assessments" class="nav-link {{ 'active' if request.url.path == '/assessments' or request.url.path.startswith('/assessments/') else '' }}">Assessment History</a>
+          <a href="/sources" class="nav-link {{ 'active' if request.url.path == '/sources' else '' }}">Source Health</a>
+          <a href="/macro-series" class="nav-link {{ 'active' if request.url.path == '/macro-series' else '' }}">Macro Series</a>
+          <a href="/price-series" class="nav-link {{ 'active' if request.url.path == '/price-series' else '' }}">Price Series</a>
+          <a href="/backtesting" class="nav-link {{ 'active' if request.url.path == '/backtesting' else '' }}">Backtesting</a>
+          <a href="/evidence" class="nav-link {{ 'active' if request.url.path == '/evidence' else '' }}">Evidence Browser</a>
+        </nav>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Research Workstation</p>
+            <h2>{{ page_title }}</h2>
+          </div>
+          <div class="topbar-actions">
+            <div class="topbar-chip">Public CBRT | ECB | IMF | PDF-first</div>
+          </div>
+        </header>
+
+    {% block content %}{% endblock %}
+      </main>
+    </div>
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+  </body>
+</html>

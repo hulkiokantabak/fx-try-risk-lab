@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero-panel">
+    <div>
+      <p class="eyebrow">Market Pricing</p>
+      <h3>Configured price series</h3>
+      <p class="hero-copy">
+        Extend the market-price catalog from the browser so Round 0 can absorb new spot pairs or
+        volatility-style inputs without a code edit.
+      </p>
+    </div>
+    <div class="hero-highlight">
+      <span class="hero-label">Live Catalog</span>
+      <strong>{{ rows|length }}</strong>
+    </div>
+  </section>
+
+  {% if flash_message %}
+    <div class="flash-banner">{{ flash_message }}</div>
+  {% endif %}
+
+  <section class="content-card cycle-section form-card">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Add Series</p>
+        <h3>Register a new market-price series</h3>
+      </div>
+    </div>
+
+    <form class="assessment-form" method="post" action="/price-series">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+      <div class="field-block">
+        <span>Market source</span>
+        <select name="source_id" required>
+          {% for source in sources %}
+            <option value="{{ source.id }}">{{ source.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="field-block">
+        <span>Series symbol</span>
+        <input
+          type="text"
+          name="symbol"
+          minlength="1"
+          maxlength="50"
+          placeholder="D.GBP.EUR.SP00.A"
+          required
+        />
+      </div>
+
+      <div class="field-block">
+        <span>Series name</span>
+        <input
+          type="text"
+          name="name"
+          minlength="2"
+          maxlength="120"
+          placeholder="EUR/GBP ECB Reference Rate"
+          required
+        />
+      </div>
+
+      <div class="two-column-grid form-grid">
+        <div class="field-block">
+          <span>Base currency</span>
+          <input type="text" name="base_currency" maxlength="10" placeholder="EUR" />
+        </div>
+        <div class="field-block">
+          <span>Quote currency</span>
+          <input type="text" name="quote_currency" maxlength="10" placeholder="GBP" />
+        </div>
+      </div>
+
+      <div class="field-block">
+        <span>Frequency</span>
+        <input type="text" name="frequency" minlength="2" maxlength="20" value="daily" required />
+      </div>
+
+      <p class="detail-copy">
+        Use uppercase base and quote currencies for FX pairs, or leave both blank for market
+        indexes. ECB EXR pairs follow symbols like <code>D.GBP.EUR.SP00.A</code>.
+      </p>
+
+      <button class="primary-button" type="submit">Add price series</button>
+    </form>
+  </section>
+
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Market Pricing</p>
+        <h3>Configured price series</h3>
+      </div>
+    </div>
+
+    {% if rows %}
+      <div class="cycle-list stacked">
+        {% for row in rows %}
+          <div class="cycle-card wide static-card">
+            <div class="cycle-row">
+              <div>
+                <span class="cycle-meta">{{ row.source_name }} | {{ row.series.frequency }}</span>
+                <strong>{{ row.series.name }}</strong>
+              </div>
+              <span class="status-pill">
+                {% if row.series.base_currency and row.series.quote_currency %}
+                  {{ row.series.base_currency }}/{{ row.series.quote_currency }}
+                {% else %}
+                  market index
+                {% endif %}
+              </span>
+            </div>
+            <p>Symbol: {{ row.series.symbol }}</p>
+            <p>
+              Observations: {{ row.observation_count }}
+              {% if row.latest_observation_date %}
+                | Latest: {{ row.latest_observation_date.strftime("%Y-%m-%d") }}
+              {% endif %}
+              {% if row.latest_value is not none %}
+                | Last close: {{ "%.4f"|format(row.latest_value) }}
+              {% endif %}
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No price series are configured yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Stored Cycles</p>
+        <h3>Assessment history</h3>
+      </div>
+      <a class="inline-link" href="/assessments/new">Create new cycle</a>
+    </div>
+
+    {% if history_rows %}
+      <div class="cycle-list stacked">
+        {% for row in history_rows %}
+          <a class="cycle-card wide" href="/assessments/{{ row.cycle.id }}">
+            <div class="cycle-row">
+              <div>
+                <span class="cycle-meta">{{ row.cycle.primary_horizon }} | {{ row.cycle.status }}</span>
+                <strong>{{ row.cycle.label }}</strong>
+              </div>
+              <span class="cycle-time">{{ row.cycle.assessment_timestamp.strftime("%Y-%m-%d %H:%M") }}</span>
+            </div>
+            <p>{{ row.cycle.summary or "Assessment cycle shell created." }}</p>
+            {% if row.parent_cycle or row.follow_up_count %}
+              <div class="action-row history-tags">
+                {% if row.parent_cycle %}
+                  <span class="status-pill partial-success">Follow-up to #{{ row.parent_cycle.id }}</span>
+                {% endif %}
+                {% if row.follow_up_count %}
+                  <span class="status-pill success">
+                    {{ row.follow_up_count }} follow-up{{ "" if row.follow_up_count == 1 else "s" }}
+                  </span>
+                {% endif %}
+              </div>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No assessment cycles have been created yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="two-column-grid">
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Official Series</p>
+          <h3>Configured macro catalog</h3>
+        </div>
+      </div>
+
+      {% if flash_message %}
+        <div class="flash-banner">{{ flash_message }}</div>
+      {% endif %}
+
+      {% if rows %}
+        <div class="cycle-list stacked">
+          {% for row in rows %}
+            <div class="cycle-card wide static-card">
+              <div class="cycle-row">
+                <div>
+                  <span class="cycle-meta">{{ row.source_name }} | {{ row.series.category }}</span>
+                  <strong>{{ row.series.name }}</strong>
+                </div>
+                <span class="status-pill">{{ row.series.frequency }}</span>
+              </div>
+              <p>Code: {{ row.series.code }}{% if row.series.unit %} | Unit: {{ row.series.unit }}{% endif %}</p>
+              <p>
+                Observations: {{ row.observation_count }}
+                {% if row.latest_observation_date %}
+                  | Latest: {{ row.latest_observation_date.strftime("%Y-%m-%d") }}
+                {% endif %}
+                {% if row.latest_value is not none %}
+                  | Last value: {{ "%.3f"|format(row.latest_value) }}
+                {% endif %}
+              </p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No macro series are configured yet.</p>
+      {% endif %}
+    </article>
+
+    <article class="content-card accent-card form-card">
+      <p class="eyebrow">Add Series</p>
+      <h3>Register a new official macro series</h3>
+      <p class="hero-copy">
+        Use provider-native codes, for example `FEDFUNDS`, `PCPIPCH/TUR`, or `TP.DK.USD.A.YTL`.
+        For Turkey-specific domestic data, `v1` now prefers public CBRT pages that do not depend
+        on EVDS access. Categories should stay lowercase snake_case, and frequency should be a
+        short lowercase token such as `daily`, `monthly`, or `annual`.
+      </p>
+      <p class="detail-copy">
+        The core no-key Turkey setup is now `CBRT 1 Week Repo` for `domestic_rates` and
+        `CBRT International Reserves and Foreign Currency Liquidity` for `reserves`. EVDS stays
+        optional and should not be required for the default workflow.
+      </p>
+
+      {% if cbrt_guidance %}
+        <div class="chip-cloud compact-cloud">
+          {% for item in cbrt_guidance %}
+            <div class="info-chip muted-chip">
+              <strong>{{ item.title }}</strong>
+              <span>{{ item.suggested_category }} | {{ item.frequency }}</span>
+              <p>{{ item.notes }}</p>
+              {% if item.template_code %}
+                <p><code>{{ item.template_code }}</code></p>
+              {% endif %}
+              <a class="inline-link" href="{{ item.doc_url }}" target="_blank" rel="noopener noreferrer">
+                {{ item.doc_label }}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form class="assessment-form" action="/macro-series" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+
+        <label class="field-block">
+          <span>Official Source</span>
+          <select name="source_id">
+            {% for source in sources %}
+              <option value="{{ source.id }}">{{ source.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label class="field-block">
+          <span>Series Code</span>
+          <input
+            type="text"
+            name="code"
+            maxlength="220"
+            placeholder="FEDFUNDS or CBRT_POLICY_RATE_1W_REPO"
+            required
+          />
+        </label>
+
+        <label class="field-block">
+          <span>Name</span>
+          <input
+            type="text"
+            name="name"
+            maxlength="160"
+            placeholder="Effective Federal Funds Rate"
+            required
+          />
+        </label>
+
+        <label class="field-block">
+          <span>Category</span>
+          <input type="text" name="category" maxlength="80" placeholder="global_rates" required />
+        </label>
+
+        <label class="field-block">
+          <span>Frequency</span>
+          <input type="text" name="frequency" maxlength="20" placeholder="monthly" required />
+        </label>
+
+        <label class="field-block">
+          <span>Unit</span>
+          <input type="text" name="unit" maxlength="50" placeholder="percent" />
+        </label>
+
+        <button type="submit" class="primary-button">Add macro series</button>
+      </form>
+    </article>
+  </section>
+{% endblock %}

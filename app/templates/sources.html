@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Provider Snapshot</p>
+        <h3>Source health</h3>
+      </div>
+      <div class="action-cluster">
+        <a class="inline-link" href="/healthz">Health check JSON</a>
+        <form action="/sources/refresh" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="secondary-button">Run queued refreshes</button>
+        </form>
+      </div>
+    </div>
+
+    {% if flash_message %}
+      <div class="flash-banner">{{ flash_message }}</div>
+    {% endif %}
+
+    {% if rows %}
+      <div class="cycle-list stacked">
+        {% for row in rows %}
+          <div class="cycle-card wide static-card">
+            <div class="cycle-row">
+              <div>
+                <span class="cycle-meta">Tier {{ row.source.trust_tier }} | {{ row.source.category }}</span>
+                <strong>{{ row.source.name }}</strong>
+              </div>
+              <span class="status-pill {{ row.last_status }}">{{ row.last_status }}</span>
+            </div>
+            <p>
+              Method: {{ row.source.collection_method }} |
+              Parser: {{ row.source.parser_adapter or "none" }} |
+              Enabled: {{ "yes" if row.source.enabled else "no" }} |
+              Series: {{ row.configured_series_count }}
+            </p>
+            <p>
+              Last finish:
+              {% if row.last_finished_at %}
+                {{ row.last_finished_at.strftime("%Y-%m-%d %H:%M") }}
+              {% else %}
+                never
+              {% endif %}
+              | Items ingested: {{ row.last_items_ingested }}
+            </p>
+            {% if row.last_error_message %}
+              <p class="warning-copy">{{ row.last_error_message }}</p>
+            {% endif %}
+            {% if row.source.endpoint %}
+              <p class="source-endpoint">{{ row.source.endpoint }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No sources are configured yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

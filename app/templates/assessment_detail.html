@@ -1,0 +1,1126 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero-panel detail-hero">
+    <div>
+      <p class="eyebrow">Assessment Cycle</p>
+      <h3>{{ cycle.label }}</h3>
+      <p class="hero-copy">
+        This cycle carries one stored Round 0 snapshot plus the FX Experts debate record when
+        rounds have been run. Use a follow-up cycle for a fresh snapshot; rebuilding this cycle
+        replaces its current snapshot and clears the stored debate outputs.
+      </p>
+    </div>
+    <div class="hero-highlight">
+      <span class="hero-label">Primary Horizon</span>
+      <strong>{{ cycle.primary_horizon }}</strong>
+      <span class="detail-chip">{{ cycle.status }}</span>
+    </div>
+  </section>
+
+  {% if flash_message %}
+    <div class="flash-banner">{{ flash_message }}</div>
+  {% endif %}
+
+  <section class="content-card accent-card briefing-mode-card">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Analyst Briefing Mode</p>
+        <h3>Read the cycle in desk order</h3>
+      </div>
+      <div class="action-row" data-view-controls>
+        <button type="button" class="secondary-button" data-view-target="quick" aria-pressed="false">
+          Quick Read
+        </button>
+        <button type="button" class="secondary-button" data-view-target="full" aria-pressed="false">
+          Full Workup
+        </button>
+      </div>
+    </div>
+    <p class="detail-copy">
+      Start with the answer, scan what changed, review the expert debate, drop into evidence only
+      where needed, then check backtesting and operate the cycle from the bottom of the page.
+    </p>
+    <div class="action-row briefing-nav">
+      <a class="inline-link" href="#answer">Answer</a>
+      <a class="inline-link" href="#change">What Changed</a>
+      <a class="inline-link" href="#debate">Debate</a>
+      <a class="inline-link" href="#evidence">Evidence</a>
+      <a class="inline-link" href="#backtest">Backtest</a>
+      <a class="inline-link" href="#operate">Operate</a>
+    </div>
+  </section>
+
+  <section class="two-column-grid briefing-summary-grid">
+    <article class="content-card accent-card">
+      <p class="eyebrow">Desk Note</p>
+      <h3>Current call</h3>
+      <p class="detail-copy">{{ briefing_summary.answer_note }}</p>
+    </article>
+
+    <article class="content-card">
+      <p class="eyebrow">Watchlist</p>
+      <h3>What could move the next cycle</h3>
+      <p class="detail-copy">{{ briefing_summary.watch_note }}</p>
+      {% if briefing_summary.watch_triggers %}
+        <div class="chip-cloud compact-cloud">
+          {% for trigger in briefing_summary.watch_triggers %}
+            <span class="info-chip">
+              <strong>Watch</strong>
+              <p>{{ trigger }}</p>
+            </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <p class="detail-copy"><strong>Setup priority:</strong> {{ briefing_summary.setup_note }}</p>
+    </article>
+  </section>
+
+  <section class="content-card glossary-card">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Need-To-Know Terms</p>
+        <h3>Explain the desk shorthand</h3>
+      </div>
+    </div>
+    <div class="glossary-grid">
+      <details>
+        <summary>Disagreement Range</summary>
+        <p>The spread between the highest and lowest core-agent score. A wider range means the desk is split.</p>
+      </details>
+      <details>
+        <summary>Stress Flag</summary>
+        <p>A special warning that acute or nonlinear risk is present even if the weighted average still looks moderate.</p>
+      </details>
+      <details>
+        <summary>Readiness</summary>
+        <p>How complete the evidence pack is for the main lenses before debate starts.</p>
+      </details>
+      <details>
+        <summary>Follow-Up Cycle</summary>
+        <p>A fresh timestamped snapshot that keeps the earlier cycle intact, instead of rewriting the old one.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="answer" class="two-column-grid trust-grid">
+    <article class="content-card accent-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Desk Trust</p>
+          <h3>Can I trust this cycle?</h3>
+        </div>
+        <span class="status-pill {{ trust_summary.trust_class }}">{{ trust_summary.trust_label }}</span>
+      </div>
+      <div class="source-summary-grid">
+        <div class="summary-tile highlight-tile">
+          <span>Snapshot Age</span>
+          <strong>{{ trust_summary.snapshot_age_label }}</strong>
+        </div>
+        <div class="summary-tile">
+          <span>Blocked Sources</span>
+          <strong>{{ trust_summary.blocked_source_count }}</strong>
+        </div>
+        <div class="summary-tile">
+          <span>Readiness</span>
+          <strong>{{ trust_summary.readiness_label }}</strong>
+        </div>
+        <div class="summary-tile">
+          <span>Disagreement</span>
+          <strong>
+            {% if trust_summary.disagreement_range is not none %}
+              {{ "%.1f"|format(trust_summary.disagreement_range) }}
+            {% else %}
+              n/a
+            {% endif %}
+          </strong>
+        </div>
+        <div class="summary-tile">
+          <span>Queued Refreshes</span>
+          <strong>{{ trust_summary.queued_refresh_count }}</strong>
+        </div>
+        <div class="summary-tile">
+          <span>Next Best Action</span>
+          <strong>{{ trust_summary.next_action }}</strong>
+        </div>
+      </div>
+      <p class="detail-copy trust-note">{{ trust_summary.note }}</p>
+    </article>
+
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Lineage</p>
+          <h3>How this cycle fits the chain</h3>
+        </div>
+      </div>
+      {% if lineage_summary.parent_cycle %}
+        <div class="cycle-list stacked lineage-list">
+          <a class="cycle-card wide" href="/assessments/{{ lineage_summary.parent_cycle.id }}">
+            <span class="cycle-meta">Parent Cycle</span>
+            <strong>#{{ lineage_summary.parent_cycle.id }} | {{ lineage_summary.parent_cycle.label }}</strong>
+            <p>{{ lineage_summary.parent_cycle.assessment_timestamp.strftime("%Y-%m-%d %H:%M") }}</p>
+          </a>
+        </div>
+        <div class="source-summary-grid">
+          <div class="summary-tile">
+            <span>Score Delta</span>
+            <strong>
+              {% if lineage_summary.score_delta is not none %}
+                {{ "%+.1f"|format(lineage_summary.score_delta) }}
+              {% else %}
+                n/a
+              {% endif %}
+            </strong>
+          </div>
+          <div class="summary-tile">
+            <span>Market Regime</span>
+            <strong>{{ lineage_summary.current_market_regime or "n/a" }}</strong>
+            {% if lineage_summary.previous_market_regime %}
+              <p>Was {{ lineage_summary.previous_market_regime }}</p>
+            {% endif %}
+          </div>
+          <div class="summary-tile">
+            <span>Turkey Layer</span>
+            <strong>{{ lineage_summary.current_turkey_regime or "n/a" }}</strong>
+            {% if lineage_summary.previous_turkey_regime %}
+              <p>Was {{ lineage_summary.previous_turkey_regime }}</p>
+            {% endif %}
+          </div>
+          <div class="summary-tile">
+            <span>Specialist Delta</span>
+            <strong>
+              {% if lineage_summary.added_specialists or lineage_summary.removed_specialists %}
+                changed
+              {% else %}
+                unchanged
+              {% endif %}
+            </strong>
+            <p>
+              Added: {{ lineage_summary.added_specialists|join(", ") if lineage_summary.added_specialists else "none" }}
+              | Removed: {{ lineage_summary.removed_specialists|join(", ") if lineage_summary.removed_specialists else "none" }}
+            </p>
+          </div>
+        </div>
+      {% else %}
+        <p class="empty-state">
+          This cycle is the current root of its chain. Create a follow-up cycle when you want a
+          new timestamped snapshot that still keeps the relationship visible.
+        </p>
+      {% endif %}
+      {% if lineage_summary.child_cycles %}
+        <div class="chip-cloud compact-cloud">
+          {% for child_cycle in lineage_summary.child_cycles %}
+            <a class="info-chip" href="/assessments/{{ child_cycle.id }}">
+              <strong>Follow-up #{{ child_cycle.id }}</strong>
+              <span>{{ child_cycle.assessment_timestamp.strftime("%Y-%m-%d %H:%M") }}</span>
+              <p>{{ child_cycle.label }}</p>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </article>
+  </section>
+
+  <section id="change" class="content-card accent-card delta-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Follow-up Delta</p>
+        <h3>What changed since last cycle</h3>
+      </div>
+      {% if delta_summary.parent_cycle %}
+        <span class="status-pill partial-success">Against #{{ delta_summary.parent_cycle.id }}</span>
+      {% else %}
+        <span class="status-pill pending">Root cycle</span>
+      {% endif %}
+    </div>
+    {% if delta_summary.parent_cycle %}
+      <p class="detail-copy">{{ delta_summary.summary }}</p>
+      <div class="source-summary-grid">
+        <div class="summary-tile highlight-tile">
+          <span>House View</span>
+          <strong>
+            {% if delta_summary.score_delta is not none %}
+              {{ "%+.1f"|format(delta_summary.score_delta) }}
+            {% elif delta_summary.current_score is not none %}
+              {{ "%.1f"|format(delta_summary.current_score) }}
+            {% else %}
+              n/a
+            {% endif %}
+          </strong>
+          <p>{{ delta_summary.score_sentence }}</p>
+        </div>
+        <div class="summary-tile">
+          <span>Market Regime</span>
+          <strong>{{ delta_summary.current_market_regime or "n/a" }}</strong>
+          <p>{{ delta_summary.market_sentence }}</p>
+        </div>
+        <div class="summary-tile">
+          <span>Turkey Layer</span>
+          <strong>{{ delta_summary.current_turkey_regime or "n/a" }}</strong>
+          <p>{{ delta_summary.turkey_sentence }}</p>
+        </div>
+        <div class="summary-tile">
+          <span>Specialists</span>
+          <strong>
+            {% if delta_summary.added_specialists or delta_summary.removed_specialists %}
+              +{{ delta_summary.added_specialists|length }} / -{{ delta_summary.removed_specialists|length }}
+            {% else %}
+              unchanged
+            {% endif %}
+          </strong>
+          <p>{{ delta_summary.specialist_sentence }}</p>
+        </div>
+        <div class="summary-tile">
+          <span>Watch Triggers</span>
+          <strong>
+            {% if delta_summary.added_watch_triggers or delta_summary.removed_watch_triggers %}
+              +{{ delta_summary.added_watch_triggers|length }} / -{{ delta_summary.removed_watch_triggers|length }}
+            {% elif delta_summary.current_watch_triggers %}
+              {{ delta_summary.current_watch_triggers|length }}
+            {% else %}
+              n/a
+            {% endif %}
+          </strong>
+          <p>{{ delta_summary.watch_trigger_sentence }}</p>
+        </div>
+      </div>
+      {% if delta_summary.current_watch_triggers %}
+        <div class="chip-cloud compact-cloud delta-cloud">
+          {% for trigger in delta_summary.current_watch_triggers %}
+            <span class="info-chip">
+              <strong>Watch</strong>
+              <p>{{ trigger }}</p>
+            </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <p class="empty-state">
+        This is the first cycle in its chain. Once you create a follow-up cycle, this section will
+        compress the score, regime, specialist, and watch-trigger changes into one fast read.
+      </p>
+    {% endif %}
+  </section>
+
+  <section class="workflow-strip compact-strip">
+    <article class="workflow-card {{ 'workflow-complete' if cycle else 'workflow-active' }}">
+      <span class="workflow-step">1</span>
+      <strong>Cycle Opened</strong>
+      <p>{{ cycle.assessment_timestamp.strftime("%Y-%m-%d %H:%M") }}</p>
+    </article>
+    <article class="workflow-card {{ 'workflow-complete' if evidence_pack and evidence_pack.refresh_plan.queued_count == 0 else 'workflow-active' if evidence_pack else '' }}">
+      <span class="workflow-step">2</span>
+      <strong>Data Refreshed</strong>
+      <p>
+        {% if evidence_pack %}
+          {{ evidence_pack.refresh_plan.queued_count }} queued refreshes remaining
+        {% else %}
+          Round 0 not built yet
+        {% endif %}
+      </p>
+    </article>
+    <article class="workflow-card {{ 'workflow-complete' if latest_house_view else '' }}">
+      <span class="workflow-step">3</span>
+      <strong>FX Debate</strong>
+      <p>{% if latest_house_view %}House view stored{% else %}Rounds 1-4 not run yet{% endif %}</p>
+    </article>
+    <article class="workflow-card {{ 'workflow-complete' if latest_pdf_report else '' }}">
+      <span class="workflow-step">4</span>
+      <strong>Report</strong>
+      <p>{% if latest_pdf_report %}PDF brief ready{% else %}No PDF artifact yet{% endif %}</p>
+    </article>
+    <article class="workflow-card {{ 'workflow-complete' if realized_outcomes and realized_outcomes|selectattr('realized_move_pct', 'ne', none)|list else '' }}">
+      <span class="workflow-step">5</span>
+      <strong>Backtest</strong>
+      <p>
+        {% if realized_outcomes and realized_outcomes|selectattr('realized_move_pct', 'ne', none)|list %}
+          Realized outcomes are starting to resolve
+        {% else %}
+          Waiting for horizon outcomes
+        {% endif %}
+      </p>
+    </article>
+  </section>
+
+  {% if latest_house_view %}
+    <section class="two-column-grid">
+      <article class="content-card accent-card">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">House View</p>
+            <h3>Final synthesis</h3>
+          </div>
+          <span class="detail-chip {{ 'stress' if latest_house_view.stress_flag else '' }}">
+            {{ "Stress Flag" if latest_house_view.stress_flag else "No Stress Flag" }}
+          </span>
+        </div>
+        <ul class="feature-list">
+          <li>Primary Score: {{ "%.1f"|format(latest_house_view.house_primary_score) }}</li>
+          <li>House Confidence: {{ latest_house_view.house_confidence }}</li>
+          <li>Disagreement Range: {{ "%.1f"|format(latest_house_view.disagreement_range) }}</li>
+          <li>Primary Horizon: {{ latest_house_view.primary_horizon }}</li>
+        </ul>
+        {% if latest_house_view.minority_risk_note %}
+          <p class="detail-copy">{{ latest_house_view.minority_risk_note }}</p>
+        {% endif %}
+      </article>
+
+      <article class="content-card">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">House Curve</p>
+            <h3>Event-probability curve</h3>
+          </div>
+        </div>
+        <div class="source-summary-grid">
+          {% for horizon, score in latest_house_view.risk_curve.items() %}
+            <div class="summary-tile {{ 'highlight-tile' if horizon == latest_house_view.primary_horizon else '' }}">
+              <span>{{ horizon }}</span>
+              <strong>{{ "%.1f"|format(score) }}</strong>
+            </div>
+          {% endfor %}
+        </div>
+      </article>
+    </section>
+  {% endif %}
+
+  {% if realized_outcomes %}
+    <section id="backtest" class="content-card cycle-section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Realized Outcomes</p>
+          <h3>What actually happened after the forecast</h3>
+        </div>
+        <a class="inline-link" href="/backtesting">Open backtesting board</a>
+      </div>
+
+      <div class="chip-cloud compact-cloud">
+        {% for outcome in realized_outcomes %}
+          <div class="info-chip">
+            <div class="cycle-row">
+              <strong>{{ outcome.horizon }}</strong>
+              <span class="status-pill {{ outcome.status_class }}">{{ outcome.status_label }}</span>
+            </div>
+            <span>Threshold {{ "%.1f"|format(outcome.threshold_pct) }}% | Due {{ outcome.due_date.strftime("%Y-%m-%d") }}</span>
+            {% if outcome.predicted_score is not none %}
+              <p>House probability: {{ "%.1f"|format(outcome.predicted_score) }}</p>
+            {% else %}
+              <p>House probability: n/a</p>
+            {% endif %}
+            {% if outcome.realized_move_pct is not none %}
+              <p>Realized move: {{ "%.3f"|format(outcome.realized_move_pct) }}%</p>
+              <p>Known on: {{ outcome.outcome_known_on.strftime("%Y-%m-%d") if outcome.outcome_known_on else "n/a" }}</p>
+            {% else %}
+              <p>Realized move: pending</p>
+            {% endif %}
+            {% if outcome.calibration_gap is not none %}
+              <p>Calibration gap: {{ "%+.1f"|format(outcome.calibration_gap) }} pts</p>
+              <p>Absolute error: {{ "%.1f"|format(outcome.absolute_error) }} pts</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="two-column-grid" data-view="full">
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Report Artifact</p>
+          <h3>Printable deliverable</h3>
+        </div>
+        {% if latest_house_view %}
+          <form action="/assessments/{{ cycle.id }}/generate-report" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button type="submit" class="secondary-button">Generate report</button>
+          </form>
+        {% endif %}
+      </div>
+      {% if latest_pdf_report or latest_html_report %}
+        <ul class="feature-list">
+          {% if latest_pdf_report %}
+            <li>PDF: {{ latest_pdf_report.title }}</li>
+            <li>PDF Generated: {{ latest_pdf_report.generated_at.strftime("%Y-%m-%d %H:%M") }}</li>
+          {% endif %}
+          {% if latest_html_report %}
+            <li>HTML Twin: {{ latest_html_report.title }}</li>
+            <li>HTML Generated: {{ latest_html_report.generated_at.strftime("%Y-%m-%d %H:%M") }}</li>
+          {% endif %}
+        </ul>
+        <div class="chip-cloud compact-cloud">
+          {% if latest_pdf_report %}
+            <a class="inline-link" href="/reports/{{ latest_pdf_report.id }}" target="_blank" rel="noopener noreferrer">
+              Open PDF report
+            </a>
+          {% endif %}
+          {% if latest_html_report %}
+            <a class="inline-link" href="/reports/{{ latest_html_report.id }}" target="_blank" rel="noopener noreferrer">
+              Open HTML twin
+            </a>
+          {% endif %}
+        </div>
+      {% else %}
+        <p class="empty-state">
+          {% if latest_house_view %}
+            No report has been generated yet. Create the PDF-first report bundle from the completed house view.
+          {% else %}
+            Run the FX Experts rounds first, then generate a printable report from the completed house view.
+          {% endif %}
+        </p>
+      {% endif %}
+    </article>
+
+    <article class="content-card accent-card">
+      <p class="eyebrow">Reporting Mode</p>
+      <p class="detail-copy">
+        Reports are stored locally as a native PDF plus an HTML twin, so you get a ready-to-open
+        deliverable now while keeping a flexible template path for later deployment upgrades.
+      </p>
+    </article>
+  </section>
+
+  <section id="debate" class="two-column-grid briefing-summary-grid">
+    <article class="content-card accent-card">
+      <p class="eyebrow">Debate Snapshot</p>
+      <h3>How the desk got here</h3>
+      <p class="detail-copy">{{ briefing_summary.debate_note }}</p>
+    </article>
+
+    <article class="content-card">
+      <p class="eyebrow">Evidence Snapshot</p>
+      <h3>Coverage before full workup</h3>
+      <p class="detail-copy">{{ briefing_summary.coverage_note }}</p>
+      <p class="detail-copy"><strong>Trust state:</strong> {{ trust_summary.trust_label }}</p>
+    </article>
+  </section>
+
+  <section id="evidence" class="two-column-grid" data-view="full">
+    <article class="content-card">
+      <p class="eyebrow">Cycle Context</p>
+      <ul class="feature-list">
+        <li>Created: {{ cycle.assessment_timestamp.strftime("%Y-%m-%d %H:%M") }}</li>
+        <li>Status: {{ cycle.status }}</li>
+        <li>Summary: {{ cycle.summary or "No summary recorded yet." }}</li>
+        <li>Evidence Pack: {{ cycle.evidence_pack_path or "Not generated yet." }}</li>
+        <li>Fresh snapshot path: use "Create follow-up cycle" to preserve this record</li>
+      </ul>
+    </article>
+
+    <article class="content-card accent-card">
+      <p class="eyebrow">User Prompt</p>
+      <p class="detail-copy">
+        {{ cycle.user_prompt or "No custom context was supplied for this cycle." }}
+      </p>
+    </article>
+  </section>
+
+  <section class="two-column-grid">
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">On-Call Specialists</p>
+          <h3>Activation log</h3>
+        </div>
+      </div>
+
+      {% if activations %}
+        <div class="chip-cloud">
+          {% for activation in activations %}
+            <div class="info-chip">
+              <strong>{{ activation.specialist_name }}</strong>
+              <span>{{ activation.trigger_topic }}</span>
+              <p>{{ activation.materiality_reason }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No on-call specialists were auto-activated for this cycle.</p>
+      {% endif %}
+    </article>
+
+    <article class="content-card accent-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Evidence Pack</p>
+          <h3>Round 0 snapshot</h3>
+        </div>
+        <a class="inline-link" href="/sources">Open source health</a>
+      </div>
+
+      {% if evidence_pack %}
+        <ul class="feature-list">
+          <li>Generated: {{ evidence_pack.generated_at }}</li>
+          <li>Enabled Sources: {{ evidence_pack.source_summary.enabled_sources }}</li>
+          <li>Queued Refreshes: {{ evidence_pack.refresh_plan.queued_count }}</li>
+          <li>
+            Macro Coverage:
+            {{ evidence_pack.macro_summary.series_with_observations }}/{{ evidence_pack.macro_summary.configured_series }}
+          </li>
+          <li>Recent Headlines: {{ evidence_pack.news_summary.headline_count_14d }}</li>
+          <li>Recent Chatter: {{ evidence_pack.news_summary.chatter_count_14d }}</li>
+          <li>Official Refresh: {{ "Yes" if evidence_pack.request_flags.refresh_official_data else "No" }}</li>
+          <li>News + Chatter Scan: {{ "Yes" if evidence_pack.request_flags.include_news_chatter else "No" }}</li>
+        </ul>
+        <div class="source-summary-grid">
+          {% for category, count in evidence_pack.source_summary.categories.items() %}
+            <div class="summary-tile">
+              <span>{{ category.replace("_", " ") }}</span>
+              <strong>{{ count }}</strong>
+            </div>
+          {% endfor %}
+        </div>
+        {% if evidence_pack.refresh_plan.queued_sources %}
+          <div class="chip-cloud compact-cloud">
+            {% for queued_source in evidence_pack.refresh_plan.queued_sources %}
+              <div class="info-chip">
+                <strong>{{ queued_source.source_name }}</strong>
+                <span>{{ queued_source.category.replace("_", " ") }}</span>
+                <p>Status: {{ queued_source.status }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% else %}
+        <p class="empty-state">The evidence-pack file is not available yet.</p>
+      {% endif %}
+    </article>
+  </section>
+
+  {% if evidence_pack %}
+    {% if evidence_pack.expert_readiness %}
+      <section class="content-card cycle-section" data-view="full">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Expert Readiness</p>
+            <h3>How prepared each lens is before debate</h3>
+          </div>
+        </div>
+
+        <div class="source-summary-grid">
+          {% for layer in evidence_pack.expert_readiness.layers %}
+            <div class="summary-tile {{ 'highlight-tile' if layer.status == 'ready' else '' }}">
+              <span>{{ layer.layer_name }}</span>
+              <strong>{{ layer.status }}</strong>
+              <p>{{ layer.present|length }}/{{ (layer.present|length) + (layer.missing|length) }} signals</p>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="chip-cloud compact-cloud">
+          {% for agent in evidence_pack.expert_readiness.agents %}
+            <div class="info-chip">
+              <strong>{{ agent.agent_name }}</strong>
+              <span>{{ agent.status }} | {{ agent.present_count }}/{{ agent.required_count }}</span>
+              {% if agent.missing %}
+                <p>Missing: {{ agent.missing|join(", ") }}</p>
+              {% else %}
+                <p>All core evidence categories are present.</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <p class="detail-copy">
+          Recent context: {{ evidence_pack.expert_readiness.headline_count_14d }} headlines and
+          {{ evidence_pack.expert_readiness.chatter_count_14d }} chatter items in the 14-day window.
+        </p>
+      </section>
+    {% endif %}
+
+    <section class="content-card cycle-section" data-view="full">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Next Setup Actions</p>
+          <h3>What to fix before trusting the next debate round</h3>
+        </div>
+      </div>
+
+      {% if evidence_pack.action_queue %}
+        <div class="action-grid">
+          {% for action in evidence_pack.action_queue %}
+            <article class="action-card action-{{ action.priority }}">
+              <p class="action-priority">{{ action.priority }}</p>
+              <h4>{{ action.title }}</h4>
+              <p>{{ action.detail }}</p>
+              <span>Open: {{ action.target_area }}</span>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No urgent setup actions are queued for this cycle.</p>
+      {% endif %}
+    </section>
+
+    <section class="two-column-grid" data-view="full">
+      <article class="content-card">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Macro Snapshot</p>
+            <h3>Latest official observations</h3>
+          </div>
+        </div>
+
+        {% if evidence_pack.macro_summary.rates_regime and evidence_pack.macro_summary.rates_regime.ready %}
+          <div class="source-summary-grid">
+            <div class="summary-tile highlight-tile">
+              <span>Rates Backdrop</span>
+              <strong>{{ evidence_pack.macro_summary.rates_regime.regime_label }}</strong>
+            </div>
+            <div class="summary-tile">
+              <span>Broad Dollar</span>
+              <strong>
+                {% if evidence_pack.macro_summary.rates_regime.broad_dollar_value is not none %}
+                  {{ "%.3f"|format(evidence_pack.macro_summary.rates_regime.broad_dollar_value) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>US 2Y</span>
+              <strong>
+                {% if evidence_pack.macro_summary.rates_regime.us2y_value is not none %}
+                  {{ "%.3f"|format(evidence_pack.macro_summary.rates_regime.us2y_value) }}%
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>US 10Y</span>
+              <strong>
+                {% if evidence_pack.macro_summary.rates_regime.us10y_value is not none %}
+                  {{ "%.3f"|format(evidence_pack.macro_summary.rates_regime.us10y_value) }}%
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>Carry Optics</span>
+              <strong>{{ evidence_pack.macro_summary.rates_regime.carry_signal }}</strong>
+            </div>
+          </div>
+          <p class="detail-copy">
+            {{ evidence_pack.macro_summary.rates_regime.external_signal }}.
+            {{ evidence_pack.macro_summary.rates_regime.summary }}
+          </p>
+        {% endif %}
+
+        {% if evidence_pack.macro_summary.turkey_policy_reserves and evidence_pack.macro_summary.turkey_policy_reserves.ready %}
+          <div class="source-summary-grid">
+            <div class="summary-tile highlight-tile">
+              <span>Turkey Policy / Reserves</span>
+              <strong>{{ evidence_pack.macro_summary.turkey_policy_reserves.regime_label }}</strong>
+            </div>
+            <div class="summary-tile">
+              <span>Domestic Rate</span>
+              <strong>
+                {% if evidence_pack.macro_summary.turkey_policy_reserves.primary_domestic_rate_value is not none %}
+                  {{ "%.3f"|format(evidence_pack.macro_summary.turkey_policy_reserves.primary_domestic_rate_value) }}
+                  {{ evidence_pack.macro_summary.turkey_policy_reserves.primary_domestic_rate_unit or "" }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>Reserves</span>
+              <strong>
+                {% if evidence_pack.macro_summary.turkey_policy_reserves.primary_reserve_value is not none %}
+                  {{ "%.3f"|format(evidence_pack.macro_summary.turkey_policy_reserves.primary_reserve_value) }}
+                  {{ evidence_pack.macro_summary.turkey_policy_reserves.primary_reserve_unit or "" }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>Policy Signal</span>
+              <strong>{{ evidence_pack.macro_summary.turkey_policy_reserves.policy_signal }}</strong>
+            </div>
+            <div class="summary-tile">
+              <span>Reserve Signal</span>
+              <strong>{{ evidence_pack.macro_summary.turkey_policy_reserves.reserve_signal }}</strong>
+            </div>
+          </div>
+          <p class="detail-copy">
+            {{ evidence_pack.macro_summary.turkey_policy_reserves.relative_signal }}.
+            {{ evidence_pack.macro_summary.turkey_policy_reserves.summary }}
+          </p>
+        {% else %}
+          <p class="empty-state warning-copy">
+            Turkey policy/reserve layer is incomplete. Refresh the public CBRT policy-rate and
+            reserve sources, or add stronger `domestic_rates` and `reserves` series in the macro
+            catalog, to strengthen Bosphorus and Ledger.
+          </p>
+        {% endif %}
+
+        {% if evidence_pack.macro_summary.key_observations %}
+          <div class="chip-cloud compact-cloud">
+            {% for observation in evidence_pack.macro_summary.key_observations %}
+              <div class="info-chip">
+                <strong>{{ observation.name }}</strong>
+                <span>{{ observation.source_name }} | {{ observation.observation_date }}</span>
+                <p>
+                  Value:
+                  {% if observation.value is not none %}
+                    {{ "%.3f"|format(observation.value) }}
+                  {% else %}
+                    n/a
+                  {% endif %}
+                  {% if observation.unit %}
+                    {{ observation.unit }}
+                  {% endif %}
+                </p>
+                <p>Trend: {{ observation.trend }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">No official macro observations are stored yet for this cycle.</p>
+        {% endif %}
+
+        {% if evidence_pack.macro_summary.missing_series %}
+          <div class="chip-cloud compact-cloud">
+            {% for series in evidence_pack.macro_summary.missing_series %}
+              <div class="info-chip muted-chip">
+                <strong>{{ series.name }}</strong>
+                <span>{{ series.source_name }} | Missing</span>
+                <p>{{ series.code }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </article>
+
+      <article class="content-card accent-card">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Market Snapshot</p>
+            <h3>Price and volatility context</h3>
+          </div>
+        </div>
+
+        {% if evidence_pack.price_summary.market_regime and evidence_pack.price_summary.market_regime.ready %}
+          <div class="source-summary-grid">
+            <div class="summary-tile highlight-tile">
+              <span>Market Regime</span>
+              <strong>{{ evidence_pack.price_summary.market_regime.regime_label }}</strong>
+            </div>
+            <div class="summary-tile">
+              <span>USD/TRY Move</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.try_change_pct is not none %}
+                  {{ "%+.3f"|format(evidence_pack.price_summary.market_regime.try_change_pct) }}%
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>Peer Basket Avg</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.peer_average_change_pct is not none %}
+                  {{ "%+.3f"|format(evidence_pack.price_summary.market_regime.peer_average_change_pct) }}%
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>TRY vs Peers Gap</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.try_vs_peer_gap_pct is not none %}
+                  {{ "%+.3f"|format(evidence_pack.price_summary.market_regime.try_vs_peer_gap_pct) }}%
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>VIX</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.vix_close is not none %}
+                  {{ "%.2f"|format(evidence_pack.price_summary.market_regime.vix_close) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>Volatility Regime</span>
+              <strong>{{ evidence_pack.price_summary.market_regime.volatility_regime_label or "n/a" }}</strong>
+            </div>
+            <div class="summary-tile">
+              <span>VIX9D</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.vix9d_close is not none %}
+                  {{ "%.2f"|format(evidence_pack.price_summary.market_regime.vix9d_close) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>VVIX</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.vvix_close is not none %}
+                  {{ "%.2f"|format(evidence_pack.price_summary.market_regime.vvix_close) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>VXEEM</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.vxeem_close is not none %}
+                  {{ "%.2f"|format(evidence_pack.price_summary.market_regime.vxeem_close) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>OVX</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.ovx_close is not none %}
+                  {{ "%.2f"|format(evidence_pack.price_summary.market_regime.ovx_close) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+            <div class="summary-tile">
+              <span>GVZ</span>
+              <strong>
+                {% if evidence_pack.price_summary.market_regime.gvz_close is not none %}
+                  {{ "%.2f"|format(evidence_pack.price_summary.market_regime.gvz_close) }}
+                {% else %}
+                  n/a
+                {% endif %}
+              </strong>
+            </div>
+          </div>
+          <p class="detail-copy">
+            {{ evidence_pack.price_summary.market_regime.relative_signal }}.
+            {{ evidence_pack.price_summary.market_regime.summary }}
+          </p>
+        {% endif %}
+
+        {% if evidence_pack.price_summary.derived_pairs or evidence_pack.price_summary.series %}
+          <div class="chip-cloud compact-cloud">
+            {% for pair in evidence_pack.price_summary.derived_pairs %}
+              <div class="info-chip">
+                <strong>{{ pair.name }}</strong>
+                <span>{{ pair.source_name }} | {{ pair.observed_at }}</span>
+                <p>Close: {{ "%.4f"|format(pair.close_value) }}</p>
+                {% if pair.change_pct is not none %}
+                  <p>Change: {{ "%.3f"|format(pair.change_pct) }}%</p>
+                {% endif %}
+                <p>Trend: {{ pair.trend }}</p>
+              </div>
+            {% endfor %}
+            {% for series in evidence_pack.price_summary.series %}
+              <div class="info-chip">
+                <strong>{{ series.name }}</strong>
+                <span>{{ series.source_name }} | {{ series.observed_at }}</span>
+                <p>Close: {{ "%.4f"|format(series.close_value) }}</p>
+                {% if series.change_pct is not none %}
+                  <p>Change: {{ "%.3f"|format(series.change_pct) }}%</p>
+                {% endif %}
+                <p>Trend: {{ series.trend }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">No market price observations are stored yet for this cycle.</p>
+        {% endif %}
+
+        {% if evidence_pack.price_summary.missing_series %}
+          <div class="chip-cloud compact-cloud">
+            {% for series in evidence_pack.price_summary.missing_series %}
+              <div class="info-chip muted-chip">
+                <strong>{{ series.name }}</strong>
+                <span>{{ series.source_name }} | Missing</span>
+                <p>{{ series.symbol }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </article>
+    </section>
+
+    <section class="two-column-grid" data-view="full">
+      <article class="content-card accent-card">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Recent Evidence</p>
+            <h3>Headline and chatter context</h3>
+          </div>
+        </div>
+
+        {% if evidence_pack.news_summary.recent_headlines %}
+          <div class="cycle-list stacked">
+            {% for item in evidence_pack.news_summary.recent_headlines %}
+              <div class="cycle-card wide static-card">
+                <span class="cycle-meta">{{ item.source_name }} | {{ item.published_at }}</span>
+                <strong>{{ item.title }}</strong>
+                {% if item.url %}
+                  <a class="inline-link" href="{{ item.url }}" target="_blank" rel="noopener noreferrer">Open source</a>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">No recent headlines are stored inside the Round 0 window.</p>
+        {% endif %}
+
+        {% if evidence_pack.news_summary.recent_chatter %}
+          <div class="cycle-list stacked">
+            {% for item in evidence_pack.news_summary.recent_chatter %}
+              <div class="cycle-card wide static-card">
+                <span class="cycle-meta">{{ item.source_name }} | {{ item.posted_at }}</span>
+                <strong>{{ item.content }}</strong>
+                {% if item.author %}
+                  <p>Author: {{ item.author }}</p>
+                {% endif %}
+                {% if item.url %}
+                  <a class="inline-link" href="{{ item.url }}" target="_blank" rel="noopener noreferrer">Open source</a>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </article>
+    </section>
+  {% endif %}
+
+  <section class="content-card cycle-section" data-view="full">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Debate Rounds</p>
+        <h3>FX Experts operating record</h3>
+      </div>
+      <a class="inline-link" href="/assessments">Back to history</a>
+    </div>
+
+    {% if round_displays %}
+      {% for round_display in round_displays %}
+        <div class="round-block">
+          <div class="round-header">
+            <strong>{{ round_display.label }}</strong>
+            <span>{{ round_display.outputs|length }} outputs</span>
+          </div>
+          <div class="cycle-list stacked">
+            {% for output in round_display.outputs %}
+              <div class="cycle-card wide static-card">
+                <span class="cycle-meta">
+                  {{ output.agent_name }} | {{ output.agent_role }}
+                  {% if output.confidence %}| {{ output.confidence }}{% endif %}
+                </span>
+                <strong>
+                  {% if output.primary_risk_score is not none %}
+                    {{ output.stance or "Advisory" }} | {{ "%.1f"|format(output.primary_risk_score) }}
+                  {% else %}
+                    Agenda framing
+                  {% endif %}
+                </strong>
+                <p>{{ output.content }}</p>
+                {% if output.top_drivers %}
+                  <div class="chip-cloud compact-cloud">
+                    {% for driver in output.top_drivers %}
+                      <div class="info-chip">
+                        <strong>{{ driver }}</strong>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                {% if output.risk_curve %}
+                  <div class="source-summary-grid compact-grid">
+                    {% for horizon, score in output.risk_curve.items() %}
+                      <div class="summary-tile {{ 'highlight-tile' if horizon == output.primary_horizon else '' }}">
+                        <span>{{ horizon }}</span>
+                        <strong>{{ "%.1f"|format(score) }}</strong>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                {% if output.counterevidence %}
+                  <p><strong>Counterevidence:</strong> {{ output.counterevidence }}</p>
+                {% endif %}
+                {% if output.watch_triggers %}
+                  <p><strong>Watch:</strong> {{ output.watch_triggers|join(", ") }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="cycle-list stacked">
+        <div class="cycle-card wide static-card">
+          <span class="cycle-meta">Rounds 1-4</span>
+          <strong>Expert debate outputs are not stored yet</strong>
+          <p>Run the FX Experts rounds once Round 0 looks right. The app will persist each round, compute the house curve, and preserve dissent.</p>
+        </div>
+      </div>
+    {% endif %}
+  </section>
+
+  <section id="operate" class="command-deck">
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Command Deck</p>
+          <h3>Run the cycle from here</h3>
+        </div>
+      </div>
+      <p class="detail-copy">
+        Recommended order: refresh queued sources, rebuild Round 0, run the FX Experts, then
+        export the PDF brief.
+      </p>
+      <p class="detail-copy">
+        Use a follow-up cycle when you want a fresh timestamped snapshot without rewriting this
+        cycle's stored evidence, debate, and report record.
+      </p>
+      <div class="action-row command-row">
+        <form action="/assessments/{{ cycle.id }}/follow-up" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="secondary-button">Create follow-up cycle</button>
+        </form>
+        <form action="/assessments/{{ cycle.id }}/refresh-sources" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="secondary-button">Refresh queued sources</button>
+        </form>
+        <form action="/assessments/{{ cycle.id }}/rebuild" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="secondary-button">Rebuild Round 0</button>
+        </form>
+        <form action="/assessments/{{ cycle.id }}/run-rounds" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+          <button type="submit" class="primary-button">Run FX Experts rounds</button>
+        </form>
+        {% if latest_house_view %}
+          <form action="/assessments/{{ cycle.id }}/generate-report" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+            <button type="submit" class="secondary-button">Generate PDF brief</button>
+          </form>
+        {% endif %}
+      </div>
+    </article>
+
+    <article class="content-card accent-card">
+      <p class="eyebrow">Turkey Data Path</p>
+      <h3>No-key domestic coverage</h3>
+      <p class="detail-copy">
+        The default Turkey layer now leans on public CBRT pages for `1 Week Repo` and reserve
+        liquidity, with EVDS kept optional. That keeps this cycle usable without account-gated
+        CBRT plumbing.
+      </p>
+    </article>
+  </section>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero-panel">
+    <div>
+      <p class="eyebrow">Evidence Browser</p>
+      <h3>Latest ingested public evidence</h3>
+      <p class="hero-copy">
+        This view surfaces the freshest stored macro observations, market prices, headlines, and
+        lower-trust chatter items that have landed through the source refresh workflow.
+      </p>
+    </div>
+    <div class="hero-highlight">
+      <span class="hero-label">Round 0 Inputs</span>
+      <strong>Macro + Market</strong>
+    </div>
+  </section>
+
+  <section class="two-column-grid">
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Official Macro</p>
+          <h3>Latest stored observations</h3>
+        </div>
+      </div>
+      {% if macro_rows %}
+        <div class="cycle-list stacked">
+          {% for row in macro_rows %}
+            <div class="cycle-card wide static-card">
+              <span class="cycle-meta">{{ row.source_name }} | {{ row.latest_observation_date.strftime("%Y-%m-%d") }}</span>
+              <strong>{{ row.series.name }}</strong>
+              <p>Value: {{ "%.3f"|format(row.latest_value) if row.latest_value is not none else "n/a" }} {{ row.series.unit or "" }}</p>
+              <p>Stored observations: {{ row.observation_count }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No macro observations have been ingested yet.</p>
+      {% endif %}
+    </article>
+
+    <article class="content-card accent-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Market Prices</p>
+          <h3>Latest spot and volatility context</h3>
+        </div>
+      </div>
+      {% if price_rows %}
+        <div class="cycle-list stacked">
+          {% for row in price_rows %}
+            <div class="cycle-card wide static-card">
+              <span class="cycle-meta">{{ row.source_name }} | {{ row.latest_observation_date.strftime("%Y-%m-%d") }}</span>
+              <strong>{{ row.series.name }}</strong>
+              <p>Close: {{ "%.4f"|format(row.latest_value) if row.latest_value is not none else "n/a" }}</p>
+              <p>Stored observations: {{ row.observation_count }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No market price observations have been ingested yet.</p>
+      {% endif %}
+    </article>
+  </section>
+
+  <section class="two-column-grid">
+    <article class="content-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Headlines</p>
+          <h3>Recent news items</h3>
+        </div>
+      </div>
+      {% if headlines %}
+        <div class="cycle-list stacked">
+          {% for item in headlines %}
+            <div class="cycle-card wide static-card">
+              <span class="cycle-meta">{{ item.source_name }} | {{ item.occurred_at.strftime("%Y-%m-%d %H:%M") }}</span>
+              <strong>{{ item.title }}</strong>
+              {% if item.summary %}
+                <p>{{ item.summary }}</p>
+              {% endif %}
+              {% if item.url %}
+                <a class="inline-link" href="{{ item.url }}" target="_blank" rel="noopener noreferrer">Open source</a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No headlines have been ingested yet.</p>
+      {% endif %}
+    </article>
+
+    <article class="content-card accent-card">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Chatter</p>
+          <h3>Recent low-trust items</h3>
+        </div>
+      </div>
+      {% if chatter %}
+        <div class="cycle-list stacked">
+          {% for item in chatter %}
+            <div class="cycle-card wide static-card">
+              <span class="cycle-meta">{{ item.source_name }} | {{ item.occurred_at.strftime("%Y-%m-%d %H:%M") }}</span>
+              <strong>{{ item.title }}</strong>
+              {% if item.summary %}
+                <p>Author: {{ item.summary }}</p>
+              {% endif %}
+              {% if item.url %}
+                <a class="inline-link" href="{{ item.url }}" target="_blank" rel="noopener noreferrer">Open source</a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">No chatter items have been ingested yet.</p>
+      {% endif %}
+    </article>
+  </section>
+{% endblock %}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FX Experts"
+  short_description: "Run a structured TRY depreciation-risk debate with FX experts"
+  default_prompt: "Use the FX Experts team to assess Turkish lira depreciation risk, preserve evidence-backed dissent, produce a full horizon risk curve, and keep the workflow aligned with the agreed operating and build rules."

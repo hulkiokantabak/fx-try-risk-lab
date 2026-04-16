@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.production
+.env.production.local
+data/
+.tmp/
+exports/
+gh-auth-*.txt
+pytest-cache-files-*/

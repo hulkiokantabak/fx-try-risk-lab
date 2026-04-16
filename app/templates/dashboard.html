@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero-panel">
+    <div>
+      <p class="eyebrow">Current Focus</p>
+      <h3>Public-data TRY risk workstation ready for evidence, debate, export, and backtesting.</h3>
+      <p class="hero-copy">
+        The lab now runs a real local workflow: queue source refreshes, build Round 0 evidence,
+        run the FX Experts, export a PDF report, and compare the call with realized TRY moves.
+      </p>
+    </div>
+    <div class="hero-highlight">
+      <span class="hero-label">Default House Focus</span>
+      <strong>{{ primary_horizon }}</strong>
+      <p class="hero-caption">Full curve still runs from `1w` to `1y`.</p>
+    </div>
+  </section>
+
+  <section class="workflow-strip">
+    <article class="workflow-card workflow-active">
+      <span class="workflow-step">1</span>
+      <strong>Assess</strong>
+      <p>Open a cycle with a horizon, a prompt, and the right trigger context.</p>
+      <a class="inline-link" href="/assessments/new">Start a cycle</a>
+    </article>
+    <article class="workflow-card">
+      <span class="workflow-step">2</span>
+      <strong>Evidence</strong>
+      <p>Refresh public CBRT, ECB, IMF, news, and chatter inputs before debate.</p>
+      <a class="inline-link" href="/sources">Check source health</a>
+    </article>
+    <article class="workflow-card">
+      <span class="workflow-step">3</span>
+      <strong>Debate</strong>
+      <p>Run Rounds 1-4 and preserve disagreement instead of flattening it away.</p>
+      <a class="inline-link" href="/assessments">Open cycle history</a>
+    </article>
+    <article class="workflow-card">
+      <span class="workflow-step">4</span>
+      <strong>Export</strong>
+      <p>Generate the PDF-first brief with the HTML twin kept for inspection.</p>
+      <span class="workflow-note">From any completed cycle</span>
+    </article>
+    <article class="workflow-card">
+      <span class="workflow-step">5</span>
+      <strong>Backtest</strong>
+      <p>Track realized outcomes, calibration bias, and horizon-specific accuracy.</p>
+      <a class="inline-link" href="/backtesting">Open backtesting</a>
+    </article>
+  </section>
+
+  <section class="stats-grid">
+    <article class="stat-card">
+      <span class="stat-label">Configured Sources</span>
+      <strong>{{ stats.source_count }}</strong>
+      <p>Includes public CBRT policy-rate and reserve feeds plus market, news, and chatter layers.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Assessment Cycles</span>
+      <strong>{{ stats.assessment_count }}</strong>
+      <p>Each cycle freezes Round 0, stores the debate record, and keeps the later realized outcome.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Latest House Score</span>
+      <strong>
+        {% if stats.latest_score is not none %}
+          {{ "%.1f"|format(stats.latest_score) }}
+        {% else %}
+          --
+        {% endif %}
+      </strong>
+      <p>The highlighted house probability for the most recent completed cycle.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Reports</span>
+      <strong>{{ stats.report_count }}</strong>
+      <p>Stored locally as native PDFs with HTML twins for inspection and later styling upgrades.</p>
+    </article>
+  </section>
+
+  <section class="two-column-grid">
+    <article class="content-card">
+      <p class="eyebrow">What Works Now</p>
+      <ul class="feature-list">
+        <li>Public CBRT no-key domestic data path for policy rates and reserves</li>
+        <li>Round 0 evidence-pack creation with direct specialist activation</li>
+        <li>Stored FX Experts rounds with house-view computation and dissent tracking</li>
+        <li>Backtesting board for forecast vs realized TRY depreciation events</li>
+        <li>PDF-first report generation with HTML twins</li>
+        <li>Follow-up cycle flow to preserve historical snapshots while opening fresh ones</li>
+        <li>Local SQLite storage with deploy-ready architecture</li>
+      </ul>
+    </article>
+
+    <article class="content-card accent-card">
+      <p class="eyebrow">Current Priority</p>
+      <ul class="feature-list">
+        <li>Tighten the live browser workflow around one-screen operation</li>
+        <li>Improve cycle-level command guidance and step visibility</li>
+        <li>Deepen market-implied FX and volatility inputs for Flow and Vega</li>
+        <li>Keep deployment simple while preserving local-first usage</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Recent Cycles</p>
+        <h3>Latest assessment entries</h3>
+      </div>
+      <a class="inline-link" href="/assessments">Open full history</a>
+    </div>
+
+    {% if recent_cycles %}
+      <div class="cycle-list">
+        {% for cycle in recent_cycles %}
+          <a class="cycle-card" href="/assessments/{{ cycle.id }}">
+            <span class="cycle-meta">{{ cycle.primary_horizon }} | {{ cycle.status }}</span>
+            <strong>{{ cycle.label }}</strong>
+            <p>{{ cycle.summary or "Assessment cycle shell created." }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">
+        No cycles yet. Use the new-assessment screen to create the first stored workflow entry.
+      </p>
+    {% endif %}
+  </section>
+{% endblock %}

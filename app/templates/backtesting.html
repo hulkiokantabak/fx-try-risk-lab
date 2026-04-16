@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="hero-panel">
+    <div>
+      <p class="eyebrow">Feedback Loop</p>
+      <h3>Primary-horizon forecasts versus realized TRY outcomes.</h3>
+      <p class="hero-copy">
+        This board shows whether past house views were early, late, or directionally wrong once the
+        matching horizon matured.
+      </p>
+    </div>
+    <div class="hero-highlight">
+      <span class="hero-label">Resolved Primary Horizons</span>
+      <strong>{{ stats.resolved_primary_count }}</strong>
+    </div>
+  </section>
+
+  {% if flash_message %}
+    <div class="flash-banner">{{ flash_message }}</div>
+  {% endif %}
+
+  <section class="stats-grid">
+    <article class="stat-card">
+      <span class="stat-label">Resolved</span>
+      <strong>{{ stats.resolved_primary_count }}</strong>
+      <p>Primary-horizon assessments with a known binary outcome.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Pending</span>
+      <strong>{{ stats.pending_primary_count }}</strong>
+      <p>Cycles still waiting for enough market history to score the primary horizon.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Mean Abs Error</span>
+      <strong>
+        {% if stats.mean_absolute_error is not none %}
+          {{ "%.2f"|format(stats.mean_absolute_error) }}
+        {% else %}
+          --
+        {% endif %}
+      </strong>
+      <p>Average absolute gap in probability points on resolved primary horizons.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Brier Score</span>
+      <strong>
+        {% if stats.brier_score is not none %}
+          {{ "%.4f"|format(stats.brier_score) }}
+        {% else %}
+          --
+        {% endif %}
+      </strong>
+      <p>Lower is better. This treats the house score as a true event probability.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Avg House Prob</span>
+      <strong>
+        {% if stats.avg_resolved_probability is not none %}
+          {{ "%.1f"|format(stats.avg_resolved_probability) }}
+        {% else %}
+          --
+        {% endif %}
+      </strong>
+      <p>Average primary-horizon house probability on resolved cycles.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Trigger Rate</span>
+      <strong>
+        {% if stats.realized_trigger_rate is not none %}
+          {{ "%.1f"|format(stats.realized_trigger_rate) }}
+        {% else %}
+          --
+        {% endif %}
+      </strong>
+      <p>Actual share of resolved primary horizons that crossed the threshold.</p>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Calibration Bias</span>
+      <strong>
+        {% if stats.calibration_bias is not none %}
+          {{ "%+.1f"|format(stats.calibration_bias) }}
+        {% else %}
+          --
+        {% endif %}
+      </strong>
+      <p>Positive means the house view has been too hot; negative means too cold.</p>
+    </article>
+  </section>
+
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Recompute</p>
+        <h3>Refresh realized outcomes</h3>
+      </div>
+      <form action="/backtesting/refresh" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <button type="submit" class="secondary-button">Refresh outcomes</button>
+      </form>
+    </div>
+    <p class="detail-copy">
+      Run this after manually editing price history or importing new observations outside the normal
+      source-refresh flow.
+    </p>
+  </section>
+
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Primary Horizon Log</p>
+        <h3>Cycle-by-cycle backtest</h3>
+      </div>
+    </div>
+
+    {% if rows %}
+      <div class="cycle-list stacked">
+        {% for row in rows %}
+          <a class="cycle-card wide" href="/assessments/{{ row.cycle.id }}">
+            <div class="cycle-row">
+              <div>
+                <span class="cycle-meta">{{ row.cycle.primary_horizon }} | {{ row.cycle.assessment_timestamp.strftime("%Y-%m-%d") }}</span>
+                <strong>{{ row.cycle.label }}</strong>
+              </div>
+              <span class="status-pill {{ row.status_class }}">{{ row.status_label }}</span>
+            </div>
+            <p>Due date: {{ row.due_date.strftime("%Y-%m-%d") }}</p>
+            <p>
+              House probability:
+              {% if row.predicted_score is not none %}
+                {{ "%.1f"|format(row.predicted_score) }}
+              {% else %}
+                n/a
+              {% endif %}
+              {% if row.realized_move_pct is not none %}
+                | Realized move: {{ "%.3f"|format(row.realized_move_pct) }}%
+              {% else %}
+                | Realized move: pending
+              {% endif %}
+            </p>
+            {% if row.calibration_gap is not none %}
+              <p>
+                Calibration gap: {{ "%+.1f"|format(row.calibration_gap) }} pts
+                | Absolute error: {{ "%.1f"|format(row.absolute_error) }} pts
+              </p>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No assessment cycles exist yet, so there is nothing to backtest.</p>
+    {% endif %}
+  </section>
+
+  <section class="content-card cycle-section">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Calibration By Horizon</p>
+        <h3>How the house view behaves across forecast lengths</h3>
+      </div>
+    </div>
+
+    {% if horizon_stats %}
+      <div class="action-grid">
+        {% for item in horizon_stats %}
+          <article class="action-card">
+            <p class="action-priority">{{ item.horizon }}</p>
+            <h4>{{ item.resolved_count }} resolved / {{ item.pending_count }} pending</h4>
+            <p>
+              Avg house probability:
+              {% if item.avg_predicted_score is not none %}
+                {{ "%.1f"|format(item.avg_predicted_score) }}
+              {% else %}
+                --
+              {% endif %}
+            </p>
+            <p>
+              Trigger rate:
+              {% if item.trigger_rate is not none %}
+                {{ "%.1f"|format(item.trigger_rate) }}
+              {% else %}
+                --
+              {% endif %}
+            </p>
+            <p>
+              Mean abs error:
+              {% if item.mean_absolute_error is not none %}
+                {{ "%.2f"|format(item.mean_absolute_error) }}
+              {% else %}
+                --
+              {% endif %}
+            </p>
+            <span>
+              Brier:
+              {% if item.brier_score is not none %}
+                {{ "%.4f"|format(item.brier_score) }}
+              {% else %}
+                --
+              {% endif %}
+            </span>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-state">No horizon-level calibration data is available yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

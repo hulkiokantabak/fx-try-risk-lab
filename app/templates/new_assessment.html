@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="workflow-strip compact-strip">
+    <article class="workflow-card workflow-active">
+      <span class="workflow-step">1</span>
+      <strong>Create Cycle</strong>
+      <p>Set the horizon and tell the system what stress, event, or thesis you want to examine.</p>
+    </article>
+    <article class="workflow-card">
+      <span class="workflow-step">2</span>
+      <strong>Refresh Sources</strong>
+      <p>Run queued public-source refreshes for CBRT, ECB, IMF, news, and chatter.</p>
+    </article>
+    <article class="workflow-card">
+      <span class="workflow-step">3</span>
+      <strong>Debate + Export</strong>
+      <p>Rebuild Round 0, run the experts, and export the final PDF brief.</p>
+    </article>
+  </section>
+
+  <section class="content-card form-card">
+    <p class="eyebrow">Assessment Setup</p>
+    <h3>Open a new TRY risk cycle</h3>
+    <p class="hero-copy">
+      This creates the stored cycle shell, queues the first source refresh plan, assembles the
+      initial Round 0 evidence snapshot, and auto-activates on-call specialists when your prompt
+      materially mentions their domain.
+    </p>
+
+    <div class="callout-panel">
+      <strong>Default no-key Turkey setup</strong>
+      <p>
+        `domestic_rates` now defaults to the public CBRT `1 Week Repo` path, and `reserves`
+        defaults to the public CBRT reserve-liquidity workbook. EVDS is optional, not required.
+      </p>
+    </div>
+
+    <form class="assessment-form" action="/assessments" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+
+      <label class="field-block">
+        <span>Primary Horizon</span>
+        <select name="primary_horizon">
+          {% for horizon in horizons %}
+            <option value="{{ horizon }}">{{ horizon }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label class="field-block">
+        <span>Custom Context</span>
+        <textarea
+          name="custom_context"
+          rows="6"
+          maxlength="4000"
+          placeholder="Add the market question, event focus, or thesis to test. Direct mentions like Fed, reserves, sanctions, CBRT, or Middle East will trigger the matching specialist overlay."
+        ></textarea>
+      </label>
+
+      <div class="chip-cloud compact-cloud">
+        <div class="info-chip muted-chip">
+          <strong>Example</strong>
+          <p>Assess whether reserves stress and Fed repricing raise 1m depreciation risk.</p>
+        </div>
+        <div class="info-chip muted-chip">
+          <strong>Example</strong>
+          <p>Focus on CBRT credibility, local policy easing, and whether spot is underpricing stress.</p>
+        </div>
+        <div class="info-chip muted-chip">
+          <strong>Example</strong>
+          <p>Test a geopolitical shock thesis around sanctions or Middle East escalation.</p>
+        </div>
+      </div>
+
+      <div class="checkbox-row">
+        <label><input type="checkbox" name="refresh_official_data" checked /> Refresh official data sources</label>
+        <label><input type="checkbox" name="include_news_chatter" checked /> Include news and chatter scan</label>
+      </div>
+
+      <button type="submit" class="primary-button">Create assessment cycle</button>
+    </form>
+  </section>
+{% endblock %}
