@@ -10,5 +10,6 @@ __pycache__/
 data/
 .tmp/
 exports/
+tools/
 gh-auth-*.txt
 pytest-cache-files-*/
