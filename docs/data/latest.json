@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-29T08:34:07Z",
+  "generated_at": "2026-04-30T08:36:15Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -9,17 +9,17 @@
     "1y": 25
   },
   "curve": {
-    "1w": 42.9,
-    "1m": 37.7,
-    "3m": 32.0,
-    "6m": 27.9,
-    "1y": 23.8
+    "1w": 44.0,
+    "1m": 38.5,
+    "3m": 32.5,
+    "6m": 28.2,
+    "1y": 24.0
   },
-  "primary_score": 37.7,
+  "primary_score": 38.5,
   "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
   "briefing": {
     "stance": "Balanced but fragile",
-    "probability": 37.7,
+    "probability": 38.5,
     "primary_horizon": "1m",
     "confidence": "medium",
     "caveat_severity": "high",
@@ -31,7 +31,7 @@
     "primary_message": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "market_message": "USD/TRY is +1.35% over 20 sessions, with TRY vs peers at +5.84%.",
     "macro_message": "Global-rates feeds were incomplete in this snapshot, so the model used a neutral global backdrop while still tracking CBRT policy and reserve data.",
-    "news_message": "2 Google News items and 0 social-chatter items landed in the last 14 days."
+    "news_message": "1 Google News items and 0 social-chatter items landed in the last 14 days."
   },
   "why_read": [
     {
@@ -302,6 +302,11 @@
               "date": "2026-04-29",
               "value": 37.7,
               "stance": "Balanced but fragile"
+            },
+            {
+              "date": "2026-04-30",
+              "value": 38.5,
+              "stance": "Balanced but fragile"
             }
           ]
         }
@@ -341,15 +346,15 @@
       }
     ],
     "volatility": {
-      "VIX": 17.83,
-      "VXEEM": 29.07,
-      "VVIX": 91.03,
-      "OVX": 70.5,
-      "GVZ": 26.19
+      "VIX": 18.81,
+      "VXEEM": 28.43,
+      "VVIX": 96.02,
+      "OVX": 75.96,
+      "GVZ": 27.77
     },
     "scores": {
       "market_pressure": 47.3,
-      "volatility_pressure": 45.5
+      "volatility_pressure": 48.6
     }
   },
   "macro": {
@@ -373,7 +378,7 @@
     }
   },
   "news": {
-    "headline_count_14d": 2,
+    "headline_count_14d": 1,
     "chatter_count_14d": 0,
     "score": 0.0,
     "recent_headlines": [
@@ -381,11 +386,6 @@
         "title": "Turkish central bank vows to keep lira stable as key to disinflation - T\u00fcrkiye Today",
         "link": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPdmxGUm4xb1NVVEFkOUE1MGw1NTkxeTR3TnU4Wm1OWEQ2eXVvd0VTSGJDVFNYNmxMc3NqODBEZFhGVVZueHNjaUdvVndQZm81a2poSUpMQmUxdmFPVjRBblRQYmhoNFVydjZBSV8wRFpneklISEJWcUNlMy1yQ1FCcVd5aHRnYXZudmJEb3NYVHBqRnk1d1poSWF6ajdNVVZ6YmpyVUtDODlwWnlPenY5dnY5VFQ?oc=5",
         "published_at": "2026-04-28"
-      },
-      {
-        "title": "Turkish central bank holds rate at 37%, raises caution over inflationary risks - T\u00fcrkiye Today",
-        "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOVFJ6eVVzTlMybTl6N0lhVkVMM1QtcDJRU1JVTVB0a0tPMFBOTzR6VEZTUGh3dE9pcXFNUTdjdG1BRjFoUXBmSGZveEltSk8tY1NqWG43YU1LVEVKd3pPb3AzNkJoTnU1dVdRSmVITVFRR1BIeU1ZaU5NV0NQM1FzeGJ5bVFWdVJXRGhuNTVXRlJPbUxKbXRhS0g0VlVhMFhDSGZqYzMwOENMeVVHd1VGVHotcUNMV3Y4djZWUHlDdw?oc=5",
-        "published_at": "2026-04-22"
       }
     ]
   },
@@ -396,14 +396,14 @@
       "score": 50.0
     },
     {
+      "title": "Volatility",
+      "detail": "VIX is 18.81, VXEEM is 28.43.",
+      "score": 48.6
+    },
+    {
       "title": "Price action",
       "detail": "USD/TRY 20-session move is +1.35%.",
       "score": 47.3
-    },
-    {
-      "title": "Volatility",
-      "detail": "VIX is 17.83, VXEEM is 29.07.",
-      "score": 45.5
     },
     {
       "title": "Turkey policy and reserves",
@@ -414,25 +414,29 @@
   "watchlist": [
     "Watch whether USD/TRY keeps outrunning the peer basket; current 20-session gap is +5.84%.",
     "Watch reserve trend updates from CBRT; official reserve assets are +7.93% over the latest reserve window.",
-    "Watch global volatility proxies; VIX/VXEEM are 17.83/29.07.",
-    "Watch headline intensity; the current 14-day count is 2 news items."
+    "Watch global volatility proxies; VIX/VXEEM are 18.81/28.43.",
+    "Watch headline intensity; the current 14-day count is 1 news items."
   ],
   "warnings": [
+    "ECB EUR/TRY: Fetch failed for https://data-api.ecb.europa.eu/service/data/EXR/D.TRY.EUR.SP00.A?lastNObservations=40&format=csvdata: The read operation timed out; using cached last-good data",
+    "ECB EUR/USD: Fetch failed for https://data-api.ecb.europa.eu/service/data/EXR/D.USD.EUR.SP00.A?lastNObservations=40&format=csvdata: The read operation timed out; using cached last-good data",
+    "ECB EUR/ZAR: Fetch failed for https://data-api.ecb.europa.eu/service/data/EXR/D.ZAR.EUR.SP00.A?lastNObservations=40&format=csvdata: The read operation timed out; using cached last-good data",
+    "ECB EUR/PLN: Fetch failed for https://data-api.ecb.europa.eu/service/data/EXR/D.PLN.EUR.SP00.A?lastNObservations=40&format=csvdata: The read operation timed out; using cached last-good data",
     "FRED FEDFUNDS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS: The read operation timed out",
     "FRED DGS10: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10: The read operation timed out",
     "FRED DGS2: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2: The read operation timed out",
     "FRED DTWEXBGS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
   ],
   "history_entry": {
-    "as_of": "2026-04-29T08:34:07Z",
+    "as_of": "2026-04-30T08:36:15Z",
     "primary_horizon": "1m",
-    "primary_score": 37.7,
+    "primary_score": 38.5,
     "curve": {
-      "1w": 42.9,
-      "1m": 37.7,
-      "3m": 32.0,
-      "6m": 27.9,
-      "1y": 23.8
+      "1w": 44.0,
+      "1m": 38.5,
+      "3m": 32.5,
+      "6m": 28.2,
+      "1y": 24.0
     },
     "market_regime": "Market pressure contained",
     "macro_regime": "Domestic policy and reserves are supportive",
