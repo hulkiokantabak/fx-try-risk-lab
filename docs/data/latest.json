@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-01T08:24:58Z",
+  "generated_at": "2026-05-04T08:42:36Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -9,17 +9,17 @@
     "1y": 25
   },
   "curve": {
-    "1w": 42.6,
-    "1m": 37.6,
-    "3m": 32.0,
-    "6m": 27.9,
+    "1w": 42.5,
+    "1m": 37.4,
+    "3m": 31.9,
+    "6m": 27.8,
     "1y": 23.8
   },
-  "primary_score": 37.6,
+  "primary_score": 37.4,
   "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
   "briefing": {
     "stance": "Balanced but fragile",
-    "probability": 37.6,
+    "probability": 37.4,
     "primary_horizon": "1m",
     "confidence": "medium",
     "caveat_severity": "high",
@@ -312,6 +312,11 @@
               "date": "2026-05-01",
               "value": 37.6,
               "stance": "Balanced but fragile"
+            },
+            {
+              "date": "2026-05-04",
+              "value": 37.4,
+              "stance": "Balanced but fragile"
             }
           ]
         }
@@ -351,15 +356,15 @@
       }
     ],
     "volatility": {
-      "VIX": 16.89,
-      "VXEEM": 27.45,
-      "VVIX": 93.7,
-      "OVX": 75.08,
-      "GVZ": 26.64
+      "VIX": 16.99,
+      "VXEEM": 26.51,
+      "VVIX": 95.17,
+      "OVX": 75.4,
+      "GVZ": 26.43
     },
     "scores": {
       "market_pressure": 48.2,
-      "volatility_pressure": 43.8
+      "volatility_pressure": 43.3
     }
   },
   "macro": {
@@ -412,8 +417,8 @@
     },
     {
       "title": "Volatility",
-      "detail": "VIX is 16.89, VXEEM is 27.45.",
-      "score": 43.8
+      "detail": "VIX is 16.99, VXEEM is 26.51.",
+      "score": 43.3
     },
     {
       "title": "Turkey policy and reserves",
@@ -424,7 +429,7 @@
   "watchlist": [
     "Watch whether USD/TRY keeps outrunning the peer basket; current 20-session gap is +5.47%.",
     "Watch reserve trend updates from CBRT; official reserve assets are +5.82% over the latest reserve window.",
-    "Watch global volatility proxies; VIX/VXEEM are 16.89/27.45.",
+    "Watch global volatility proxies; VIX/VXEEM are 16.99/26.51.",
     "Watch headline intensity; the current 14-day count is 2 news items."
   ],
   "warnings": [
@@ -434,14 +439,14 @@
     "FRED DTWEXBGS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
   ],
   "history_entry": {
-    "as_of": "2026-05-01T08:24:58Z",
+    "as_of": "2026-05-04T08:42:36Z",
     "primary_horizon": "1m",
-    "primary_score": 37.6,
+    "primary_score": 37.4,
     "curve": {
-      "1w": 42.6,
-      "1m": 37.6,
-      "3m": 32.0,
-      "6m": 27.9,
+      "1w": 42.5,
+      "1m": 37.4,
+      "3m": 31.9,
+      "6m": 27.8,
       "1y": 23.8
     },
     "market_regime": "Broad EM stress with TRY vulnerability",
