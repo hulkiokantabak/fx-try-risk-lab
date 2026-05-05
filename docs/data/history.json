@@ -219,5 +219,22 @@
     "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "stance": "Balanced but fragile",
     "confidence": "medium"
+  },
+  {
+    "as_of": "2026-05-05T08:28:01Z",
+    "primary_horizon": "1m",
+    "primary_score": 37.2,
+    "curve": {
+      "1w": 42.2,
+      "1m": 37.2,
+      "3m": 31.6,
+      "6m": 27.6,
+      "1y": 23.6
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic policy and reserves are supportive",
+    "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
+    "stance": "Balanced but fragile",
+    "confidence": "medium"
   }
 ]
