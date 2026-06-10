@@ -646,15 +646,15 @@
     "confidence": "medium"
   },
   {
-    "as_of": "2026-06-10T10:32:49Z",
+    "as_of": "2026-06-10T16:25:38Z",
     "primary_horizon": "1m",
-    "primary_score": 48.0,
+    "primary_score": 47.5,
     "curve": {
-      "1w": 45.1,
-      "1m": 48.0,
-      "3m": 48.2,
-      "6m": 47.4,
-      "1y": 46.6
+      "1w": 44.4,
+      "1m": 47.5,
+      "3m": 47.9,
+      "6m": 47.1,
+      "1y": 46.4
     },
     "market_regime": "Market pressure contained",
     "macro_regime": "Domestic support is mixed",

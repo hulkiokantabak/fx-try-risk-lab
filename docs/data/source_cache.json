@@ -1,10 +1,6 @@
 {
   "ecb_eurtry": [
     {
-      "observed_at": "2026-04-14T00:00:00",
-      "value": 52.7442
-    },
-    {
       "observed_at": "2026-04-15T00:00:00",
       "value": 52.6696
     },
@@ -159,13 +155,13 @@
     {
       "observed_at": "2026-06-09T00:00:00",
       "value": 53.372
+    },
+    {
+      "observed_at": "2026-06-10T00:00:00",
+      "value": 53.2384
     }
   ],
   "ecb_eurusd": [
-    {
-      "observed_at": "2026-04-14T00:00:00",
-      "value": 1.1793
-    },
     {
       "observed_at": "2026-04-15T00:00:00",
       "value": 1.178
@@ -321,13 +317,13 @@
     {
       "observed_at": "2026-06-09T00:00:00",
       "value": 1.1573
+    },
+    {
+      "observed_at": "2026-06-10T00:00:00",
+      "value": 1.1539
     }
   ],
   "ecb_eurzar": [
-    {
-      "observed_at": "2026-04-14T00:00:00",
-      "value": 19.2845
-    },
     {
       "observed_at": "2026-04-15T00:00:00",
       "value": 19.3368
@@ -483,13 +479,13 @@
     {
       "observed_at": "2026-06-09T00:00:00",
       "value": 19.0416
+    },
+    {
+      "observed_at": "2026-06-10T00:00:00",
+      "value": 19.1568
     }
   ],
   "ecb_eurbrl": [
-    {
-      "observed_at": "2026-04-14T00:00:00",
-      "value": 5.8747
-    },
     {
       "observed_at": "2026-04-15T00:00:00",
       "value": 5.8878
@@ -645,13 +641,13 @@
     {
       "observed_at": "2026-06-09T00:00:00",
       "value": 5.9751
+    },
+    {
+      "observed_at": "2026-06-10T00:00:00",
+      "value": 5.9896
     }
   ],
   "ecb_eurhuf": [
-    {
-      "observed_at": "2026-04-14T00:00:00",
-      "value": 363.85
-    },
     {
       "observed_at": "2026-04-15T00:00:00",
       "value": 364.88
@@ -807,13 +803,13 @@
     {
       "observed_at": "2026-06-09T00:00:00",
       "value": 355.33
+    },
+    {
+      "observed_at": "2026-06-10T00:00:00",
+      "value": 356.58
     }
   ],
   "ecb_eurpln": [
-    {
-      "observed_at": "2026-04-14T00:00:00",
-      "value": 4.2425
-    },
     {
       "observed_at": "2026-04-15T00:00:00",
       "value": 4.2413
@@ -969,6 +965,10 @@
     {
       "observed_at": "2026-06-09T00:00:00",
       "value": 4.2373
+    },
+    {
+      "observed_at": "2026-06-10T00:00:00",
+      "value": 4.249
     }
   ],
   "cboe_vix": [
@@ -3183,14 +3183,14 @@
       "published_at": "2026-06-09T14:22:02"
     },
     {
-      "title": "Turkish Inflation Hastens for a Second Month on War Pressures - Bloomberg.com",
-      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSHZTWm5fTnA2c2tKNmxVMHN4N013Y0dKTGRLTkNKVUJJRC11OTZ0aFJOZmRsc2swMEI5UW1IbktheFVNcEJJWTVPb3ppeV92NGRteXZyQ1ctbXE5Q1ljR2I5aUdFM0NUM3I5aC1iQWVVR1l3MUVxSmV6RjNXYXhzcklTQU9EZjlWTTNsV1RSNno2TFlKcWVXX01iMVQxWjl0X3lsRDFCUDVVaVBLQXAyS1h3?oc=5",
-      "published_at": "2026-06-05T08:32:17"
-    },
-    {
       "title": "Turkey scraps inflation target as economic strains deepen - Financial Times",
       "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOUUlMN1A3NDItMGZrUEF5bkp3UWNHUFI3UkFqbjAwMTVJeXNsS1V1aXpiYkM0Qm9hcm1GbUIzOTRtSkUyaG16UEFCV2dna19UcDlkSm55bVJ2aEx4SG1mNm5IYUtSbm9vTHc4VjZKdWlYekFvUFJXYUNUcklLQVlrcTNqX3I?oc=5",
       "published_at": "2026-05-14T07:00:00"
+    },
+    {
+      "title": "Turkish Inflation Hastens for a Second Month on War Pressures - Bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSHZTWm5fTnA2c2tKNmxVMHN4N013Y0dKTGRLTkNKVUJJRC11OTZ0aFJOZmRsc2swMEI5UW1IbktheFVNcEJJWTVPb3ppeV92NGRteXZyQ1ctbXE5Q1ljR2I5aUdFM0NUM3I5aC1iQWVVR1l3MUVxSmV6RjNXYXhzcklTQU9EZjlWTTNsV1RSNno2TFlKcWVXX01iMVQxWjl0X3lsRDFCUDVVaVBLQXAyS1h3?oc=5",
+      "published_at": "2026-06-05T08:32:17"
     },
     {
       "title": "Commerzbank Warns: Sticky Inflation Keeps Turkish Lira Under Pressure - CryptoRank",
@@ -3208,14 +3208,14 @@
       "published_at": "2026-06-05T06:22:45"
     },
     {
+      "title": "Turkish central bank cuts rates again as inflation rockets - Digital Journal",
+      "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPRGozSDB0NE5JREg2UWFfWEVBeWVSQWVYNlNPMEtlN1JtLXg1a3FIWUtaT0RFS2hlYnJYWnZ3Ym5wSEwwclJYTnBqX3dmQ0lmeEptLVJXM3YtMjYwRlhwdDJfWkM1dXJCWlBIczdBYnZYaC1RV0JzNlVQdE11WFNkVmxIdjVadFF4Ni1PWXBMNnNqQU4yMVl0YzJGZVBiMWM?oc=5",
+      "published_at": "2026-06-04T00:03:47"
+    },
+    {
       "title": "XRP News: Ripple Targets Turkey Inflation Market: Can RLUSD Beat USDT and USDC? - Yahoo Finance",
       "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPWDJwcDV3M1ZOQ0pRZ2hoLUxpTGxqbnZBN1R2Zm93ZlhTM1ZlQ1R3aU1uM3RoZk96OEE0Mi1TLXMtZ3AzVXZhbl93TEZtRXlidnRBTTNPZDBIVW5ZLW9Ud1lJY1BWajdwYkxVV1V6RHFVWkRYd0s1NkNTMkhsRzhSbEc0RFFQRERrVXR0b3RxWjQ3LUYxdHNOVExzRQ?oc=5",
       "published_at": "2026-06-02T10:25:00"
-    },
-    {
-      "title": "Turkey\u2019s annual inflation edged up to 32.6 percent in May - Turkish Minute",
-      "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNRWlLVi12bHIydVIzdVc0dmRnQlctUDVzbzJ5blRXMUdMMWF2bGs3NlJhR19aX0Vqck9uUTRWSTVHcjFscGVEaERkSkZmSHVSLUg0Qk5PUy1VaGNiM1Q3MVlYa1ZNOFhuVDRtRFEzVDJ3QlgzYTVsUlRuN2dSQnRsRnJFTHoyaFkzUEFvRWFGRU4zQUJlMThETkFpUUhkVDjSAaQBQVVfeXFMT1FCRWZ2b015MjdLLUlpalg0OXV6dk9NM3hPNk8zUnJwZWREQ1R3cW1DYUI3YjdXdzlicE1fcXJZVW5lM2MycHdyd2lpYXluSVVoblFyZ3Z6emY5dEhOU3VRYXgySHdyTVlyYzFwLUJOeEJWa0FMRUR6Q3M4VkpaaEtBdnpQdTFqeWNvUnpQdDFfWm1wTnhyQzlLRzdkOFRIdWtfU0Q?oc=5",
-      "published_at": "2026-06-05T08:54:53"
     },
     {
       "title": "Turkish central bank ups year-end inflation target, warns of war risks | Daily Sabah - Daily Sabah",
@@ -3223,14 +3223,14 @@
       "published_at": "2026-05-14T07:00:00"
     },
     {
-      "title": "Turkey's inflation surges to 54.4 percent, highest since 2002: official data - Ahram Online",
-      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOODk2UGRtUFBlYnFWeHdwZ3M4UThUZzFsdFB1SjhfTElkZTU2M25MOTJVVHB5OXRFQ21ONjhoN2duMkhwcmZiRGJyeUctS2tnMFlpUlNqTEcyeDlkajBVUXphcFpNbzRNMGk2TDV1cFRxcktCUWZvTjROSmU5TXdzdFE3NFdFdw?oc=5",
-      "published_at": "2026-06-06T09:08:06"
+      "title": "Turkey keeps interest rates unchanged as inflation soars - Ahram Online",
+      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNakZSV0xoTmhSVXdwZEdzUkNLaG5ZRXZtOEJiZ25IQ2NJMjFfY2R6eXdoOW9Za09pZWlhX3VaLWpkU1V3bDE4REVVLWVuTmJLYnRvR01CeWMyNmlOejczU3cycTFld0pPcUN2RW42VW0tZERsbXlKS3VhLXZGUjVaR0VkRm5Zdw?oc=5",
+      "published_at": "2026-06-06T08:52:34"
     },
     {
-      "title": "Turkish central bank cuts rates again as inflation rockets - Digital Journal",
-      "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPRGozSDB0NE5JREg2UWFfWEVBeWVSQWVYNlNPMEtlN1JtLXg1a3FIWUtaT0RFS2hlYnJYWnZ3Ym5wSEwwclJYTnBqX3dmQ0lmeEptLVJXM3YtMjYwRlhwdDJfWkM1dXJCWlBIczdBYnZYaC1RV0JzNlVQdE11WFNkVmxIdjVadFF4Ni1PWXBMNnNqQU4yMVl0YzJGZVBiMWM?oc=5",
-      "published_at": "2026-06-04T00:03:47"
+      "title": "Turkey\u2019s annual inflation edges up to 32.6 percent in May - Turkish Minute",
+      "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNLUhIRHFnV1NRNDBMY2liRldiLVhabGdCT09rdE96eVRfU0JTdWY3NnJpRl9adFZOMFZ2ajF3b19uRjIyT3Q4WXR4X002ZTVvMXB2TmhmR0c4RldvMl83anhNU2hmcWVfbXFXc0xnZ0piMXhpWEFsQTVIenkyLWEwUjU5UDNBWWpfQU1NUEtfRkdXVjRBLWR0dVRCbFBkUzjSAaQBQVVfeXFMUDNldnhXaVN5ckE4ZnhibHhEQXQ4bG4yV2MwSXU2UF9qQm5hTFhPQU9KTVFjWlRHZVFkUWR1Nk8yVVozSDNuTzQ3UVJFUk0xeXR4ZWNpR2NicHlmX0laMUpSSGNiYzBpSEtmX1p4WjhCcXBUOWtXZjRWendyM1Zmb3ZLZXM1ME5yanBlR0VrZFZmVU9wU3NHX1ZvblFKX0x4NTJqVGI?oc=5",
+      "published_at": "2026-06-05T08:54:53"
     },
     {
       "title": "USD/TRY: Barclays sees Turkish lira depreciation continuing as inflation tool - Investing.com",
@@ -3253,9 +3253,9 @@
       "published_at": "2026-05-15T07:00:00"
     },
     {
-      "title": "Turkey keeps interest rates unchanged as inflation soars - Ahram Online",
-      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNakZSV0xoTmhSVXdwZEdzUkNLaG5ZRXZtOEJiZ25IQ2NJMjFfY2R6eXdoOW9Za09pZWlhX3VaLWpkU1V3bDE4REVVLWVuTmJLYnRvR01CeWMyNmlOejczU3cycTFld0pPcUN2RW42VW0tZERsbXlKS3VhLXZGUjVaR0VkRm5Zdw?oc=5",
-      "published_at": "2026-06-06T08:52:34"
+      "title": "Turkey's inflation surges to 54.4 percent, highest since 2002: official data - Ahram Online",
+      "link": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOODk2UGRtUFBlYnFWeHdwZ3M4UThUZzFsdFB1SjhfTElkZTU2M25MOTJVVHB5OXRFQ21ONjhoN2duMkhwcmZiRGJyeUctS2tnMFlpUlNqTEcyeDlkajBVUXphcFpNbzRNMGk2TDV1cFRxcktCUWZvTjROSmU5TXdzdFE3NFdFdw?oc=5",
+      "published_at": "2026-06-06T09:08:06"
     },
     {
       "title": "Lira Swaps Signal Turkey Will Hold Off Hiking Rates This Meeting - Bloomberg.com",
@@ -3278,14 +3278,14 @@
       "published_at": "2026-05-04T07:00:00"
     },
     {
-      "title": "Turkey inflation edges up to 32.6% in May - RTE.ie",
-      "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQbWk5U2VvcXpmdjZqQk1aYWhaeGdTZzNKMWVnbUEydEhMOHVQbTVJandpbEk0bkFkT0ZvZDlWVERxcEo3Qk9IYWgtbzROb3A1cFlwcTZZOTVTNDM2MXA4MDk5UXNSRTlaaUk3X29NYVN0SHkxdDBVT01IeVpSbUotVGVoRGFpOWdoZ3c?oc=5",
-      "published_at": "2026-06-05T07:51:35"
-    },
-    {
       "title": "S&P sharply hikes Turkish inflation view over energy fallout from war - Reuters",
       "link": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOT2tHamV1MzlqVG9uWjVKY3ZlTkE2NWZGNGFMMjlpLUxfTF82X0toSElxMGtPVFZ1dE5VUVNNYVVwcDZieWFMYWRuUjZMVEJtTUl0dUJVaVloQlNQTWIzZk8zZTJtWmFyQUd1UU1yNktWeUFoSkZueW54SS1ObEpLRVoxOU9hNjROSzRRa3h4bXJDeHpGSlgyYVphclc0Y2FXdFJmczczZUNQc0VOY0xEZ291RnRsY0df?oc=5",
       "published_at": "2026-03-26T07:00:00"
+    },
+    {
+      "title": "Turkey weighs using gold reserves to defend lira amid Iran war turmoil: report - Turkish Minute",
+      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOOGJNdzI2Y20yc0gxWEthZUdZTWxIZ29yQlA2aWg0aDloMkp5T3RaOThZc0d0V0NpTlFscS1mN2puS3VrWHZTOG9USWlnZEpPOWNzd0NDTEZUcG1WWHdIZFVEWkJoLUpyOXpjaEh5dHo2VnRIV3NLR0YzdUd6R3ZsMHN0b2h4cWZhUTNPTTV2M29YSVJDT1JjZXJFTVVvMXpXSlhDdkZvYWp5OV9oVW1xM3hTdGRad9IBuwFBVV95cUxQT0I5TFY5S2JkR3VydHVQUERDSXpOQk5TWUQzUTJNbEhwQW13TXlIUS1lX0dhRkV6WFJ6UGNVUXhEMHBKNHNtZHF0cEF1YU9OVkprVDl2UGMzNFQtMTdXMU9PZkt3Y2VmR19qYzJHOGNuSUU5clpOSl94bE91V0dDb1RHaDYtaFJQMU1FMEtHY3pFaElJdXVxbE9STUlmcXVqRlFlaURKSVAwWkxzSXQ4V1FRTHRlNHNIelVR?oc=5",
+      "published_at": "2026-03-25T07:00:00"
     },
     {
       "title": "Turkish central bank remains constructive on inflation outlook - ING THINK economic and financial analysis | ING THINK",
@@ -3293,9 +3293,9 @@
       "published_at": "2026-02-12T08:00:00"
     },
     {
-      "title": "Turkey weighs using gold reserves to defend lira amid Iran war turmoil: report - Turkish Minute",
-      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOOGJNdzI2Y20yc0gxWEthZUdZTWxIZ29yQlA2aWg0aDloMkp5T3RaOThZc0d0V0NpTlFscS1mN2puS3VrWHZTOG9USWlnZEpPOWNzd0NDTEZUcG1WWHdIZFVEWkJoLUpyOXpjaEh5dHo2VnRIV3NLR0YzdUd6R3ZsMHN0b2h4cWZhUTNPTTV2M29YSVJDT1JjZXJFTVVvMXpXSlhDdkZvYWp5OV9oVW1xM3hTdGRad9IBuwFBVV95cUxQT0I5TFY5S2JkR3VydHVQUERDSXpOQk5TWUQzUTJNbEhwQW13TXlIUS1lX0dhRkV6WFJ6UGNVUXhEMHBKNHNtZHF0cEF1YU9OVkprVDl2UGMzNFQtMTdXMU9PZkt3Y2VmR19qYzJHOGNuSUU5clpOSl94bE91V0dDb1RHaDYtaFJQMU1FMEtHY3pFaElJdXVxbE9STUlmcXVqRlFlaURKSVAwWkxzSXQ4V1FRTHRlNHNIelVR?oc=5",
-      "published_at": "2026-03-25T07:00:00"
+      "title": "Turkey inflation edges up to 32.6% in May - RTE.ie",
+      "link": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQbWk5U2VvcXpmdjZqQk1aYWhaeGdTZzNKMWVnbUEydEhMOHVQbTVJandpbEk0bkFkT0ZvZDlWVERxcEo3Qk9IYWgtbzROb3A1cFlwcTZZOTVTNDM2MXA4MDk5UXNSRTlaaUk3X29NYVN0SHkxdDBVT01IeVpSbUotVGVoRGFpOWdoZ3c?oc=5",
+      "published_at": "2026-06-05T07:51:35"
     }
   ],
   "reddit_rss": []
