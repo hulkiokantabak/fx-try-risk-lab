@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-10T16:25:38Z",
+  "generated_at": "2026-06-11T10:58:00Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -9,17 +9,17 @@
     "1y": 25
   },
   "curve": {
-    "1w": 44.4,
-    "1m": 47.5,
-    "3m": 47.9,
-    "6m": 47.1,
-    "1y": 46.4
+    "1w": 47.5,
+    "1m": 49.6,
+    "3m": 49.1,
+    "6m": 47.8,
+    "1y": 46.5
   },
-  "primary_score": 47.5,
+  "primary_score": 49.6,
   "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
   "briefing": {
     "stance": "Balanced but fragile",
-    "probability": 47.5,
+    "probability": 49.6,
     "primary_horizon": "1m",
     "confidence": "medium",
     "caveat_severity": "high",
@@ -31,7 +31,7 @@
     "primary_message": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "market_message": "USD/TRY is +1.58% over 20 sessions, with TRY vs peers at -0.71%.",
     "macro_message": "Global-rates feeds were incomplete in this snapshot, so the model used a neutral global backdrop while still tracking CBRT policy and reserve data.",
-    "news_message": "13 Google News items and 0 social-chatter items landed in the last 14 days."
+    "news_message": "12 Google News items and 0 social-chatter items landed in the last 14 days."
   },
   "why_read": [
     {
@@ -64,7 +64,7 @@
     {
       "title": "Headline intensity",
       "detail": "If policy, inflation, or sanctions headlines start clustering more aggressively, the read should turn less patient.",
-      "now": "Now 13 news items in 14 days"
+      "now": "Now 12 news items in 14 days"
     }
   ],
   "charts": {
@@ -254,11 +254,6 @@
           "label": "Primary score",
           "points": [
             {
-              "date": "2026-04-29",
-              "value": 37.7,
-              "stance": "Balanced but fragile"
-            },
-            {
               "date": "2026-04-30",
               "value": 38.5,
               "stance": "Balanced but fragile"
@@ -402,6 +397,11 @@
               "date": "2026-06-10",
               "value": 47.5,
               "stance": "Balanced but fragile"
+            },
+            {
+              "date": "2026-06-11",
+              "value": 49.6,
+              "stance": "Balanced but fragile"
             }
           ]
         }
@@ -441,15 +441,15 @@
       }
     ],
     "volatility": {
-      "VIX": 19.87,
-      "VXEEM": 40.51,
-      "VVIX": 95.81,
-      "OVX": 57.63,
-      "GVZ": 28.04
+      "VIX": 22.22,
+      "VXEEM": 44.67,
+      "VVIX": 108.16,
+      "OVX": 60.28,
+      "GVZ": 32.18
     },
     "scores": {
       "market_pressure": 28.4,
-      "volatility_pressure": 62.2
+      "volatility_pressure": 71.2
     }
   },
   "macro": {
@@ -473,9 +473,9 @@
     }
   },
   "news": {
-    "headline_count_14d": 13,
+    "headline_count_14d": 12,
     "chatter_count_14d": 0,
-    "score": 11.4,
+    "score": 10.0,
     "recent_headlines": [
       {
         "title": "Turkish inflation just above expectations at 1.7% monthly, 32.6% annually - Reuters",
@@ -488,7 +488,7 @@
         "published_at": "2026-06-09"
       },
       {
-        "title": "Turkish Inflation Hastens for a Second Month on War Pressures - Bloomberg.com",
+        "title": "Turkish Inflation Hastens for a Second Month on War Pressures - Bloomberg",
         "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSHZTWm5fTnA2c2tKNmxVMHN4N013Y0dKTGRLTkNKVUJJRC11OTZ0aFJOZmRsc2swMEI5UW1IbktheFVNcEJJWTVPb3ppeV92NGRteXZyQ1ctbXE5Q1ljR2I5aUdFM0NUM3I5aC1iQWVVR1l3MUVxSmV6RjNXYXhzcklTQU9EZjlWTTNsV1RSNno2TFlKcWVXX01iMVQxWjl0X3lsRDFCUDVVaVBLQXAyS1h3?oc=5",
         "published_at": "2026-06-05"
       },
@@ -511,14 +511,14 @@
   },
   "reasons": [
     {
+      "title": "Volatility",
+      "detail": "VIX is 22.22, VXEEM is 44.67.",
+      "score": 71.2
+    },
+    {
       "title": "Turkey policy and reserves",
       "detail": "Policy rate is 37.00%, official reserves are -7.17% over the latest reserve window.",
       "score": 64.1
-    },
-    {
-      "title": "Volatility",
-      "detail": "VIX is 19.87, VXEEM is 40.51.",
-      "score": 62.2
     },
     {
       "title": "Global macro",
@@ -534,8 +534,8 @@
   "watchlist": [
     "Watch whether USD/TRY keeps outrunning the peer basket; current 20-session gap is -0.71%.",
     "Watch reserve trend updates from CBRT; official reserve assets are -7.17% over the latest reserve window.",
-    "Watch global volatility proxies; VIX/VXEEM are 19.87/40.51.",
-    "Watch headline intensity; the current 14-day count is 13 news items."
+    "Watch global volatility proxies; VIX/VXEEM are 22.22/44.67.",
+    "Watch headline intensity; the current 14-day count is 12 news items."
   ],
   "warnings": [
     "FRED FEDFUNDS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS: The read operation timed out",
@@ -544,15 +544,15 @@
     "FRED DTWEXBGS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
   ],
   "history_entry": {
-    "as_of": "2026-06-10T16:25:38Z",
+    "as_of": "2026-06-11T10:58:00Z",
     "primary_horizon": "1m",
-    "primary_score": 47.5,
+    "primary_score": 49.6,
     "curve": {
-      "1w": 44.4,
-      "1m": 47.5,
-      "3m": 47.9,
-      "6m": 47.1,
-      "1y": 46.4
+      "1w": 47.5,
+      "1m": 49.6,
+      "3m": 49.1,
+      "6m": 47.8,
+      "1y": 46.5
     },
     "market_regime": "Market pressure contained",
     "macro_regime": "Domestic support is mixed",
