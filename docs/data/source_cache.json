@@ -1,10 +1,6 @@
 {
   "ecb_eurtry": [
     {
-      "observed_at": "2026-04-21T00:00:00",
-      "value": 52.8274
-    },
-    {
       "observed_at": "2026-04-22T00:00:00",
       "value": 52.7102
     },
@@ -159,13 +155,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 53.6797
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 53.6863
     }
   ],
   "ecb_eurusd": [
-    {
-      "observed_at": "2026-04-21T00:00:00",
-      "value": 1.1767
-    },
     {
       "observed_at": "2026-04-22T00:00:00",
       "value": 1.1733
@@ -321,13 +317,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 1.1594
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 1.1591
     }
   ],
   "ecb_eurzar": [
-    {
-      "observed_at": "2026-04-21T00:00:00",
-      "value": 19.262
-    },
     {
       "observed_at": "2026-04-22T00:00:00",
       "value": 19.323
@@ -483,13 +479,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 18.7702
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 18.8026
     }
   ],
   "ecb_eurbrl": [
-    {
-      "observed_at": "2026-04-21T00:00:00",
-      "value": 5.841
-    },
     {
       "observed_at": "2026-04-22T00:00:00",
       "value": 5.8333
@@ -645,13 +641,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 5.8669
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 5.8929
     }
   ],
   "ecb_eurhuf": [
-    {
-      "observed_at": "2026-04-21T00:00:00",
-      "value": 362.15
-    },
     {
       "observed_at": "2026-04-22T00:00:00",
       "value": 365.54
@@ -807,13 +803,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 349.53
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 349.68
     }
   ],
   "ecb_eurpln": [
-    {
-      "observed_at": "2026-04-21T00:00:00",
-      "value": 4.2295
-    },
     {
       "observed_at": "2026-04-22T00:00:00",
       "value": 4.2468
@@ -969,13 +965,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 4.2429
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 4.241
     }
   ],
   "cboe_vix": [
-    {
-      "observed_at": "2026-02-24T00:00:00",
-      "value": 19.55
-    },
     {
       "observed_at": "2026-02-25T00:00:00",
       "value": 17.93
@@ -1291,13 +1287,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 16.41
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 18.44
     }
   ],
   "cboe_vix9d": [
-    {
-      "observed_at": "2026-02-23T00:00:00",
-      "value": 21.11
-    },
     {
       "observed_at": "2026-02-24T00:00:00",
       "value": 18.6
@@ -1613,13 +1609,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 15.77
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 18.63
     }
   ],
   "cboe_vvix": [
-    {
-      "observed_at": "2026-02-23T00:00:00",
-      "value": 115.66
-    },
     {
       "observed_at": "2026-02-24T00:00:00",
       "value": 108.61
@@ -1935,13 +1931,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 87.69
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 94.53
     }
   ],
   "cboe_vxeem": [
-    {
-      "observed_at": "2026-02-23T00:00:00",
-      "value": 25.12
-    },
     {
       "observed_at": "2026-02-24T00:00:00",
       "value": 24.0
@@ -2257,13 +2253,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 39.84
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 37.41
     }
   ],
   "cboe_ovx": [
-    {
-      "observed_at": "2026-02-23T00:00:00",
-      "value": 59.05
-    },
     {
       "observed_at": "2026-02-24T00:00:00",
       "value": 58.82
@@ -2579,13 +2575,13 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 53.1
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 53.65
     }
   ],
   "cboe_gvz": [
-    {
-      "observed_at": "2026-02-23T00:00:00",
-      "value": 38.46
-    },
     {
       "observed_at": "2026-02-24T00:00:00",
       "value": 37.55
@@ -2901,6 +2897,10 @@
     {
       "observed_at": "2026-06-16T00:00:00",
       "value": 25.18
+    },
+    {
+      "observed_at": "2026-06-17T00:00:00",
+      "value": 28.45
     }
   ],
   "cbrt_policy_rate": [
@@ -3159,14 +3159,24 @@
       "published_at": "2026-06-16T09:31:54"
     },
     {
-      "title": "Inflation likely to exceed Turkey\u2019s 2026 target, central bank should explain why, TEPAV says - Turkish Minute",
-      "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQMUxDOGpsVDB0MnAxMnh5N3hFam1pTkhubDNZYmh4ZnF0YW42WTMtZlZIZE5CMnJyZkwxLWFFNENWdXJqUTh2ZHVzdzZJdWgwZWhaSDEzeGZIcWFuX3RUVE5VUDl5a1ZTTFpBVTEzMUNuU0MxMHJuSXNrbVFGQ3FNZHdFZnBBUVZZSUtMVVp3NUFWOTV1U0JBQXd1T3prd25pSldKMEZvWTRlamVQbGhFUW9uNEN4dllhOHFiUm53OTRpUlZCbUZiS0plWdIB0AFBVV95cUxNc1RGTmZqMEkyUmMwSFNhLUhFMmwyVTZtTDQ3eDk3YnFiWkQwTGw4aWs4MlVUTWZlODlwdjRhQjBVeEV6UHZXTkdFR25Qb2l3aWgxaE52c01PM3RNRUxfaDVfZk4wbWtSRUJreDlvM2Y4QTVlTnkzTDRtQmJ3UGxWaE1HVWIxbGFYbTQ4eTIxamp5UEVpM0FlMGM5eXlGV0ZfMDlKRS1lY1pVTjBBMVljQ0pJZ0dZQWFQNjVjYVRiV2RmX1pDM3prU2h0QnliTFhS?oc=5",
-      "published_at": "2026-06-11T13:00:07"
+      "title": "Iran war added at least 5 points to Turkey\u2019s inflation outlook, finance minister says - Turkish Minute",
+      "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOM0hXWmc2dUx0NUxEYkJpLXVZNTRMaUQ0UzBHRlRfcmpMQklYNlRnaG92R0VfOG4yMkpqeFNnZFp2a3ppeENoblAyRm1DOG45N3gxTXUyVDYyb2h0Mk56ZkVOQ1FIQkwyODFmRW9Nd2Z6REFFRkpvckpjQS1NcWVDN3VwRjhzRVdBWHRyWjVIU2prN2wtYXplczJFSGg5M0FVb2p3ZHJzUWkwbjdrZFE5RDF0M2ptUFhvZDJEamFR0gHDAUFVX3lxTE5DOXU1QmdLcWhfQkoyT2VvNEtkZElEbkhKNnlJX0N4RE1nZTFLTjNXS2NIWHFGX0w2d3FPdThORVdJenY5ZlNreFFwWWc2WkNpajVWeTktQjgyR0VFOF9GWl9qRGxKbWNVX3BWb2ZTb0JmZEUxTFl6c01qTWhNdjhaWFZmT2xSbWZKNGxycG5FWHFyQ2hkaGlxOThIYTE4QUctVGRtTUNsbV95cWs4dFNIU2pEamtsS1FIakVueTFaNHZTVQ?oc=5",
+      "published_at": "2026-06-09T14:22:02"
     },
     {
-      "title": "Turkish central bank holds, keeping an eye on inflationary risks - ING Think",
-      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOTWZESnpyUnF5NWYxZVBTQ0l0WGpraklYSmluODZSV010UklKOFlMaDRteE1ZYzFKMFBRUDBYa2RpdlZyVzAwS05ibGpseDVYVnBGWk91WkM1MUk2M3lYUW1oT0M1VHlMWlg1ZHhYS2VQWFlraVE4ZVFDUVlTRmV6cGZuVzFyTDdZUmhDczZCaVRZNllDaS0wQVd0Umx5RnY1Mm81VkRvRHBXZmc?oc=5",
-      "published_at": "2026-06-11T12:04:58"
+      "title": "Turkish Inflation Hastens for a Second Month on War Pressures - Bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSHZTWm5fTnA2c2tKNmxVMHN4N013Y0dKTGRLTkNKVUJJRC11OTZ0aFJOZmRsc2swMEI5UW1IbktheFVNcEJJWTVPb3ppeV92NGRteXZyQ1ctbXE5Q1ljR2I5aUdFM0NUM3I5aC1iQWVVR1l3MUVxSmV6RjNXYXhzcklTQU9EZjlWTTNsV1RSNno2TFlKcWVXX01iMVQxWjl0X3lsRDFCUDVVaVBLQXAyS1h3?oc=5",
+      "published_at": "2026-06-05T07:00:00"
+    },
+    {
+      "title": "Inflation adds pressure to Turkey\u2019s price-control aims - Arabian Gulf Business Insight | AGBI",
+      "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQb1dldzNCV0J2Mkx4LUJsckJTWk56czhGRjFHZmxEZHVCYVlCbEVkUEthelo4WDNuMlNJS2xPMHozWHNEVk9qalVJeUZxLU1SdXFLWkdMaUNKd2dlRG9saGJqX2NLdVpfOWpnOEVGc2dKLXp0cjk0aWhUcDRFVmliZnA1T1c1TGdPa0p3UHQyRGJlWmZ6X0E?oc=5",
+      "published_at": "2026-06-05T07:00:00"
+    },
+    {
+      "title": "Turkish inflation beats consensus again in May - ING Think",
+      "link": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOV0txdktXM3I2R196OE5hdHhzbnRpSDhGRlIwWWxWcFlTNGNiZkZxSXdWYS1fNngzS3lxV3VSbXl5YjZBRWViZTc5bXpiS3hqY2NXLWhFdnl3OVdSX2hSTXRjZGVIRXJRbkx0bmlfZDY0NlZUU2F0SDlIVTBrVnZjdQ?oc=5",
+      "published_at": "2026-06-05T10:11:40"
     },
     {
       "title": "USD/TRY: Barclays sees Turkish lira depreciation continuing as inflation tool - Investing.com",
@@ -3174,14 +3184,14 @@
       "published_at": "2026-03-24T07:00:00"
     },
     {
-      "title": "Iran war added at least 5 points to Turkey\u2019s inflation outlook, finance minister says - Turkish Minute",
-      "link": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOM0hXWmc2dUx0NUxEYkJpLXVZNTRMaUQ0UzBHRlRfcmpMQklYNlRnaG92R0VfOG4yMkpqeFNnZFp2a3ppeENoblAyRm1DOG45N3gxTXUyVDYyb2h0Mk56ZkVOQ1FIQkwyODFmRW9Nd2Z6REFFRkpvckpjQS1NcWVDN3VwRjhzRVdBWHRyWjVIU2prN2wtYXplczJFSGg5M0FVb2p3ZHJzUWkwbjdrZFE5RDF0M2ptUFhvZDJEamFR0gHDAUFVX3lxTE5DOXU1QmdLcWhfQkoyT2VvNEtkZElEbkhKNnlJX0N4RE1nZTFLTjNXS2NIWHFGX0w2d3FPdThORVdJenY5ZlNreFFwWWc2WkNpajVWeTktQjgyR0VFOF9GWl9qRGxKbWNVX3BWb2ZTb0JmZEUxTFl6c01qTWhNdjhaWFZmT2xSbWZKNGxycG5FWHFyQ2hkaGlxOThIYTE4QUctVGRtTUNsbV95cWs4dFNIU2pEamtsS1FIakVueTFaNHZTVQ?oc=5",
-      "published_at": "2026-06-09T14:22:02"
+      "title": "Turkey\u2019s Economy Was Winning. Then The Iran War Came - Forbes",
+      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxObUVCaTVGN3hNRHRVWEdtRlQwN3ppQkFIQ1hNZFREcm9XNHZ2b2pwME5jb2dzTHdZUk5NcjhrZ1ZPcHNKV1hLalNZTGFJT0lHNjhNSHJSZUZRN3poeng0cVU2NTVCYVFIWGhqN2cxaHNyYTJkbmxCUmZwbzRHLTFDRFYybmprOWNndzc2YklZQ2wyOWp3VEpIeE5NcmRPUkVhenA0Y3FR?oc=5",
+      "published_at": "2026-04-04T07:00:00"
     },
     {
-      "title": "Turkey keeps tight grip on monetary policy as inflation persists - Arabian Gulf Business Insight | AGBI",
-      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNUlVHdXZFMFhLU1VPaUpBZkcyb2JkMzkzUm1YMDdCX1dOcURWc25NTnYxTEFvQ215eE5sR0dvN1Fadmo5UDRHX1kwRjU5VGNvS2FNQ1cxX2FCX0w1LXdKSkxRb0p0WnluTzRtd0Z6U3RPVGlXaFRXWUh2eHVMbWlmTzZyUGhvQUpucmRHcVlDSVNKdlZFVVdfU3hPc0hZUlU4Y1IwclRIdTFYUUE?oc=5",
-      "published_at": "2026-05-05T07:00:00"
+      "title": "Inflation likely to exceed Turkey\u2019s 2026 target, central bank should explain why, TEPAV says - Turkish Minute",
+      "link": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNRFNnMEpSUEJsV01Ldklma2lveDFtekE0OGg3QW5hbzQwQ2haWUFBLUtpSTZyZHRjRnRPQUJwX3lTWWVNZ1p1anNjTXl0YjFsOUVleHlqQld6R0xpQS1TSlhfRmUzRS0yeFhMSjV0aS0taC0wcTNmUnkwTGNTeUpVemJoeFJsSFdySjBnWGJ3cUEyb0lfNEhHRlJSMDN4Rmd4WVBlN2xMT3BIRTdMYnNoaUxuWXFLVERVelRKTXlkTWlORHUxMkHSAcsBQVVfeXFMTUhxX0VEcmtZYTJKZTd3U19lbHhvLVAxT25CcjJQcVgteUEwaUt3clNRTjgzWTBDMmJYT2VWTHkybHdtTjZoN2xabWEwSlhWaDRPMUVIak1BN3d4YkduM2xoQzZBT1NWUkZvTHRVTHI3UUJHVVRGQnVTV1k1SE1MM09TcHU5MFBQOU5vNUF3RkVodjBEdVRxYnlhTVdIN1pLYTZpRVVsaGZqUzJxSjN2TnJ4dThjMHJFb0REcWpRYlRtWEZLTTlLcnY4S1E?oc=5",
+      "published_at": "2026-06-11T13:00:07"
     },
     {
       "title": "Turkey scraps inflation target as economic strains deepen - Financial Times",
@@ -3189,19 +3199,14 @@
       "published_at": "2026-05-14T07:00:00"
     },
     {
-      "title": "Turkey\u2019s Central Bank Holds Rates as Iran War Threatens Inflation Pickup - WSJ",
-      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQOU52Vktvc250NUZqbFdRUmxWVjNzb18zUjNFSG5vbVJCbWF4SHJ3UE5CajQ0a003NmZPeGRCNVp3VFAtaXppTDNKNXBuQjkzWHRFOG5teW1JSklWU0VOdEJ0ekdJa0xqMjZUUTlzU0lWSkw2Wmx4MUhjb2ZtbUpURkxSRWd3T1ZrU2lfUmlMdXhHWFhvb0JSdDQxWHNKTmg3QlczcVdqZ1JLcERxbU0xTm4tQVFUcXNRWFdZRkg5d3F5dw?oc=5",
-      "published_at": "2026-03-12T07:00:00"
+      "title": "Turkish central bank holds, keeping an eye on inflationary risks - ING Think",
+      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOTWZESnpyUnF5NWYxZVBTQ0l0WGpraklYSmluODZSV010UklKOFlMaDRteE1ZYzFKMFBRUDBYa2RpdlZyVzAwS05ibGpseDVYVnBGWk91WkM1MUk2M3lYUW1oT0M1VHlMWlg1ZHhYS2VQWFlraVE4ZVFDUVlTRmV6cGZuVzFyTDdZUmhDczZCaVRZNllDaS0wQVd0Umx5RnY1Mm81VkRvRHBXZmc?oc=5",
+      "published_at": "2026-06-11T12:04:58"
     },
     {
-      "title": "Turkish Inflation Quickens More Than Expected to 32.4% in April - Bloomberg.com",
-      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPeHpLN0huZTBVZGFQRVRSek1sQ24wUnNVX2E5RGRKQ3p1NE9hNFJSaWhyZUwtWFRuMFctdEZoWlQwczV4TmREVnVPTzFPS1E3alZpal9EQ1VZclRBQk5Qb0JwQ3B6d2JwX3ExcjJxdktZSUFKdmFyVXlDT3l0QU9ocW5kcF9od09rcUVpWE10SjJaNmF3VmF0aWtjVmxxT1ZVWmFNaTdEblozNi1USUJoM2MzRQ?oc=5",
-      "published_at": "2026-05-04T07:00:00"
-    },
-    {
-      "title": "Turkish central bank ups year-end inflation target, warns of war risks | Daily Sabah - Daily Sabah",
-      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPR2JVeUZxckMtNDlNUV9aUjBEUHZoSXYwTEZpdnNHakRmdFFxYzVrYUZKVGdsYzViMkdEWTVCalRHMFB6ZDBNOEIweXF2bHFSbEh5emVDTEpVY0EtTzBXc0xXRWtmWDZnRTAtaXI2cVZQaGpka0ZoZkxEb2NtdGZ2WHZQN1h4VmxDUlBzZEpxVVpOSlpUZ2paNWtwMy1rNGVNVnVZZjdENHR1X0VGNFBLVHR6b9IBuAFBVV95cUxQNmk3LXZqZ3lZZ0h4RHJIX2NJSWFTMTZOYXg0clVCQ1dmMW1Kd1ptdTJuam8taGpsdTJzT1V3VENnNi1WZThLMVd5bVZuSzZ2NUJ6MkZNN3E3ZHVYWlJCRTFjS002SV9OUVdITlF0N1VDTWdUM19NRlh1U0o1VnZfV3FiYXF3UmdWc3p1UHJKZFY0SGo3TzNjNzhOa0ZXU3A1NVYxeXlUa2xIMGJraHRBUkR4M3g1eFE0?oc=5",
-      "published_at": "2026-05-14T07:00:00"
+      "title": "Lira Swaps Signal Turkey Will Hold Off Hiking Rates This Meeting - Bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQYWc5ZFV3YVV2dFVwZEtEcjZkU3ZhdEpSdEQ5MFQ4VEd4R014WXN4ZXhpMEhmTUVKX3k5aWNYMWZYM3ZVMHN1aFlqNUJTaDF5UzZDMjNOWUV1ZXl1dzJoWURiNVdPZlk1OUpKSUxJWko5Wm1pRTRESU1ueDR2TmYwdVEza3RIWGtudkNsWGplYWpMSkFUVkRxank0Sk9qanJfMFZBOU9xc2ZjLVNwaEs3dHNFSjd1QQ?oc=5",
+      "published_at": "2026-04-21T07:00:00"
     },
     {
       "title": "Turkish monthly inflation surges to 4.18% amid war fallout - Reuters",
@@ -3209,9 +3214,9 @@
       "published_at": "2026-05-04T07:00:00"
     },
     {
-      "title": "Turkish central bank remains constructive on inflation outlook - ING Think",
-      "link": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPTDFrX0NTUS1wc0JBaHlLVGVnWmpGUjhXTlBhZU1pRlc0QW9QZmNfOFR5c0dHTjRPQkhBb1lYeWtBWG9LT2ZQUG1Yalo1OFdyeUhER2VEdjRlcDViSTFFdFQ4OEdjNmpTMDI3dGYzcWNleThCNjZyR2RvYTFFZFl4Q2dqcklfbWNnVVpVUEp0WU9pVDdpSXc?oc=5",
-      "published_at": "2026-02-12T08:00:00"
+      "title": "Turkish central bank puts all policy options on the table - ING Think",
+      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOSm5Zb3JaTWhzQUstSkJWS3NjTXAtQTZqQmRoeURTS0pvdGN2a3dTSEp0WU8xR2RNWXV1aXRwR2RYREJ6OV9vYUJGNkRBS3RnUzRtdGpMeXNBZWx1Q1F1dGZ0eUNtNDRYdFNrVkp2a1NsWXpXVm1XOFBtNVl2aWs3NG9xdGIzeUs5NzJzUjJRVQ?oc=5",
+      "published_at": "2026-05-14T07:00:00"
     },
     {
       "title": "Turkish central bank keeps rate at 37 percent amid geopolitical risks - Turkish Minute",
@@ -3222,11 +3227,6 @@
       "title": "Turkish monthly inflation near 3%, keeping pressure on central bank - Reuters",
       "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOQnpNS1dhZTNYdWVhZWZ6dFhEUEl0cGpzYnlFYjN0UmdGU1VDbjlvVUZzTTZtRlJ2UHZnMG9kZmFUM3JUMzRGVXdYZXhEWkY3eWtjdGhBSGw0X2NqMXlJdTNJWkl6bkoyZzkwdHNVaURfaG9pQm1NUkxlTTJ5NHdqbEZyVzc1VVNfZmtLRFFNdDJEQVhya2ZsNkVzZFZCWDBMM3VlYTVDcVNzWmJBT3ZzX3ZtMXBwVVE?oc=5",
       "published_at": "2026-03-03T08:00:00"
-    },
-    {
-      "title": "Turkish inflation brings an upside surprise in January - ING Think",
-      "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5ZZm9UTWR6NU9MTkh2b2lzcnFBal9nc1dkS1Z5ODI1MG5wRHRRSEJwakdqc0ljdXRzRnJlNEt2NGVGWjFTejh0SkpZdUtmdkhvMXJkeV9QQ1dGd081alRJRFBlVUpycUFNSE5JOXgzcW1tZjQ?oc=5",
-      "published_at": "2026-02-03T08:00:00"
     },
     {
       "title": "Turkey weighs using gold reserves to defend lira amid Iran war turmoil: report - Turkish Minute",
@@ -3249,28 +3249,28 @@
       "published_at": "2026-03-17T07:00:00"
     },
     {
-      "title": "Drain on Turkey\u2019s reserves raises prospect of gold sales to prop up currency - Financial Times",
-      "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNdk1kQXhkcUgyOWVRR056RWNGaE84bVFZUFFzVnJHMUNsVW05cVpVVm1DaVE2LVJ3SWZvMjFIalFkSjJoRzR5VGN3dEtXdFdCR2tpd1hVVU9sQ2FaeU9KUFBQTmpncEppTUVUUTVsQTk0b1FZMEozdVBjNElCaEZuanYtcTc?oc=5",
-      "published_at": "2026-03-24T07:00:00"
+      "title": "Turkey keeps tight grip on monetary policy as inflation persists - Arabian Gulf Business Insight | AGBI",
+      "link": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNUlVHdXZFMFhLU1VPaUpBZkcyb2JkMzkzUm1YMDdCX1dOcURWc25NTnYxTEFvQ215eE5sR0dvN1Fadmo5UDRHX1kwRjU5VGNvS2FNQ1cxX2FCX0w1LXdKSkxRb0p0WnluTzRtd0Z6U3RPVGlXaFRXWUh2eHVMbWlmTzZyUGhvQUpucmRHcVlDSVNKdlZFVVdfU3hPc0hZUlU4Y1IwclRIdTFYUUE?oc=5",
+      "published_at": "2026-05-05T07:00:00"
     },
     {
-      "title": "Turkey makes smaller than expected rate cut on stubborn inflation concerns - Reuters",
-      "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOejFvd2pSa0oxZW10bm9IQjE5S1pmbW9ROWdwNGpPTExUS2Q0WVl0LUdzLW5wZDU0Q2ZlYUJnY2dQcUpJdTI3Mll2Y2EtdjBibjNBc3lNalZnTldiUzZjdEpMdEFscjZHYk5KbXpVUVZaTFRjdV9XdnN6LTdNb1N5X0I1amItbEdWSE1KZmZxUml1VzFjQkhfdkdaY3FGTkwta085OW1TZWM1ejU0bFpIbTF0NGhpZEVwZDluOGVVS05mVlk?oc=5",
-      "published_at": "2026-01-22T08:00:00"
+      "title": "Turkey\u2019s Central Bank Holds Rates as Iran War Threatens Inflation Pickup - WSJ",
+      "link": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQOU52Vktvc250NUZqbFdRUmxWVjNzb18zUjNFSG5vbVJCbWF4SHJ3UE5CajQ0a003NmZPeGRCNVp3VFAtaXppTDNKNXBuQjkzWHRFOG5teW1JSklWU0VOdEJ0ekdJa0xqMjZUUTlzU0lWSkw2Wmx4MUhjb2ZtbUpURkxSRWd3T1ZrU2lfUmlMdXhHWFhvb0JSdDQxWHNKTmg3QlczcVdqZ1JLcERxbU0xTm4tQVFUcXNRWFdZRkg5d3F5dw?oc=5",
+      "published_at": "2026-03-12T07:00:00"
     },
     {
-      "title": "T\u00fcrkiye: Resilience tested by conflict in the Middle East and weak liquidity - Credendo",
-      "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNbkFoMnBCeVFRWnVtNW45a3V5SnZWbzRsQVF2LXZaWVJzTzFFNjAwNGZQemc1LUN0Q0hIaGc5dlh4ME5jVHBvTXQ5QWoyT3BWSnBfLUtWQ0E4c1FDM2ZXd0VNc3NxU0xiRVliLUw5YUt0aFgxQ2FLSGVBbzN6NmF3clhRUUY3QmZMSnZtSGJaN1luSzlZeWFHYXVKU2t3VlVMWVVwSVBn?oc=5",
-      "published_at": "2026-04-23T07:00:00"
+      "title": "Turkish inflation brings an upside surprise in January - ING Think",
+      "link": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5ZZm9UTWR6NU9MTkh2b2lzcnFBal9nc1dkS1Z5ODI1MG5wRHRRSEJwakdqc0ljdXRzRnJlNEt2NGVGWjFTejh0SkpZdUtmdkhvMXJkeV9QQ1dGd081alRJRFBlVUpycUFNSE5JOXgzcW1tZjQ?oc=5",
+      "published_at": "2026-02-03T08:00:00"
     },
     {
-      "title": "Turkish central bank puts all policy options on the table - ING Think",
-      "link": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOSm5Zb3JaTWhzQUstSkJWS3NjTXAtQTZqQmRoeURTS0pvdGN2a3dTSEp0WU8xR2RNWXV1aXRwR2RYREJ6OV9vYUJGNkRBS3RnUzRtdGpMeXNBZWx1Q1F1dGZ0eUNtNDRYdFNrVkp2a1NsWXpXVm1XOFBtNVl2aWs3NG9xdGIzeUs5NzJzUjJRVQ?oc=5",
-      "published_at": "2026-05-14T07:00:00"
+      "title": "Turkish Inflation Quickens More Than Expected to 32.4% in April - Bloomberg.com",
+      "link": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPeHpLN0huZTBVZGFQRVRSek1sQ24wUnNVX2E5RGRKQ3p1NE9hNFJSaWhyZUwtWFRuMFctdEZoWlQwczV4TmREVnVPTzFPS1E3alZpal9EQ1VZclRBQk5Qb0JwQ3B6d2JwX3ExcjJxdktZSUFKdmFyVXlDT3l0QU9ocW5kcF9od09rcUVpWE10SjJaNmF3VmF0aWtjVmxxT1ZVWmFNaTdEblozNi1USUJoM2MzRQ?oc=5",
+      "published_at": "2026-05-04T07:00:00"
     },
     {
       "title": "Turkish Central Bank leaves door open to fresh rate hikes if inflation worsens - Turkish Minute",
-      "link": "https://news.google.com/rss/articles/CBMivAFBVV95cUxObnAta1VjcEt4ZHRLZVlITlJ6NF9PV3liWC1iS1NXTnZid0ZkcTVQT0RjUk5YeHpMNW1jaGFLTmZ5VmRrV3pfVVBVX2x6SDFzZXE0bnVFTzMwUWxNX3JWS3BjUkE3WWpKQ1hENVhheU1CbTVlSy05UmU3NXpYUFNMRl9WNURMM1NHYm91dTlUTERtdlJ5V2JTZ1lib2FsWVEtSUJEVmp5SWJJS3h6aGY2SG1RY081amJCWnJDNdIBwgFBVV95cUxOWXFpeDBiYjE5VnF1MzVpWVdNR0JFVUlrWm92MVV5QUx6T19tMVFOTVpqOUdPSUVRbFNUVUQ5bm1Pc1NEUDVqR05oLTJ4OXZhemVOTWxxazBCZGxxZW0xaENqXzN4M2U0VklKTWlqWENsbFFQVmZockdPd3NoYkZTQlk0cW9HekRXNllMUmlqMHdPQ1hKbjAtRDlsdll3UDY0T0o3TXFsbXF0T1R0Ylp0Ql9ldGtLNDlxNndNVGtURkFRdw?oc=5",
+      "link": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNVEk5OHB1Z3Jpd0E1NFBGdmEwLVNObmRZMllVcjM0a0Jkb0s1d1VPaVphLTZEYXcxTU1qNDhEbkh2OE9PWm1jaDJGcURYYUhUSzFocGJiVHpJcnh3a1dmUjlPUVJKWXFPdXUyNUxiZW12RnVBUlVvd2lELWxrMk1xQ3hwUEtIQVk4amRfVlMxYUp0M2h3MS1wNXc2VVU3OFMxYndPeGxka1BQRXJqcU1nQTZqbDd6LUnSAbwBQVVfeXFMTWJoSWl1WkZ4QjNZTGFCWXNfMjRsZy1rQjRVYmJnTnJiWFhEMUtFOUE4ODhfS3BnbVdaWUp2TktvX2xtSHlyeXhQVDJNRWcyeGJvMEJQYXg2amFYUmVsV20yWmhLS1QwVENHOHN2SnB3aHRnV0VDMVBWQXFpNDRGcWhaRk5QV0UyZ0d1RGZqS0J0RjV4dC03NXFGaUpVNXBUQmlBNU95ZmhTSFo4aXpPcTBVcU5NRU1nTHdEajc?oc=5",
       "published_at": "2026-03-19T07:00:00"
     }
   ],
