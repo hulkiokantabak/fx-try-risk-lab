@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-26T09:51:48Z",
+  "generated_at": "2026-06-29T11:23:28Z",
   "primary_horizon": "1m",
   "thresholds": {
     "1w": 2,
@@ -9,17 +9,17 @@
     "1y": 25
   },
   "curve": {
-    "1w": 38.0,
-    "1m": 34.6,
-    "3m": 30.4,
+    "1w": 37.6,
+    "1m": 34.3,
+    "3m": 30.3,
     "6m": 27.0,
-    "1y": 23.7
+    "1y": 23.8
   },
-  "primary_score": 34.6,
+  "primary_score": 34.3,
   "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
   "briefing": {
     "stance": "Contained depreciation",
-    "probability": 34.6,
+    "probability": 34.3,
     "primary_horizon": "1m",
     "confidence": "medium",
     "caveat_severity": "high",
@@ -29,15 +29,15 @@
   "summary": {
     "deck": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "primary_message": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
-    "market_message": "USD/TRY is +1.34% over 20 sessions, with TRY vs peers at -1.18%.",
+    "market_message": "USD/TRY is +1.61% over 20 sessions, with TRY vs peers at -0.86%.",
     "macro_message": "Global-rates feeds were incomplete in this snapshot, so the model used a neutral global backdrop while still tracking CBRT policy and reserve data.",
-    "news_message": "2 Google News items and 0 social-chatter items landed in the last 14 days."
+    "news_message": "3 Google News items and 0 social-chatter items landed in the last 14 days."
   },
   "why_read": [
     {
       "label": "Pressure",
       "title": "Spot pressure is still live",
-      "detail": "TRY is -1.18% weaker than the peer basket over 20 sessions, while USD/TRY is +1.34% over the same window."
+      "detail": "TRY is -0.86% weaker than the peer basket over 20 sessions, while USD/TRY is +1.61% over the same window."
     },
     {
       "label": "Support",
@@ -53,8 +53,8 @@
   "trigger_cards": [
     {
       "title": "TRY vs peers",
-      "detail": "If TRY keeps lagging the peer basket beyond the current -1.18% gap, the read should move more bearish.",
-      "now": "Now -1.18% over 20 sessions"
+      "detail": "If TRY keeps lagging the peer basket beyond the current -0.86% gap, the read should move more bearish.",
+      "now": "Now -0.86% over 20 sessions"
     },
     {
       "title": "Reserve trend",
@@ -77,84 +77,84 @@
           "label": "USD/TRY",
           "points": [
             {
-              "date": "2026-05-29",
+              "date": "2026-06-01",
               "value": 0.0
             },
             {
-              "date": "2026-06-01",
-              "value": 0.02
-            },
-            {
               "date": "2026-06-02",
-              "value": 0.09
+              "value": 0.07
             },
             {
               "date": "2026-06-03",
-              "value": 0.16
+              "value": 0.14
             },
             {
               "date": "2026-06-04",
-              "value": 0.19
+              "value": 0.17
             },
             {
               "date": "2026-06-05",
-              "value": 0.43
+              "value": 0.42
             },
             {
               "date": "2026-06-08",
-              "value": 0.47
+              "value": 0.45
             },
             {
               "date": "2026-06-09",
-              "value": 0.5
+              "value": 0.49
             },
             {
               "date": "2026-06-10",
-              "value": 0.55
+              "value": 0.53
             },
             {
               "date": "2026-06-11",
-              "value": 0.59
+              "value": 0.57
             },
             {
               "date": "2026-06-12",
-              "value": 0.83
+              "value": 0.81
             },
             {
               "date": "2026-06-15",
-              "value": 0.86
+              "value": 0.84
             },
             {
               "date": "2026-06-16",
-              "value": 0.9
+              "value": 0.88
             },
             {
               "date": "2026-06-17",
-              "value": 0.94
+              "value": 0.92
             },
             {
               "date": "2026-06-18",
-              "value": 1.22
+              "value": 1.2
             },
             {
               "date": "2026-06-19",
-              "value": 1.22
+              "value": 1.2
             },
             {
               "date": "2026-06-22",
-              "value": 1.26
+              "value": 1.24
             },
             {
               "date": "2026-06-23",
-              "value": 1.29
+              "value": 1.28
             },
             {
               "date": "2026-06-24",
-              "value": 1.31
+              "value": 1.3
             },
             {
               "date": "2026-06-25",
-              "value": 1.37
+              "value": 1.35
+            },
+            {
+              "date": "2026-06-26",
+              "value": 1.59
             }
           ]
         },
@@ -162,84 +162,84 @@
           "label": "Peer basket",
           "points": [
             {
-              "date": "2026-05-29",
+              "date": "2026-06-01",
               "value": 0.0
             },
             {
-              "date": "2026-06-01",
-              "value": 0.04
-            },
-            {
               "date": "2026-06-02",
-              "value": -0.15
+              "value": -0.2
             },
             {
               "date": "2026-06-03",
-              "value": 0.21
+              "value": 0.17
             },
             {
               "date": "2026-06-04",
-              "value": 0.23
+              "value": 0.19
             },
             {
               "date": "2026-06-05",
-              "value": 0.23
+              "value": 0.18
             },
             {
               "date": "2026-06-08",
-              "value": 1.52
+              "value": 1.48
             },
             {
               "date": "2026-06-09",
-              "value": 1.42
+              "value": 1.38
             },
             {
               "date": "2026-06-10",
-              "value": 2.09
+              "value": 2.05
             },
             {
               "date": "2026-06-11",
-              "value": 1.71
+              "value": 1.67
             },
             {
               "date": "2026-06-12",
-              "value": 0.82
+              "value": 0.78
             },
             {
               "date": "2026-06-15",
-              "value": 0.05
+              "value": 0.0
             },
             {
               "date": "2026-06-16",
-              "value": 0.04
+              "value": -0.01
             },
             {
               "date": "2026-06-17",
-              "value": 0.21
+              "value": 0.17
             },
             {
               "date": "2026-06-18",
-              "value": 1.74
+              "value": 1.7
             },
             {
               "date": "2026-06-19",
-              "value": 1.86
+              "value": 1.81
             },
             {
               "date": "2026-06-22",
-              "value": 1.78
+              "value": 1.74
             },
             {
               "date": "2026-06-23",
-              "value": 2.53
+              "value": 2.49
             },
             {
               "date": "2026-06-24",
-              "value": 3.25
+              "value": 3.21
             },
             {
               "date": "2026-06-25",
-              "value": 3.12
+              "value": 3.08
+            },
+            {
+              "date": "2026-06-26",
+              "value": 2.42
             }
           ]
         }
@@ -253,11 +253,6 @@
         {
           "label": "Primary score",
           "points": [
-            {
-              "date": "2026-05-18",
-              "value": 42.0,
-              "stance": "Balanced but fragile"
-            },
             {
               "date": "2026-05-19",
               "value": 41.1,
@@ -402,6 +397,11 @@
               "date": "2026-06-26",
               "value": 34.6,
               "stance": "Contained depreciation"
+            },
+            {
+              "date": "2026-06-29",
+              "value": 34.3,
+              "stance": "Contained depreciation"
             }
           ]
         }
@@ -411,45 +411,45 @@
   "market": {
     "regime_label": "Market pressure contained",
     "usd_try": {
-      "latest": 46.5147,
-      "date": "2026-06-25",
-      "change_5d": 0.149,
-      "change_20d": 1.341
+      "latest": 46.6251,
+      "date": "2026-06-26",
+      "change_5d": 0.387,
+      "change_20d": 1.611
     },
-    "peer_avg_20d": 2.518,
-    "try_gap_20d": -1.177,
+    "peer_avg_20d": 2.467,
+    "try_gap_20d": -0.856,
     "peers": [
       {
         "label": "USD/ZAR",
-        "change_20d": 1.293,
-        "latest": 16.5615
+        "change_20d": 1.457,
+        "latest": 16.4605
       },
       {
         "label": "USD/BRL",
-        "change_20d": 2.55,
-        "latest": 5.2019
+        "change_20d": 2.589,
+        "latest": 5.1759
       },
       {
         "label": "USD/HUF",
-        "change_20d": 2.497,
-        "latest": 313.4632
+        "change_20d": 2.258,
+        "latest": 310.6131
       },
       {
         "label": "USD/PLN",
-        "change_20d": 3.731,
-        "latest": 3.7802
+        "change_20d": 3.564,
+        "latest": 3.76
       }
     ],
     "volatility": {
-      "VIX": 18.89,
-      "VXEEM": 39.58,
-      "VVIX": 91.19,
-      "OVX": 46.96,
-      "GVZ": 29.58
+      "VIX": 18.41,
+      "VXEEM": 38.11,
+      "VVIX": 89.02,
+      "OVX": 46.46,
+      "GVZ": 27.18
     },
     "scores": {
-      "market_pressure": 24.8,
-      "volatility_pressure": 56.7
+      "market_pressure": 28.0,
+      "volatility_pressure": 52.0
     }
   },
   "macro": {
@@ -473,10 +473,15 @@
     }
   },
   "news": {
-    "headline_count_14d": 2,
+    "headline_count_14d": 3,
     "chatter_count_14d": 0,
     "score": 0.0,
     "recent_headlines": [
+      {
+        "title": "119,000 businesses closed in Turkey during 4 years of inflation, high borrowing costs - Turkish Minute",
+        "link": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNM25Td3NUaGxEcENoQmlIX0hVTEVmcmxFbW04TW9MLXU5WXQ5SHdMc19DT2xFVzlOODVVNkZ4ODlzSWRWeTFEa1FUM1lNbDY3YmxYMVdndTVYT1BMWnNDa1M0Sk1WT0Vkc3djNDM0cDdBUFRIM2NPMEhGSUVhdzhWUy1WUFNpRkd6dC14by10NHNWQnFXSmprQ2ZwQjJpaG1ra0hBZmVGYzhEVVhOVGg3dDlDZ0E0RlBuVkJpYW1xN0lZMGPSAcgBQVVfeXFMTmFhMkpESlZwX1c1eUdLSHdOSDYwUlNOc1I3dVhSZnR2TFZwX1F6NUVWME4yLXE4c3JxUGV0Qmh0UHR5VUhRWG9MRERoNmthOUU5dmhkRXZPOERaNC1oT0Q1dTBfdGk0M3laMVN0aTJtc04xYXExX0VtTF95MmJPbDlVNXliNDZ5eVVPcl9wMERGeWRKY0owRDFHLUVDZmExWnB4ODA0WFpKTlR5LVBCTXFhZGxXN2dBVTZreU9GZm1RYWE3a0xsZzQ?oc=5",
+        "published_at": "2026-06-26"
+      },
       {
         "title": "Turkish central bank chief says deterioration in inflation expectations remains limited despite geopolitical backdrop - Anadolu Ajans\u0131",
         "link": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxPYmFyenloU0gyOWluSkNNSjZSU0l2TG0ySUk1Q1c2X1l6NjlnRkRjd2dBOWtiUjlwVWppbG1oelNNRmZ3aE5ENERHdjJndmlVY3FHQlI4enlJQXE1MGEybHZVenJueG9vME1mcVdCZWlvTTRPTTJtSmQ3RjVfUXBMcGh6N1dIWkktb05CbVBablpCempqa1VDS2NyMHpMc3owdGY5MF9meTAxQzR0WEFRUWJ1TXNfUUx6aFBNemV3aEZrRmxTaEN4U0dLSEVTb3JFMWs2UVl2UHJScEQ0bnp6LVR5WkVwQzdScXhUTENxNA?oc=5",
@@ -492,8 +497,8 @@
   "reasons": [
     {
       "title": "Volatility",
-      "detail": "VIX is 18.89, VXEEM is 39.58.",
-      "score": 56.7
+      "detail": "VIX is 18.41, VXEEM is 38.11.",
+      "score": 52.0
     },
     {
       "title": "Global macro",
@@ -502,8 +507,8 @@
     },
     {
       "title": "Price action",
-      "detail": "USD/TRY 20-session move is +1.34%.",
-      "score": 24.8
+      "detail": "USD/TRY 20-session move is +1.61%.",
+      "score": 28.0
     },
     {
       "title": "Turkey policy and reserves",
@@ -512,10 +517,10 @@
     }
   ],
   "watchlist": [
-    "Watch whether USD/TRY keeps outrunning the peer basket; current 20-session gap is -1.18%.",
+    "Watch whether USD/TRY keeps outrunning the peer basket; current 20-session gap is -0.86%.",
     "Watch reserve trend updates from CBRT; official reserve assets are -1.40% over the latest reserve window.",
-    "Watch global volatility proxies; VIX/VXEEM are 18.89/39.58.",
-    "Watch headline intensity; the current 14-day count is 2 news items."
+    "Watch global volatility proxies; VIX/VXEEM are 18.41/38.11.",
+    "Watch headline intensity; the current 14-day count is 3 news items."
   ],
   "warnings": [
     "FRED FEDFUNDS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS: The read operation timed out",
@@ -524,15 +529,15 @@
     "FRED DTWEXBGS: Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
   ],
   "history_entry": {
-    "as_of": "2026-06-26T09:51:48Z",
+    "as_of": "2026-06-29T11:23:28Z",
     "primary_horizon": "1m",
-    "primary_score": 34.6,
+    "primary_score": 34.3,
     "curve": {
-      "1w": 38.0,
-      "1m": 34.6,
-      "3m": 30.4,
+      "1w": 37.6,
+      "1m": 34.3,
+      "3m": 30.3,
       "6m": 27.0,
-      "1y": 23.7
+      "1y": 23.8
     },
     "market_regime": "Market pressure contained",
     "macro_regime": "Domestic policy and reserves are supportive",
