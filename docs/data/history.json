@@ -899,5 +899,22 @@
     "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "stance": "Contained depreciation",
     "confidence": "medium"
+  },
+  {
+    "as_of": "2026-07-01T10:14:39Z",
+    "primary_horizon": "1m",
+    "primary_score": 32.7,
+    "curve": {
+      "1w": 35.4,
+      "1m": 32.7,
+      "3m": 29.3,
+      "6m": 26.4,
+      "1y": 23.4
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic policy and reserves are supportive",
+    "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
+    "stance": "Contained depreciation",
+    "confidence": "medium"
   }
 ]
