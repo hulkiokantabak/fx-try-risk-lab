@@ -5,12 +5,23 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Callable, Iterable
 
 
 class DataQualityError(ValueError):
     """Raised when a response is syntactically readable but not usable data."""
+
+
+MAXIMUM_FUTURE_SKEW_DAYS = 2
+
+
+def _ensure_not_future(value: datetime, *, label: str, now: datetime) -> None:
+    normalized = value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)
+    if normalized > now + timedelta(days=MAXIMUM_FUTURE_SKEW_DAYS):
+        raise DataQualityError(
+            f"{label} is more than {MAXIMUM_FUTURE_SKEW_DAYS} days in the future"
+        )
 
 
 def validate_series(
@@ -24,11 +35,13 @@ def validate_series(
     if len(points) < minimum_count:
         raise DataQualityError(f"expected at least {minimum_count} observations; received {len(points)}")
     dates = []
+    now = datetime.now(UTC)
     for point in points:
         observed_at = getattr(point, "observed_at", None)
         value = getattr(point, "value", None)
         if not isinstance(observed_at, datetime):
             raise DataQualityError("observation date is missing or invalid")
+        _ensure_not_future(observed_at, label="observation date", now=now)
         if not isinstance(value, (int, float)) or not math.isfinite(float(value)):
             raise DataQualityError("observation value is missing or non-finite")
         if positive and value <= 0:
@@ -60,11 +73,14 @@ def validate_feed(entries: Iterable[object], *, minimum_count: int = 1) -> None:
     entries = list(entries)
     if len(entries) < minimum_count:
         raise DataQualityError(f"expected at least {minimum_count} feed entries; received {len(entries)}")
+    now = datetime.now(UTC)
     for entry in entries:
         if not str(getattr(entry, "title", "")).strip():
             raise DataQualityError("feed entry has no title")
-        if not isinstance(getattr(entry, "published_at", None), datetime):
+        published_at = getattr(entry, "published_at", None)
+        if not isinstance(published_at, datetime):
             raise DataQualityError("feed entry has no valid publication date")
+        _ensure_not_future(published_at, label="feed publication date", now=now)
 
 
 def latest_observation(value: object) -> datetime | None:

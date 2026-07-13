@@ -1057,7 +1057,7 @@
     "data_cutoff": "2026-07-10T00:00:00Z"
   },
   {
-    "as_of": "2026-07-13T10:32:23Z",
+    "as_of": "2026-07-13T11:25:06Z",
     "primary_horizon": "1m",
     "primary_score": 9.2,
     "curve": {
@@ -1069,11 +1069,12 @@
     },
     "market_regime": "Market pressure contained",
     "macro_regime": "Domestic-policy and reserve data unavailable",
-    "headline": "TRY is lagging peers, while incomplete domestic context limits the macro interpretation of the experimental price-history signal.",
+    "headline": "The primary exact-terminal estimate is 9.2% (contained depreciation risk). Material contextual evidence is unavailable and remains UNKNOWN; inspect source health before drawing a macro conclusion.",
     "stance": "Contained depreciation",
+    "evidence_coverage": "medium",
     "confidence": "medium",
-    "forecast_id": "fxtry-2026-07-10T00:00:00Z-c2b71ff28e672519d18904ac",
-    "model_version": "empirical-regime-v2.1.0",
+    "forecast_id": "fxtry-2026-07-10T00:00:00Z-1f76a32e5b4454bab76d6cff",
+    "model_version": "empirical-regime-v2.2.0",
     "data_cutoff": "2026-07-10T00:00:00Z"
   }
 ]

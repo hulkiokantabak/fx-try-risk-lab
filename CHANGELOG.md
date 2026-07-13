@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-07-13
+
+### Auditable probability-model rebuild
+
+- replaced the heuristic score with purged, walk-forward empirical probability
+  forecasts for both exact-terminal and any-reference-fix threshold events
+- published horizon-level calibration diagnostics, uncertainty intervals,
+  challenger estimates, authority labels, and target-purged climatology skill
+- added an append-only, cryptographically identified v3 forecast ledger with
+  separate terminal and path-resolution events
+- added a version-bound expert archive that preserves individual curves,
+  fixed horizon-specific aggregation weights, dissent, stress cases, and the
+  complete five-round review record
+- rebuilt the browser experience as an accessible, responsive research monitor
+  with explicit model, expert, source-health, and limitation surfaces
+- hardened source ingestion, archive parsing, browser rendering, GitHub Actions,
+  and publication validation; expanded financial, content, compatibility, and
+  security regression coverage
+
 ## 2026-04-16
 
 ### Final v1 polish

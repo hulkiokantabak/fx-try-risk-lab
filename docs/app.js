@@ -4,6 +4,7 @@ const NOTE_KEY = "fx-try-risk-lab-note";
 const SVG_NS = "http://www.w3.org/2000/svg";
 const HORIZON_ORDER = ["1w", "1m", "3m", "6m", "1y"];
 const CHART_COLORS = ["#37b6a3", "#e5a84b", "#91a9b8", "#d56b6b"];
+const CHART_DASHES = [null, "9 5", "2 4", "12 4 2 4"];
 let activeSnapshot = null;
 let activeHorizon = null;
 
@@ -94,7 +95,9 @@ function safeExternalHref(value) {
 
 function svgElement(tagName, attributes = {}) {
   const element = document.createElementNS(SVG_NS, tagName);
-  Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+  Object.entries(attributes).forEach(([key, value]) => {
+    element.setAttribute(key, String(value));
+  });
   return element;
 }
 
@@ -133,6 +136,68 @@ function horizonUncertainty(snapshot, horizon) {
   const lower = finite(value.lower_probability ?? value.lower ?? value.low ?? value.p10);
   const upper = finite(value.upper_probability ?? value.upper ?? value.high ?? value.p90);
   return lower === null || upper === null ? null : { lower, upper };
+}
+
+function horizonAuthority(snapshot, horizon) {
+  const status = String(snapshot?.forecast?.horizons?.[horizon]?.calibration_status ?? "experimental").toLowerCase();
+  return status === "calibrated"
+    ? { label: "Limited authority", className: "authority-limited", detail: "This horizon passes the published historical gate; live evidence remains limited." }
+    : { label: "Experimental", className: "authority-experimental", detail: "This horizon does not pass the published historical gate." };
+}
+
+function horizonChallenger(snapshot, horizon) {
+  const challenger = snapshot?.forecast?.horizons?.[horizon]?.challenger;
+  const probability = finite(challenger?.probability);
+  if (probability === null) return null;
+  return {
+    probability,
+    delta: finite(
+      challenger?.delta_model_minus_challenger_percentage_points
+        ?? challenger?.delta_model_minus_benchmark_percentage_points,
+    ),
+    name: challenger?.name ?? "Current target-purged climatology",
+  };
+}
+
+function pathRiskView(snapshot) {
+  const raw = snapshot?.path_risk ?? snapshot?.forecast?.path_risk;
+  const fallbackHorizons = snapshot?.forecast?.touch_horizons;
+  const horizonsPayload = raw?.horizons ?? fallbackHorizons;
+  if (!horizonsPayload || typeof horizonsPayload !== "object") return null;
+  const curve = {};
+  HORIZON_ORDER.forEach((horizon) => {
+    const item = horizonsPayload[horizon];
+    const probability = finite(typeof item === "object" ? item?.probability : item);
+    if (probability !== null) curve[horizon] = probability;
+  });
+  if (!Object.keys(curve).length) return null;
+  return {
+    curve,
+    horizons: horizonsPayload,
+    eventDefinition: raw?.event_definition ?? snapshot?.forecast?.touch_event_definition ?? {},
+  };
+}
+
+function pathRiskUncertainty(pathRisk, horizon) {
+  const value = pathRisk?.horizons?.[horizon]?.uncertainty;
+  if (!value) return null;
+  const lower = finite(value.lower_probability ?? value.lower);
+  const upper = finite(value.upper_probability ?? value.upper);
+  return lower === null || upper === null ? null : { lower, upper };
+}
+
+function renderAuthorityBadges(snapshot) {
+  const container = byId("authority-badges");
+  clearNode(container);
+  horizons(snapshot).forEach((horizon) => {
+    const authority = horizonAuthority(snapshot, horizon);
+    const badge = document.createElement("li");
+    badge.className = `authority-badge ${authority.className}`;
+    badge.title = authority.detail;
+    appendText(badge, "strong", horizon);
+    badge.append(document.createTextNode(` ${authority.label}`));
+    container.appendChild(badge);
+  });
 }
 
 function baselineFor(snapshot, horizon) {
@@ -228,7 +293,7 @@ function renderTermChart(snapshot) {
   const description = addSvgDescription(
     svg,
     "term-chart-title",
-    "Probability estimate term structure",
+    "Exact-terminal probability estimate and optional any-time-breach estimate",
     "term-chart-desc",
     "Loading chart data.",
   );
@@ -240,8 +305,13 @@ function renderTermChart(snapshot) {
   const width = 640;
   const height = 250;
   const margin = { left: 58, right: 22, top: 22, bottom: 46 };
-  const dataMin = Math.min(...values.map((point) => point.value));
-  const dataMax = Math.max(...values.map((point) => point.value));
+  const pathRisk = pathRiskView(snapshot);
+  const pathValues = pathRisk
+    ? horizons(snapshot).map((horizon) => ({ horizon, value: finite(pathRisk.curve[horizon]) })).filter((point) => point.value !== null)
+    : [];
+  const allChartValues = values.concat(pathValues);
+  const dataMin = Math.min(...allChartValues.map((point) => point.value));
+  const dataMax = Math.max(...allChartValues.map((point) => point.value));
   const floor = Math.max(0, Math.floor((dataMin - 8) / 10) * 10);
   const ceiling = Math.min(100, Math.ceil((dataMax + 8) / 10) * 10) || 100;
   const range = ceiling - floor || 1;
@@ -275,18 +345,53 @@ function renderTermChart(snapshot) {
     valueLabel.textContent = formatNumber(point.value, 1);
     svg.appendChild(valueLabel);
   });
+  if (pathValues.length) {
+    const byHorizon = new Map(values.map((point, index) => [point.horizon, index]));
+    const pathPoints = pathValues.map((point) => `${x(byHorizon.get(point.horizon) ?? 0)},${y(point.value)}`).join(" ");
+    svg.appendChild(svgElement("polyline", { points: pathPoints, fill: "none", class: "path-risk-line" }));
+    pathValues.forEach((point) => {
+      const index = byHorizon.get(point.horizon) ?? 0;
+      const circle = svgElement("circle", { cx: x(index), cy: y(point.value), r: 4, class: "path-risk-point" });
+      const title = svgElement("title");
+      title.textContent = `${point.horizon} any-time breach at an observed daily ECB reference-rate observation: ${formatNumber(point.value, 1)}%`;
+      circle.appendChild(title);
+      svg.appendChild(circle);
+    });
+  }
   const unit = svgElement("text", { x: 14, y: margin.top, class: "axis-title" });
   unit.textContent = isCalibrated(snapshot) ? "Probability (%)" : "Experimental estimate (%)";
   svg.appendChild(unit);
-  description.textContent = `${assessmentLabel(snapshot)} by horizon: ${values.map((point) => `${point.horizon} ${formatNumber(point.value, 1)}`).join(", ")}.`;
+  description.textContent = `${assessmentLabel(snapshot)} for the exact-terminal event by horizon: ${values.map((point) => `${point.horizon} ${formatNumber(point.value, 1)}`).join(", ")}.${pathValues.length ? ` Separately trained, coherence-constrained any-time breach at observed daily ECB reference rates: ${pathValues.map((point) => `${point.horizon} ${formatNumber(point.value, 1)}`).join(", ")}. These events are not interchangeable, and intraday prices are outside the path contract.` : " No any-time-breach curve is published."}`;
+
+  const legend = byId("term-legend");
+  clearNode(legend);
+  const terminalLegend = appendText(legend, "li", "Exact terminal observation", "term-legend-item terminal");
+  terminalLegend.title = "Primary event: threshold met at exactly t+h.";
+  if (pathValues.length) {
+    const pathLegend = appendText(legend, "li", "Any daily ECB observation in t+1…t+h", "term-legend-item path");
+    pathLegend.title = pathRisk.eventDefinition.relationship_to_terminal ?? "A separate path event; not interchangeable with terminal probability.";
+  }
+
+  const challengerNote = byId("challenger-note");
+  const selectedChallenger = horizonChallenger(snapshot, activeHorizon);
+  if (challengerNote && selectedChallenger) {
+    challengerNote.textContent = `${activeHorizon} terminal challenger: ${formatNumber(selectedChallenger.probability, 1)}% (${selectedChallenger.name}). This target-purged historical event rate is a benchmark, not an expert view or an uncertainty bound.`;
+    challengerNote.hidden = false;
+  } else if (challengerNote) {
+    challengerNote.hidden = true;
+  }
 
   const body = byId("term-table-body");
   clearNode(body);
-  setText("term-value-heading", assessmentLabel(snapshot));
+  setText("term-value-heading", `Exact-terminal ${assessmentLabel(snapshot).toLowerCase()}`);
   values.forEach((point) => {
     const row = document.createElement("tr");
     const baseline = baselineFor(snapshot, point.horizon);
     const interval = horizonUncertainty(snapshot, point.horizon);
+    const pathProbability = finite(pathRisk?.curve?.[point.horizon]);
+    const pathInterval = pathRiskUncertainty(pathRisk, point.horizon);
+    const authority = horizonAuthority(snapshot, point.horizon);
+    const challenger = horizonChallenger(snapshot, point.horizon);
     const horizonCell = appendText(row, "th", point.horizon);
     horizonCell.scope = "row";
     [
@@ -294,7 +399,15 @@ function renderTermChart(snapshot) {
       `${formatNumber(point.value, 1)}%`,
       baseline.threshold === null ? "n/a" : `≥ ${formatNumber(baseline.threshold, 1)}% depreciation`,
       interval ? `${formatNumber(interval.lower, 1)}–${formatNumber(interval.upper, 1)}%` : "not published",
-    ].forEach((value) => appendText(row, "td", value));
+      pathProbability === null
+        ? "not published"
+        : `${formatNumber(pathProbability, 1)}%${pathInterval ? ` (${formatNumber(pathInterval.lower, 1)}–${formatNumber(pathInterval.upper, 1)}%)` : ""}`,
+      challenger === null ? "not published" : `${formatNumber(challenger.probability, 1)}%`,
+    ].forEach((value) => {
+      appendText(row, "td", value);
+    });
+    const authorityCell = appendText(row, "td", authority.label);
+    authorityCell.className = `authority-table ${authority.className}`;
     body.appendChild(row);
   });
 }
@@ -328,21 +441,37 @@ function publishedDrivers(snapshot) {
 function driverDirection(driver) {
   const value = String(driver.direction ?? driver.effect ?? "").toLowerCase();
   const estimatedEffect = finite(driver.estimated_effect_percentage_points);
+  if (/neutral|flat|immaterial/.test(value)) return "neutral";
   if (estimatedEffect !== null) return estimatedEffect < 0 ? "down" : "up";
   return /down|lower|cushion|support|reduce|negative|relief/.test(value) ? "down" : "up";
+}
+
+function driverStrengthText(driver) {
+  const strength = finite(driver.strength ?? driver.score ?? driver.estimated_effect_percentage_points);
+  if (driver.estimated_effect_percentage_points !== undefined && strength !== null) {
+    return `${strength > 0 ? "+" : ""}${formatNumber(strength, 1)} pp`;
+  }
+  return strength === null
+    ? capitalize(driver.strength ?? "unranked")
+    : `${formatNumber(strength, 0)}/100`;
 }
 
 function renderDrivers(snapshot) {
   const raisers = byId("risk-raisers");
   const cushions = byId("risk-cushions");
+  const neutral = byId("neutral-drivers");
+  const neutralPanel = byId("neutral-driver-panel");
   clearNode(raisers);
   clearNode(cushions);
+  clearNode(neutral);
   const exactDrivers = publishedDrivers(snapshot);
   const drivers = exactDrivers.length ? exactDrivers : buildFallbackDrivers(snapshot);
-  const groups = { up: [], down: [] };
-  drivers.forEach((driver) => groups[driverDirection(driver)].push(driver));
+  const groups = { up: [], down: [], neutral: [] };
+  drivers.forEach((driver) => {
+    groups[driverDirection(driver)].push(driver);
+  });
 
-  Object.entries(groups).forEach(([direction, items]) => {
+  Object.entries({ up: groups.up, down: groups.down }).forEach(([direction, items]) => {
     const target = direction === "up" ? raisers : cushions;
     if (!items.length) {
       appendText(target, "p", "No driver published in this direction.", "empty-state");
@@ -353,15 +482,7 @@ function renderDrivers(snapshot) {
       article.className = "driver-row";
       const header = document.createElement("div");
       appendText(header, "h4", driver.title ?? driver.name ?? driver.label ?? "Unnamed driver");
-      const strength = finite(driver.strength ?? driver.score ?? driver.estimated_effect_percentage_points);
-      appendText(
-        header,
-        "span",
-        driver.estimated_effect_percentage_points !== undefined && strength !== null
-          ? `${strength > 0 ? "+" : ""}${formatNumber(strength, 1)} pp`
-          : strength === null ? capitalize(driver.strength ?? "unranked") : `${formatNumber(strength, 0)}/100`,
-        "strength",
-      );
+      appendText(header, "span", driverStrengthText(driver), "strength");
       article.appendChild(header);
       appendText(
         article,
@@ -374,6 +495,21 @@ function renderDrivers(snapshot) {
       target.appendChild(article);
     });
   });
+  if (groups.neutral.length) {
+    groups.neutral.slice(0, 6).forEach((driver) => {
+      const article = document.createElement("article");
+      article.className = "driver-row";
+      const header = document.createElement("div");
+      appendText(header, "h4", driver.title ?? driver.name ?? driver.label ?? "Unnamed driver");
+      appendText(header, "span", driverStrengthText(driver), "strength");
+      article.appendChild(header);
+      appendText(article, "p", driver.interpretation ?? driver.detail ?? "No interpretation published.");
+      neutral?.appendChild(article);
+    });
+    if (neutralPanel) neutralPanel.hidden = false;
+  } else if (neutralPanel) {
+    neutralPanel.hidden = true;
+  }
 }
 
 function chartPoints(chartData) {
@@ -433,8 +569,11 @@ function renderLineChart(chartId, legendId, metaId, tableTargetId, chartData, su
   normalizeArray(chartData.series).forEach((series, seriesIndex) => {
     const points = normalizeArray(series.points).filter((point) => finite(point.value) !== null);
     const color = CHART_COLORS[seriesIndex % CHART_COLORS.length];
+    const dashPattern = CHART_DASHES[seriesIndex % CHART_DASHES.length];
     const coordinates = points.map((point, index) => `${x(index)},${y(finite(point.value))}`).join(" ");
-    svg.appendChild(svgElement("polyline", { points: coordinates, fill: "none", stroke: color, class: "chart-line" }));
+    const lineAttributes = { points: coordinates, fill: "none", stroke: color, class: "chart-line" };
+    if (dashPattern) lineAttributes["stroke-dasharray"] = dashPattern;
+    svg.appendChild(svgElement("polyline", lineAttributes));
     points.forEach((point, index) => {
       const marker = svgElement("circle", { cx: x(index), cy: y(finite(point.value)), r: 3, fill: color, class: "chart-marker" });
       const title = svgElement("title");
@@ -445,9 +584,11 @@ function renderLineChart(chartId, legendId, metaId, tableTargetId, chartData, su
     const item = document.createElement("div");
     item.className = "legend-item";
     const swatch = document.createElement("span");
-    swatch.className = `legend-swatch palette-${seriesIndex % CHART_COLORS.length}`;
+    swatch.className = `legend-swatch palette-${seriesIndex % CHART_COLORS.length} pattern-${seriesIndex % CHART_DASHES.length}`;
+    swatch.setAttribute("aria-hidden", "true");
     item.appendChild(swatch);
-    appendText(item, "span", `${series.label ?? "Series"} · ${formatNumber(points.at(-1)?.value, 2)}${suffix}`);
+    const latestPoint = points.length ? points[points.length - 1] : null;
+    appendText(item, "span", `${series.label ?? "Series"} · ${formatNumber(latestPoint?.value, 2)}${suffix}`);
     legend.appendChild(item);
   });
 
@@ -460,7 +601,7 @@ function renderLineChart(chartId, legendId, metaId, tableTargetId, chartData, su
   });
 
   const first = allPoints[0];
-  const last = allPoints.at(-1);
+  const last = allPoints[allPoints.length - 1];
   const unit = chartId === "score-chart"
     ? assessmentLabel(activeSnapshot)
     : chartData?.unit ?? (suffix === "%" ? "Percent" : assessmentLabel(activeSnapshot));
@@ -523,13 +664,15 @@ function dataHealthSource(snapshot, key) {
 function sourceObservationText(snapshot, labelledKeys) {
   const details = labelledKeys.map(([label, key]) => {
     const source = dataHealthSource(snapshot, key);
-    if (!source) return `${label}: date not published`;
+    if (!source) return `${label}: UNKNOWN; source record not published`;
+    const status = sourceStatus(source);
     const observed = source.latest_observation ?? source.observed_at ?? source.source_date ?? source.as_of;
-    return observed
-      ? `${label}: ${formatDate(observed)}`
-      : `${label}: ${capitalize(sourceStatus(source))}, date not published`;
+    if (!observed) return `${label}: ${capitalize(status)}; observation date not published`;
+    return status === "fresh"
+      ? `${label}: fresh; observed ${formatDate(observed)}`
+      : `${label}: ${capitalize(status)}; last observation ${formatDate(observed)}`;
   });
-  return `Observed · ${details.join(" · ")}`;
+  return `Sources · ${details.join(" · ")}`;
 }
 
 function renderTriggers(snapshot) {
@@ -551,41 +694,105 @@ function renderTriggers(snapshot) {
 }
 
 function expertMembers(expertView) {
-  return normalizeArray(expertView?.members ?? expertView?.experts ?? expertView?.views);
+  return normalizeArray(expertView?.final_experts ?? expertView?.members ?? expertView?.experts ?? expertView?.views);
+}
+
+function confidenceLabel(value) {
+  const score = finite(value?.score ?? value);
+  if (score === null) return "Not scored";
+  if (score < 40) return "Low confidence";
+  if (score < 65) return "Moderate confidence";
+  return "High confidence";
+}
+
+function confidenceScore(value) {
+  return finite(value?.score ?? value);
+}
+
+function appendExpertCurve(parent, curve) {
+  const list = document.createElement("dl");
+  list.className = "expert-curve";
+  HORIZON_ORDER.forEach((horizon) => {
+    const value = finite(curve?.[horizon]);
+    if (value === null) return;
+    const item = document.createElement("div");
+    appendText(item, "dt", horizon);
+    appendText(item, "dd", `${formatNumber(value, 1)}%`);
+    list.appendChild(item);
+  });
+  parent.appendChild(list);
 }
 
 function renderExpertView(snapshot) {
   const view = snapshot.expert_view;
   const members = expertMembers(view);
   const container = byId("expert-members");
+  const houseBody = byId("expert-house-body");
   const dissent = byId("expert-dissent");
+  const stress = byId("expert-stress");
   clearNode(container);
+  clearNode(houseBody);
   clearNode(dissent);
+  clearNode(stress);
   if (!view || !members.length) {
     setText("expert-status", "Not published");
     setText("expert-summary", "No structured expert assessment accompanies this snapshot. The model output and any future expert overlay are kept separate by design.");
+    setText("expert-meta", "Expert judgment is never substituted for the empirical model.");
     appendText(container, "p", "Awaiting a frozen-evidence expert round.", "empty-state");
+    byId("expert-house-wrap").hidden = true;
     dissent.hidden = true;
+    stress.hidden = true;
     return;
   }
-  setText("expert-status", view.status ?? `${members.length} views`);
-  setText("expert-summary", view.summary ?? view.house_view ?? "Structured specialist views on the same evidence pack.");
+  const house = view.house ?? {};
+  const disagreement = view.disagreement ?? {};
+  const houseConfidence = confidenceScore(house.confidence);
+  const aggregation = String(house.aggregation ?? house.aggregation_method ?? house.method ?? "aggregation method not published").replace(/-/g, " ");
+  setText("expert-status", "Expert judgment—not model");
+  setText("expert-summary", house.summary ?? view.summary ?? view.house_view ?? "Structured specialist views on the same evidence pack.");
+  setText(
+    "expert-meta",
+    `House confidence ${formatNumber(houseConfidence, 0)}/100 · ${confidenceLabel(house.confidence)} · ${aggregation}. Frozen evidence ${view.evidence?.forecast_id ?? "not identified"}.`,
+  );
+  byId("expert-house-wrap").hidden = false;
+  HORIZON_ORDER.forEach((horizon) => {
+    const value = finite(house.curve?.[horizon]);
+    const range = disagreement.ranges?.[horizon] ?? {};
+    if (value === null) return;
+    const row = document.createElement("tr");
+    const horizonCell = appendText(row, "th", horizon);
+    horizonCell.scope = "row";
+    appendText(row, "td", `${formatNumber(value, 1)}%`);
+    const lower = finite(range.min);
+    const upper = finite(range.max);
+    appendText(row, "td", lower === null || upper === null ? "not published" : `${formatNumber(lower, 1)}–${formatNumber(upper, 1)}%`);
+    houseBody.appendChild(row);
+  });
   members.forEach((member) => {
     const card = document.createElement("article");
     card.className = "expert-card";
-    appendText(card, "span", member.role ?? member.specialty ?? "Specialist", "eyebrow");
-    appendText(card, "h3", member.name ?? "Unnamed expert");
+    const role = member.role ?? member.name ?? "Unnamed expert";
+    appendText(card, "span", member.mandate ?? member.specialty ?? "Final round", "eyebrow");
+    appendText(card, "h3", role);
     appendText(card, "strong", member.stance ?? member.view ?? "No stance published");
-    if (finite(member.probability ?? member.score) !== null) appendText(card, "p", `${formatNumber(member.probability ?? member.score, 1)}${member.probability !== undefined ? "%" : "/100"} · confidence ${member.confidence ?? "n/a"}`);
-    if (member.rationale) appendText(card, "p", member.rationale);
+    appendText(card, "p", `Confidence ${formatNumber(member.confidence, 0)}/100 · ${confidenceLabel(member.confidence)}`, "expert-confidence");
+    appendExpertCurve(card, member.curve);
+    const rationale = member.rationale ?? member.summary ?? member.reasoning;
+    if (rationale) appendText(card, "p", rationale);
     container.appendChild(card);
   });
-  const dissentText = view.dissent ?? view.disagreement ?? view.minority_view;
+  const dissentText = disagreement.minority_view ?? view.dissent ?? view.minority_view;
   if (dissentText) {
     appendText(dissent, "strong", "Preserved dissent");
-    appendText(dissent, "p", typeof dissentText === "string" ? dissentText : JSON.stringify(dissentText));
+    appendText(dissent, "p", String(dissentText));
     dissent.hidden = false;
   } else dissent.hidden = true;
+  const stressText = disagreement.stress_view ?? view.stress_view;
+  if (stressText) {
+    appendText(stress, "strong", "Stress view");
+    appendText(stress, "p", String(stressText));
+    stress.hidden = false;
+  } else stress.hidden = true;
 }
 
 function calibrationHorizons(calibration) {
@@ -608,8 +815,8 @@ function renderCalibration(snapshot) {
   const copy = document.createElement("div");
   appendText(copy, "h3", calibrated ? "Validation gate passed" : "Experimental estimate—validation gate failed");
   appendText(copy, "p", calibrated
-    ? `Every horizon passes the published backtest gate; the separate live ledger is reported below.`
-    : "This remains an experimental probability estimate. At least one horizon fails the published backtest gate; live issuance and resolution counts are reported separately.");
+    ? "Every horizon passes the published backtest gate and has at least 20 resolved local calibration analogs; the live ledger is separate."
+    : "This remains an experimental probability estimate. At least one horizon fails its backtest gate or lacks 20 resolved local calibration analogs; live outcomes are separate.");
   state.appendChild(copy);
 
   const horizonData = calibrationHorizons(calibration);
@@ -618,12 +825,14 @@ function renderCalibration(snapshot) {
   const issued = finite(live.issued_forecasts);
   const resolved = finite(live.resolved_horizon_outcomes ?? live.resolved_forecast_count);
   const backtestN = finite(primaryMetrics.forecast_count ?? primaryMetrics.sample_size ?? primaryMetrics.n);
+  const minimumCalibrationN = finite(calibration.sample_size);
   const brier = finite(calibration.brier_score ?? calibration.brier ?? primaryMetrics.brier_score);
   appendDefinition(summary, "Live forecasts issued", issued === null ? "not published" : formatNumber(issued, 0));
   appendDefinition(summary, "Live horizon outcomes resolved", resolved === null ? "not published" : formatNumber(resolved, 0));
   appendDefinition(summary, `${snapshot.primary_horizon ?? "Primary"} backtest N`, backtestN === null ? "not published" : formatNumber(backtestN, 0));
   appendDefinition(summary, `${snapshot.primary_horizon ?? "Primary"} backtest Brier`, brier === null ? "not published" : formatNumber(brier, 3));
-  appendDefinition(summary, "Overall backtest gate", calibrated ? "Pass" : "Fail");
+  appendDefinition(summary, "Minimum current calibration N", minimumCalibrationN === null ? "not published" : formatNumber(minimumCalibrationN, 0));
+  appendDefinition(summary, "Model-level validation gate", calibrated ? "Pass" : "Fail");
   appendDefinition(summary, "Model version", snapshot.model?.version ?? "legacy / unversioned");
 
   const available = Object.keys(horizonData);
@@ -634,6 +843,7 @@ function renderCalibration(snapshot) {
     const count = finite(item.sample_size ?? item.n ?? item.observations ?? item.forecast_count);
     const skill = finite(item.brier_skill_vs_climatology);
     const ece = finite(item.calibration_error);
+    const currentCalibrationN = finite(snapshot.forecast?.horizons?.[horizon]?.sample?.calibration_examples);
     const publishedGate = snapshot.forecast?.horizons?.[horizon]?.calibration_status;
     const passes = publishedGate
       ? publishedGate === "calibrated"
@@ -646,9 +856,13 @@ function renderCalibration(snapshot) {
       formatNumber(item.log_loss ?? item.logloss, 3),
       skill === null ? "n/a" : formatSigned(skill, "", 3),
       ece === null ? "n/a" : formatNumber(ece, 3),
-    ].forEach((value) => appendText(row, "td", value));
-    const gate = appendText(row, "td", available.includes(horizon) ? (passes ? "Pass" : "Fail") : "Not reported");
-    gate.className = passes ? "gate-status gate-pass" : "gate-status gate-fail";
+      currentCalibrationN === null ? "n/a" : formatNumber(currentCalibrationN, 0),
+    ].forEach((value) => {
+      appendText(row, "td", value);
+    });
+    const isReported = available.includes(horizon);
+    const gate = appendText(row, "td", isReported ? (passes ? "Pass" : "Fail") : "Not reported");
+    gate.className = isReported ? `gate-status ${passes ? "gate-pass" : "gate-fail"}` : "gate-status";
     body.appendChild(row);
   });
 }
@@ -699,7 +913,7 @@ function renderHealth(snapshot) {
   const counts = byId("health-counts");
   clearNode(counts);
   [["Fresh", health.fresh_count], ["Stale", stale], ["Unavailable", unavailable]].forEach(([label, value]) => {
-    const item = document.createElement("span");
+    const item = document.createElement("li");
     appendText(item, "strong", formatNumber(value, 0));
     item.appendChild(document.createTextNode(` ${label}`));
     counts.appendChild(item);
@@ -726,8 +940,8 @@ function renderHealth(snapshot) {
       article,
       "small",
       observed
-        ? `Observed ${formatDate(observed)}${source.age_days !== undefined ? ` · ${source.age_days} days old` : ""}${source.item_count !== undefined ? ` · ${source.item_count} items` : ""}`
-        : "Observation date not published",
+        ? `${statusValue === "fresh" ? "Observed" : `${capitalize(statusValue)}; last observation`} ${formatDate(observed)}${source.age_days !== undefined ? ` · ${source.age_days} days old` : ""}${source.item_count !== undefined ? ` · ${source.item_count} items` : ""}`
+        : `${capitalize(statusValue)}; observation date not published`,
     );
     grid.appendChild(article);
   });
@@ -736,11 +950,13 @@ function renderHealth(snapshot) {
   const list = byId("warning-list");
   clearNode(list);
   setText("warning-count", `(${warnings.length})`);
-  warnings.forEach((warning) => appendText(list, "li", warning));
+  warnings.forEach((warning) => {
+    appendText(list, "li", warning);
+  });
   byId("warning-disclosure").hidden = warnings.length === 0;
 }
 
-function renderHistory(history, snapshot) {
+function renderHistory(history) {
   const body = byId("history-body");
   clearNode(body);
   const items = normalizeArray(history).slice().reverse().slice(0, 12);
@@ -759,7 +975,9 @@ function renderHistory(history, snapshot) {
       entry.primary_horizon ?? "n/a",
       `${formatNumber(entry.primary_score, 1)}%`,
       entry.stance ?? entry.market_regime ?? "n/a",
-    ].forEach((value) => appendText(row, "td", value));
+    ].forEach((value) => {
+      appendText(row, "td", value);
+    });
     body.appendChild(row);
   });
 }
@@ -789,7 +1007,14 @@ function renderHeadlines(snapshot) {
   clearNode(container);
   const headlines = normalizeArray(snapshot.news?.recent_headlines).slice(0, 6);
   if (!headlines.length) {
-    appendText(container, "li", "No recent headlines captured.", "empty-state");
+    appendText(
+      container,
+      "li",
+      snapshot.news?.headline_feed_available === false
+        ? "Headline feed unavailable; no absence-of-news inference is made."
+        : "No recent headlines were captured by the available feed.",
+      "empty-state",
+    );
     return;
   }
   headlines.forEach((headline) => {
@@ -802,13 +1027,16 @@ function renderHeadlines(snapshot) {
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       const external = appendText(link, "span", "↗", "external");
-      external.setAttribute("aria-label", " opens in a new tab");
+      external.setAttribute("aria-hidden", "true");
+      appendText(link, "span", " (opens in a new tab)", "sr-only");
     } else {
       link.removeAttribute("href");
       link.setAttribute("aria-disabled", "true");
     }
     item.appendChild(link);
-    appendText(item, "time", formatDate(headline.published_at));
+    const published = appendText(item, "time", formatDate(headline.published_at));
+    const publishedDate = new Date(headline.published_at);
+    if (!Number.isNaN(publishedDate.getTime())) published.dateTime = publishedDate.toISOString();
     container.appendChild(item);
   });
 }
@@ -833,14 +1061,26 @@ function wireNotes(snapshot) {
   });
   document.querySelector("[data-export-note]").addEventListener("click", () => {
     const payload = { exported_at: new Date().toISOString(), forecast_id: snapshot.forecast_id ?? null, snapshot_generated_at: snapshot.generated_at, horizon: activeHorizon, note: field.value };
-    const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "fx-try-risk-note.json";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    let url = null;
+    let link = null;
+    try {
+      if (typeof URL.createObjectURL !== "function") throw new Error("Object URL export is unsupported");
+      url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
+      link = document.createElement("a");
+      link.href = url;
+      link.download = "fx-try-risk-note.json";
+      document.body.appendChild(link);
+      link.click();
+      setText("note-status", "JSON export prepared. Your note remains stored only in this browser.");
+    } catch (error) {
+      console.warn("Note export unavailable", error);
+      setText("note-status", "JSON export is unavailable in this browser context.");
+    } finally {
+      if (link) link.remove();
+      if (url && typeof URL.revokeObjectURL === "function") {
+        window.setTimeout(() => URL.revokeObjectURL(url), 0);
+      }
+    }
   });
 }
 
@@ -863,9 +1103,10 @@ function renderSnapshot(snapshot, history) {
       : `${formatNumber(coverage * 100, 0)}%${availableSources !== null && totalSources !== null ? ` (${formatNumber(availableSources, 0)}/${formatNumber(totalSources, 0)})` : ""}`,
   );
   setText("briefing-caveat", capitalize(snapshot.data_health?.status ?? briefing.caveat_severity ?? "unknown"));
-  setText("model-tag", `${model.label ?? model.name ?? (isCalibrated(snapshot) ? "Calibrated model" : "Uncalibrated model")} ${model.version ? `v${model.version}` : ""}`.trim());
+  setText("model-tag", `${model.label ?? model.name ?? (isCalibrated(snapshot) ? "Calibrated model" : "Uncalibrated model")} ${model.version ?? ""}`.trim());
 
   renderHorizonSelector(snapshot);
+  renderAuthorityBadges(snapshot);
   updateHorizon(activeHorizon);
   renderTriggers(snapshot);
   renderExpertView(snapshot);
@@ -874,17 +1115,17 @@ function renderSnapshot(snapshot, history) {
 
   const spot = snapshot.market?.usd_try ?? {};
   setText("quick-spot", formatNumber(spot.latest, 4));
-  setText("quick-spot-date", `TRY per USD · ${sourceObservationText(snapshot, [["EUR/TRY", "ecb_eurtry"], ["EUR/USD", "ecb_eurusd"]]).replace("Observed · ", "")}`);
+  setText("quick-spot-date", `TRY per USD · ${sourceObservationText(snapshot, [["EUR/TRY", "ecb_eurtry"], ["EUR/USD", "ecb_eurusd"]]).replace("Sources · ", "")}`);
   setText("quick-spot-change", formatChange(spot.change_20d));
-  setText("quick-spot-change-date", sourceObservationText(snapshot, [["EUR/TRY", "ecb_eurtry"], ["EUR/USD", "ecb_eurusd"]]).replace("Observed · ", ""));
+  setText("quick-spot-change-date", sourceObservationText(snapshot, [["EUR/TRY", "ecb_eurtry"], ["EUR/USD", "ecb_eurusd"]]).replace("Sources · ", ""));
   setText("quick-peer-gap", formatSigned(snapshot.market?.try_gap_20d, " pp"));
-  setText("quick-peer-date", sourceObservationText(snapshot, [["BRL", "ecb_eurbrl"], ["HUF", "ecb_eurhuf"], ["PLN", "ecb_eurpln"], ["ZAR", "ecb_eurzar"]]).replace("Observed · ", ""));
+  setText("quick-peer-date", sourceObservationText(snapshot, [["BRL", "ecb_eurbrl"], ["HUF", "ecb_eurhuf"], ["PLN", "ecb_eurpln"], ["ZAR", "ecb_eurzar"]]).replace("Sources · ", ""));
   setText("quick-policy", finite(snapshot.macro?.turkey?.policy_rate) === null ? "n/a" : `${formatNumber(snapshot.macro.turkey.policy_rate, 2)}%`);
-  setText("quick-policy-date", sourceObservationText(snapshot, [["CBRT", "cbrt_policy_rate"]]).replace("Observed · ", ""));
+  setText("quick-policy-date", sourceObservationText(snapshot, [["CBRT", "cbrt_policy_rate"]]).replace("Sources · ", ""));
 
   setText("market-regime", snapshot.market?.regime_label ?? "Market regime unavailable");
   setText("macro-regime", snapshot.macro?.regime_label ?? "Macro regime unavailable");
-  setText("market-freshness", sourceObservationText(snapshot, [["ECB EUR/TRY", "ecb_eurtry"], ["EUR/USD", "ecb_eurusd"]]).replace("Observed · ", ""));
+  setText("market-freshness", sourceObservationText(snapshot, [["ECB EUR/TRY", "ecb_eurtry"], ["EUR/USD", "ecb_eurusd"]]).replace("Sources · ", ""));
   setText("market-lens-date", "Source-dated below");
   setText("macro-lens-date", "Source-dated below");
   renderMetricGrid("market-metrics", [
@@ -903,7 +1144,7 @@ function renderSnapshot(snapshot, history) {
   const currentModelHistory = sameModelHistory(history, snapshot);
   renderLineChart("market-chart", "market-chart-legend", "market-chart-meta", "market-chart-table", snapshot.charts?.market_trend, "%");
   renderLineChart("score-chart", "score-chart-legend", "score-chart-meta", "score-chart-table", scoreChartFromHistory(currentModelHistory, snapshot), "%");
-  renderHistory(currentModelHistory, snapshot);
+  renderHistory(currentModelHistory);
   renderHeadlines(snapshot);
   wireNotes(snapshot);
 }

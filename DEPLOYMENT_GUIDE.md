@@ -66,9 +66,12 @@ Versioned releases must preserve:
 - `docs/data/latest.json`: the current decision surface;
 - `docs/data/history.json`: chronological public snapshot history;
 - `docs/data/source_cache.json`: last-known source payloads, never presented as
-  live without disclosure; and
-- the canonical forecast ledger: immutable forecast identity plus subsequently
-  observed outcomes.
+  live without disclosure;
+- `docs/data/forecast_ledger.json`: immutable issued forecasts plus append-only,
+  separately identified terminal and path resolutions; and
+- `docs/data/expert-latest.json`: the optional expert archive, displayed only
+  when its forecast, model, event, cutoff, and evidence identities exactly bind
+  to the current snapshot.
 
 Schema and model changes should advance their versions. A model release must
 state whether the output is an uncalibrated risk index, an experimental

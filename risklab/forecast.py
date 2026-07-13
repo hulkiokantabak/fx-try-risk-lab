@@ -15,7 +15,7 @@ from statistics import mean, median
 from typing import Sequence
 
 
-MODEL_VERSION = "empirical-regime-v2.1.0"
+MODEL_VERSION = "empirical-regime-v2.2.0"
 HORIZON_SESSIONS = {"1w": 5, "1m": 22, "3m": 66, "6m": 132, "1y": 264}
 FEATURE_WINDOW = 20
 MINIMUM_HISTORY = 750
@@ -52,6 +52,7 @@ class Prediction:
     outcome: int
     conditional_count: int
     calibration_count: int
+    unconstrained_probability: float | None = None
 
 
 @dataclass(frozen=True)
@@ -73,85 +74,42 @@ def build_empirical_forecast(points: Sequence[object], thresholds: dict[str, flo
     by_index = {row.index: row for row in features}
     current = features[-1]
     horizons: dict[str, dict] = {}
+    touch_horizons: dict[str, dict] = {}
     all_metrics: dict[str, dict] = {}
+    all_touch_metrics: dict[str, dict] = {}
     all_drivers: dict[str, list[dict]] = {}
+    all_touch_drivers: dict[str, list[dict]] = {}
 
     for horizon, sessions in HORIZON_SESSIONS.items():
         threshold = float(thresholds[horizon])
-        labelled = _labelled_rows(points, features, sessions, threshold)
-        current_training = [row for row in labelled if row.target_index <= current.index]
-        if len(current_training) < MINIMUM_TRAINING:
-            raise ValueError(
-                f"{horizon} forecast has only {len(current_training)} leakage-safe training examples"
-            )
-
-        backtest = _walk_forward_backtest(labelled, by_index, sessions)
-        raw, conditional_count, regime = _conditional_probability(current, current_training)
-        calibrated, calibration_count = _calibrate(raw, backtest, as_of_index=current.index + 1)
-        metrics = _metrics(backtest)
-        calibration_status = (
-            "calibrated"
-            if metrics.get("forecast_count", 0) >= 50
-            and (metrics.get("brier_skill_vs_climatology") or 0.0) > 0.0
-            and (metrics.get("calibration_error") or 1.0) <= 0.10
-            else "experimental"
-        )
-        interval = _uncertainty_interval(
-            calibrated,
-            raw_probability=raw,
-            current=current,
-            training=current_training,
-            earlier_predictions=backtest,
+        terminal, terminal_backtest, terminal_probability = _estimate_horizon(
+            points,
+            features,
+            by_index,
+            current,
+            horizon=horizon,
             sessions=sessions,
-            as_of_index=current.index + 1,
+            threshold=threshold,
+            contract="exact_terminal",
         )
-        drivers = _signed_drivers(current, current_training)
-        target_move = ((points[-1].value * (1.0 + threshold / 100.0)))
-
-        horizons[horizon] = {
-            "horizon": horizon,
-            "sessions": sessions,
-            "threshold_percent": threshold,
-            "probability": round(calibrated * 100.0, 1),
-            "raw_probability": round(raw * 100.0, 1),
-            "uncertainty": {
-                "level": 90,
-                "lower": round(interval.lower * 100.0, 1),
-                "upper": round(interval.upper * 100.0, 1),
-                "lower_probability": round(interval.lower * 100.0, 1),
-                "upper_probability": round(interval.upper * 100.0, 1),
-                "method": (
-                    f"{BOOTSTRAP_REPLICATIONS}-replicate deterministic circular moving-block bootstrap "
-                    "of strictly resolved as-of regime and reliability-calibration evidence; "
-                    "90% percentile interval"
-                ),
-                "effective_sample_size": interval.effective_sample_size,
-                "block_length_sessions": interval.block_length_sessions,
-                "calibration_block_length_forecasts": interval.calibration_block_length_forecasts,
-                "calibration_evidence_count": interval.calibration_evidence_count,
-                "limitations": (
-                    "Sampling uncertainty conditional on the fixed feature and regime definitions; "
-                    "it does not quantify structural breaks, source error or tail-model risk."
-                ),
-            },
-            "event": {
-                "baseline_value": round(float(points[-1].value), 6),
-                "threshold_value": round(target_move, 6),
-                "operator": ">=",
-                "formula": f"USDTRY[t+{sessions}] / USDTRY[t] - 1 >= {threshold / 100.0:.6f}",
-            },
-            "sample": {
-                "training_examples": len(current_training),
-                "conditional_examples": conditional_count,
-                "calibration_examples": calibration_count,
-                "regime": regime,
-            },
-            "calibration": metrics,
-            "calibration_status": calibration_status,
-            "signed_drivers": drivers,
-        }
-        all_metrics[horizon] = metrics
-        all_drivers[horizon] = drivers
+        touch, _touch_backtest, _touch_probability = _estimate_horizon(
+            points,
+            features,
+            by_index,
+            current,
+            horizon=horizon,
+            sessions=sessions,
+            threshold=threshold,
+            contract="any_time_breach",
+            coherence_floor_probability=terminal_probability,
+            coherence_floor_predictions=terminal_backtest,
+        )
+        horizons[horizon] = terminal
+        touch_horizons[horizon] = touch
+        all_metrics[horizon] = terminal["calibration"]
+        all_touch_metrics[horizon] = touch["calibration"]
+        all_drivers[horizon] = terminal["signed_drivers"]
+        all_touch_drivers[horizon] = touch["signed_drivers"]
 
     cutoff_date = points[-1].observed_at.strftime("%Y-%m-%d")
     cutoff = f"{cutoff_date}T00:00:00Z"
@@ -165,14 +123,17 @@ def build_empirical_forecast(points: Sequence[object], thresholds: dict[str, flo
         "model": {
             "name": "Empirical regime-conditioned USD/TRY model",
             "version": MODEL_VERSION,
-            "status": "experimental",
+            "status": "calibrated" if is_calibrated else "experimental",
             "is_calibrated": is_calibrated,
             "output_type": "calibrated_probability" if is_calibrated else "experimental_probability",
             "probability_scale": "0-100 percent",
+            "primary_contract": "exact_terminal",
+            "secondary_contract": "any_time_breach",
             "method": (
                 "Expanding-window historical event rate conditioned on as-of 5-session momentum, "
                 "20-session momentum, realized volatility and acceleration; Bayesian shrinkage to "
-                "the as-of climatology; rolling reliability recalibration."
+                "the as-of climatology; rolling reliability recalibration. Exact-terminal and "
+                "any-time-breach contracts are estimated separately from their own labels."
             ),
             "predictors": [
                 "USD/TRY 5-session percentage change",
@@ -193,6 +154,7 @@ def build_empirical_forecast(points: Sequence[object], thresholds: dict[str, flo
                 "Long-horizon backtest outcomes overlap even though evaluation forecasts are sampled no more often than monthly.",
                 "Moving-block intervals retain observed target-window dependence but describe sampling uncertainty, not structural breaks.",
                 "Backtest metrics are research evidence, not a guarantee of future performance.",
+                "Any-time-breach estimates use observed ECB daily reference-rate observations only; intraday breaches are not observed.",
             ],
         },
         "data_cutoff": cutoff,
@@ -211,9 +173,11 @@ def build_empirical_forecast(points: Sequence[object], thresholds: dict[str, flo
             "horizon_unit": "ECB trading observations",
         },
         "event_definition": {
+            "event_type": "exact_terminal",
+            "primary": True,
             "pair": "USD/TRY",
             "direction": "TRY depreciation / USD/TRY increase",
-            "measurement": "ECB reference-rate close to close over an exact count of trading observations",
+            "measurement": "ECB reference-rate change over an exact count of aligned observations",
             "statement": (
                 "For each horizon, the event occurs when the future USD/TRY reference rate is greater than or "
                 "equal to the baseline multiplied by one plus that horizon's threshold."
@@ -238,8 +202,278 @@ def build_empirical_forecast(points: Sequence[object], thresholds: dict[str, flo
                 "calibration_error": "weighted absolute forecast-vs-outcome gap across probability bins; lower is better",
             },
         },
+        "path_risk": {
+            "contract": "any_time_breach",
+            "primary": False,
+            "event_definition": {
+                "event_type": "any_time_breach",
+                "pair": "USD/TRY",
+                "direction": "TRY depreciation / USD/TRY increase",
+                "measurement": (
+                    "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive"
+                ),
+                "statement": (
+                    "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY "
+                    "daily reference-rate observation from t+1 through t+h, inclusive, is greater than or "
+                    "equal to the baseline multiplied by one plus that horizon's threshold. The outcome is "
+                    "zero only after observation t+h is available."
+                ),
+                "relationship_to_terminal": (
+                    "This is a separate path-dependent contract. It can resolve to 1 even when the primary "
+                    "exact-terminal contract resolves to 0; the exact-terminal forecast remains primary."
+                ),
+                "thresholds_percent": thresholds,
+                "horizon_sessions": HORIZON_SESSIONS,
+                "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+                "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)",
+                "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+                "resolution_rule": (
+                    "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise "
+                    "resolve to 0 only when the complete h-observation window has ended."
+                ),
+                "observation_limit": (
+                    "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract."
+                ),
+            },
+            "coherence_constraint": {
+                "rule": "P(any-time breach by h) = max(unconstrained path estimate, P(exact-terminal breach at h))",
+                "rationale": (
+                    "The exact-terminal event is a subset of the inclusive any-time-breach event, so its "
+                    "probability is a mathematical lower bound on path risk."
+                ),
+                "backtest_application": (
+                    "Applied to matched same-forecast-index walk-forward probabilities before touch metrics "
+                    "and calibration-status gates are computed."
+                ),
+            },
+            "horizons": touch_horizons,
+            "backtest": {
+                "protocol": (
+                    "strict expanding-window, complete-touch-window-purged training and as-of reliability calibration"
+                ),
+                "metrics": all_touch_metrics,
+                "metric_definitions": {
+                    "brier_score": "mean squared probability error; lower is better",
+                    "log_loss": "mean negative Bernoulli log likelihood; lower is better",
+                    "brier_skill_vs_climatology": (
+                        "1 - touch-model Brier / target-purged touch-climatology Brier; each benchmark "
+                        "probability is stored when its forecast is formed; positive is better"
+                    ),
+                    "calibration_error": (
+                        "weighted absolute forecast-vs-outcome gap across probability bins; lower is better"
+                    ),
+                },
+            },
+            "signed_drivers": all_touch_drivers,
+        },
         "signed_drivers": all_drivers,
     }
+
+
+def _estimate_horizon(
+    points: Sequence[object],
+    features: Sequence[FeatureRow],
+    by_index: dict[int, FeatureRow],
+    current: FeatureRow,
+    *,
+    horizon: str,
+    sessions: int,
+    threshold: float,
+    contract: str,
+    coherence_floor_probability: float | None = None,
+    coherence_floor_predictions: Sequence[Prediction] | None = None,
+) -> tuple[dict, list[Prediction], float]:
+    """Fit one event contract without sharing outcomes across contracts."""
+
+    if contract == "exact_terminal":
+        labelled = _labelled_rows(points, features, sessions, threshold)
+    elif contract == "any_time_breach":
+        labelled = _touch_labelled_rows(points, features, sessions, threshold)
+    else:
+        raise ValueError(f"unsupported forecast contract: {contract}")
+
+    # Publication is represented by as_of_index=current.index + 1, so the
+    # equivalent strict purge admits target_index <= current.index. Historical
+    # forecasts retain target_index < forecast_index in _walk_forward_backtest;
+    # neither path admits a partial target window.
+    current_training = [row for row in labelled if row.target_index <= current.index]
+    if len(current_training) < MINIMUM_TRAINING:
+        raise ValueError(
+            f"{horizon} {contract} forecast has only {len(current_training)} leakage-safe training examples"
+        )
+
+    unconstrained_backtest = _walk_forward_backtest(labelled, by_index, sessions)
+    raw, conditional_count, regime = _conditional_probability(current, current_training)
+    unconstrained_calibrated, calibration_count = _calibrate(
+        raw,
+        unconstrained_backtest,
+        as_of_index=current.index + 1,
+    )
+    calibrated = unconstrained_calibrated
+    backtest = unconstrained_backtest
+    coherence_adjustments = 0
+    coherence_max_adjustment = 0.0
+    if contract == "any_time_breach":
+        if coherence_floor_probability is None or coherence_floor_predictions is None:
+            raise ValueError("any_time_breach estimation requires matched exact-terminal coherence floors")
+        backtest, coherence_adjustments, coherence_max_adjustment = _coherent_touch_predictions(
+            unconstrained_backtest,
+            coherence_floor_predictions,
+        )
+        calibrated = max(unconstrained_calibrated, coherence_floor_probability)
+    challenger = _climatology_probability(current_training)
+    metrics = _metrics(backtest)
+    if contract == "any_time_breach":
+        metrics["probability_series"] = "coherence_constrained_any_time_breach"
+        metrics["coherence_adjusted_forecast_count"] = coherence_adjustments
+        metrics["coherence_max_adjustment_percentage_points"] = round(
+            coherence_max_adjustment * 100.0,
+            4,
+        )
+        metrics["unconstrained_metrics"] = _metrics(unconstrained_backtest)
+    calibration_status = _calibration_status(metrics)
+    interval = _uncertainty_interval(
+        calibrated,
+        raw_probability=raw,
+        current=current,
+        training=current_training,
+        earlier_predictions=backtest,
+        sessions=sessions,
+        as_of_index=current.index + 1,
+    )
+    drivers = _signed_drivers(current, current_training)
+    baseline = float(points[-1].value)
+    threshold_value = baseline * (1.0 + threshold / 100.0)
+    if contract == "exact_terminal":
+        event = {
+            "event_type": contract,
+            "primary": True,
+            "baseline_value": round(baseline, 6),
+            "threshold_value": round(threshold_value, 6),
+            "operator": ">=",
+            "observation_offset": sessions,
+            "formula": f"USDTRY[t+{sessions}] / USDTRY[t] - 1 >= {threshold / 100.0:.6f}",
+            "contract_text": (
+                f"Resolve to 1 only if the derived ECB USD/TRY observation exactly at t+{sessions} "
+                f"is at least {threshold:.6f}% above USD/TRY at t; otherwise resolve to 0."
+            ),
+        }
+    else:
+        event = {
+            "event_type": contract,
+            "primary": False,
+            "baseline_value": round(baseline, 6),
+            "threshold_value": round(threshold_value, 6),
+            "operator": ">=",
+            "window_start_offset": 1,
+            "window_end_offset": sessions,
+            "window_inclusive": True,
+            "formula": (
+                f"max(USDTRY[t+1], ..., USDTRY[t+{sessions}]) / USDTRY[t] - 1 "
+                f">= {threshold / 100.0:.6f}"
+            ),
+            "contract_text": (
+                f"Resolve to 1 if any derived ECB USD/TRY observation from t+1 through t+{sessions}, "
+                f"inclusive, touches or exceeds {threshold:.6f}% above USD/TRY at t; otherwise resolve "
+                f"to 0 only after observation t+{sessions} is available."
+            ),
+        }
+
+    benchmark = {
+        "name": "Current target-purged climatology",
+        "role": "challenger",
+        "probability": round(challenger * 100.0, 1),
+        "delta_model_minus_benchmark_percentage_points": round(
+            (calibrated - challenger) * 100.0,
+            1,
+        ),
+        "training_examples": len(current_training),
+        "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+        "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+    }
+    result = {
+        "horizon": horizon,
+        "sessions": sessions,
+        "threshold_percent": threshold,
+        "probability": round(calibrated * 100.0, 1),
+        "raw_probability": round(raw * 100.0, 1),
+        "uncertainty": {
+            "level": 90,
+            "lower": round(interval.lower * 100.0, 1),
+            "upper": round(interval.upper * 100.0, 1),
+            "lower_probability": round(interval.lower * 100.0, 1),
+            "upper_probability": round(interval.upper * 100.0, 1),
+            "method": (
+                f"{BOOTSTRAP_REPLICATIONS}-replicate deterministic circular moving-block bootstrap "
+                "of strictly resolved as-of regime and reliability-calibration evidence; "
+                "90% percentile interval"
+            ),
+            "effective_sample_size": interval.effective_sample_size,
+            "block_length_sessions": interval.block_length_sessions,
+            "calibration_block_length_forecasts": interval.calibration_block_length_forecasts,
+            "calibration_evidence_count": interval.calibration_evidence_count,
+            "limitations": (
+                "Sampling uncertainty conditional on the fixed feature and regime definitions; "
+                "it does not quantify structural breaks, source error or tail-model risk."
+            ),
+        },
+        "event": event,
+        "sample": {
+            "training_examples": len(current_training),
+            "conditional_examples": conditional_count,
+            "calibration_examples": calibration_count,
+            "regime": regime,
+        },
+        "calibration": metrics,
+        "calibration_status": calibration_status,
+        "signed_drivers": drivers,
+    }
+    if contract == "exact_terminal":
+        result["challenger"] = {
+            **benchmark,
+            "delta_model_minus_challenger_percentage_points": benchmark[
+                "delta_model_minus_benchmark_percentage_points"
+            ],
+        }
+    else:
+        result["benchmark"] = benchmark
+        adjustment = calibrated - unconstrained_calibrated
+        result["unconstrained_probability"] = round(unconstrained_calibrated * 100.0, 1)
+        result["coherence_constraint"] = {
+            "rule": "touch probability is floored by the matched exact-terminal probability",
+            "terminal_floor_probability": round(float(coherence_floor_probability) * 100.0, 1),
+            "adjustment_percentage_points": round(adjustment * 100.0, 1),
+            "binding": adjustment > 0.0,
+            "backtest_adjusted_forecast_count": coherence_adjustments,
+            "backtest_max_adjustment_percentage_points": round(
+                coherence_max_adjustment * 100.0,
+                4,
+            ),
+            "metrics_probability_series": "coherence_constrained_any_time_breach",
+        }
+    return result, backtest, calibrated
+
+
+def _calibration_status(metrics: dict) -> str:
+    forecast_count = metrics.get("forecast_count")
+    brier_skill = metrics.get("brier_skill_vs_climatology")
+    calibration_error = metrics.get("calibration_error")
+    passes = (
+        isinstance(forecast_count, (int, float))
+        and math.isfinite(float(forecast_count))
+        and forecast_count >= 50
+        and isinstance(brier_skill, (int, float))
+        and math.isfinite(float(brier_skill))
+        and brier_skill > 0.0
+        and isinstance(calibration_error, (int, float))
+        and math.isfinite(float(calibration_error))
+        and calibration_error <= 0.10
+    )
+    return (
+        "calibrated"
+        if passes
+        else "experimental"
+    )
 
 
 def _feature_rows(points: Sequence[object]) -> list[FeatureRow]:
@@ -283,6 +517,34 @@ def _labelled_rows(
     return result
 
 
+def _touch_labelled_rows(
+    points: Sequence[object],
+    features: Sequence[FeatureRow],
+    sessions: int,
+    threshold: float,
+) -> list[LabelledRow]:
+    """Label an inclusive t+1..t+h daily-reference-rate threshold breach.
+
+    ``target_index`` is always the end of the full observation window, including
+    when a breach occurs earlier. This intentionally delays admission of every
+    positive and negative label until the same complete window has resolved.
+    """
+
+    result = []
+    for row in features:
+        target_index = row.index + sessions
+        if target_index >= len(points):
+            continue
+        baseline = float(points[row.index].value)
+        threshold_value = baseline * (1.0 + threshold / 100.0)
+        touched = any(
+            float(points[position].value) >= threshold_value
+            for position in range(row.index + 1, target_index + 1)
+        )
+        result.append(LabelledRow(row, target_index, int(touched)))
+    return result
+
+
 def _walk_forward_backtest(
     labelled: Sequence[LabelledRow],
     by_index: dict[int, FeatureRow],
@@ -319,6 +581,59 @@ def _walk_forward_backtest(
             )
         )
     return predictions
+
+
+def _coherent_touch_predictions(
+    touch_predictions: Sequence[Prediction],
+    terminal_predictions: Sequence[Prediction],
+) -> tuple[list[Prediction], int, float]:
+    """Project matched touch forecasts onto their terminal-event lower bound.
+
+    Outcomes and raw estimates remain those of the touch contract. Only the
+    published/evaluated touch probability is projected, and the original value
+    is retained on each prediction for reproducibility.
+    """
+
+    terminal_by_index = {
+        prediction.forecast_index: prediction for prediction in terminal_predictions
+    }
+    touch_indexes = {prediction.forecast_index for prediction in touch_predictions}
+    if touch_indexes != set(terminal_by_index):
+        raise ValueError("touch and terminal backtests must have identical forecast indexes")
+
+    coherent: list[Prediction] = []
+    adjusted_count = 0
+    maximum_adjustment = 0.0
+    for touch in touch_predictions:
+        terminal = terminal_by_index[touch.forecast_index]
+        if touch.target_index != terminal.target_index:
+            raise ValueError("matched touch and terminal forecasts must share a target-window end")
+        if touch.outcome < terminal.outcome:
+            raise ValueError("touch outcome cannot be lower than its exact-terminal subset outcome")
+        unconstrained = (
+            touch.unconstrained_probability
+            if touch.unconstrained_probability is not None
+            else touch.probability
+        )
+        constrained = max(unconstrained, terminal.probability)
+        adjustment = constrained - unconstrained
+        if adjustment > 0.0:
+            adjusted_count += 1
+            maximum_adjustment = max(maximum_adjustment, adjustment)
+        coherent.append(
+            Prediction(
+                forecast_index=touch.forecast_index,
+                target_index=touch.target_index,
+                raw_probability=touch.raw_probability,
+                probability=constrained,
+                climatology_probability=touch.climatology_probability,
+                outcome=touch.outcome,
+                conditional_count=touch.conditional_count,
+                calibration_count=touch.calibration_count,
+                unconstrained_probability=unconstrained,
+            )
+        )
+    return coherent, adjusted_count, maximum_adjustment
 
 
 def _conditional_probability(

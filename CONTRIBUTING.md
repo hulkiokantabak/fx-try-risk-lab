@@ -65,10 +65,12 @@ status is not sufficient validation.
 ## Forecast history and outcome ledger
 
 Forecast identifiers are unique and immutable. History and ledger timestamps
-must be strictly chronological. When an outcome becomes observable, append or
-fill the outcome fields without changing the original issue time, model,
-event, threshold, or estimate. Corrections require a visible correction record,
-not silent replacement.
+must be strictly chronological. When an outcome becomes observable, append a
+new resolution event that references the immutable issued forecast; never fill
+or rewrite the issued row. Terminal and path outcomes use distinct resolution
+identities, and a path outcome must wait until its complete observation window
+has elapsed. Corrections require a visible correction record, not silent
+replacement.
 
 ## Browser and editorial standards
 

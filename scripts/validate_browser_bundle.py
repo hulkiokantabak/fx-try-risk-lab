@@ -15,15 +15,21 @@ import math
 import re
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Iterable, Mapping
 
 
 ROOT = Path(__file__).resolve().parent.parent
 HORIZONS = ("1w", "1m", "3m", "6m", "1y")
 HORIZON_SET = set(HORIZONS)
-LEDGER_IDENTITY_VERSION = "sha256-canonical-json-v2"
+LEDGER_IDENTITY_VERSION_V2 = "sha256-canonical-json-v2"
+LEDGER_IDENTITY_VERSION = "sha256-canonical-json-v3"
 LEDGER_IDENTITY_DIGEST_LENGTH = 24
-LEDGER_CONTENT_KEYS = ("model", "data_cutoff", "baseline", "target", "event_definition", "horizons")
+LEDGER_CONTENT_KEYS_V2 = ("model", "data_cutoff", "baseline", "target", "event_definition", "horizons")
+LEDGER_CONTENT_KEYS = (*LEDGER_CONTENT_KEYS_V2, "path_risk")
+LEDGER_CONTENT_KEYS_BY_VERSION = {
+    LEDGER_IDENTITY_VERSION_V2: LEDGER_CONTENT_KEYS_V2,
+    LEDGER_IDENTITY_VERSION: LEDGER_CONTENT_KEYS,
+}
 FORECAST_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$")
 ALLOWED_HEALTH = {
     "healthy",
@@ -249,6 +255,154 @@ def validate_uncertainty(value: Any, curve: Mapping[str, Any]) -> None:
         require_string(interval["method"], f"uncertainty.{horizon}.method")
 
 
+def validate_path_risk(value: Any, thresholds: Mapping[str, Any]) -> None:
+    """Validate the optional, separately estimated any-time-breach contract."""
+
+    path_risk = require_object(value, "latest.path_risk")
+    require_keys(path_risk, {"contract", "event_definition", "horizons"}, "latest.path_risk")
+    contract = require_string(path_risk["contract"], "latest.path_risk.contract").casefold()
+    require(contract == "any_time_breach", "latest.path_risk.contract must be any_time_breach")
+
+    event = require_object(path_risk["event_definition"], "latest.path_risk.event_definition")
+    require_keys(
+        event,
+        {"statement", "measurement", "relationship_to_terminal", "thresholds_percent", "horizon_sessions"},
+        "latest.path_risk.event_definition",
+    )
+    statement = require_string(event["statement"], "latest.path_risk.event_definition.statement").casefold()
+    measurement = require_string(event["measurement"], "latest.path_risk.event_definition.measurement").casefold()
+    relationship = require_string(
+        event["relationship_to_terminal"],
+        "latest.path_risk.event_definition.relationship_to_terminal",
+    ).casefold()
+    require("any" in statement and ("breach" in statement or "touch" in statement), "path-risk statement must define an any-time breach")
+    require("t+1" in measurement or "maximum" in measurement or "window" in measurement, "path-risk measurement must define the observation window")
+    require(
+        "terminal" in relationship
+        and ("not interchangeable" in relationship or "different" in relationship or "separate" in relationship),
+        "path risk must state that it is separate from terminal probability",
+    )
+    path_thresholds = validate_horizon_map(
+        event["thresholds_percent"],
+        "latest.path_risk.event_definition.thresholds_percent",
+        minimum=0.000001,
+        maximum=100,
+    )
+    require(dict(path_thresholds) == dict(thresholds), "path-risk thresholds must match the primary contract")
+    sessions = validate_horizon_map(
+        event["horizon_sessions"],
+        "latest.path_risk.event_definition.horizon_sessions",
+        minimum=1,
+        maximum=1000,
+    )
+    for horizon, count in sessions.items():
+        require(isinstance(count, int) and not isinstance(count, bool), f"path-risk sessions.{horizon} must be an integer")
+
+    horizons = require_object(path_risk["horizons"], "latest.path_risk.horizons")
+    require(set(horizons) == HORIZON_SET, "latest.path_risk.horizons must match canonical horizons")
+    curve: dict[str, float] = {}
+    intervals: dict[str, Any] = {}
+    for horizon in HORIZONS:
+        item = require_object(horizons[horizon], f"latest.path_risk.horizons.{horizon}")
+        require_keys(
+            item,
+            {"sessions", "threshold_percent", "probability", "uncertainty", "calibration", "calibration_status"},
+            f"latest.path_risk.horizons.{horizon}",
+        )
+        count = item["sessions"]
+        require(isinstance(count, int) and not isinstance(count, bool), f"path-risk horizons.{horizon}.sessions must be an integer")
+        require(count == sessions[horizon], f"path-risk horizons.{horizon}.sessions must match its event definition")
+        require_number(item["threshold_percent"], f"path-risk horizons.{horizon}.threshold_percent", minimum=0.000001, maximum=100)
+        require(float(item["threshold_percent"]) == float(thresholds[horizon]), f"path-risk horizons.{horizon} threshold must match primary contract")
+        curve[horizon] = require_number(item["probability"], f"path-risk horizons.{horizon}.probability", minimum=0, maximum=100)
+        intervals[horizon] = item["uncertainty"]
+        calibration_status = require_string(item["calibration_status"], f"path-risk horizons.{horizon}.calibration_status").casefold()
+        require(calibration_status in {"calibrated", "experimental"}, f"unsupported path-risk calibration status for {horizon}")
+        calibration = require_object(item["calibration"], f"latest.path_risk.horizons.{horizon}.calibration")
+        if "forecast_count" in calibration:
+            require_number(calibration["forecast_count"], f"path-risk calibration {horizon}.forecast_count", minimum=0)
+    validate_uncertainty(intervals, curve)
+
+
+def validate_expert_view(value: Any, latest: Mapping[str, Any]) -> None:
+    """Validate frozen-evidence expert judgment without treating it as model output."""
+
+    expert = require_object(value, "latest.expert_view")
+    require_keys(
+        expert,
+        {"status", "evidence", "house", "disagreement", "final_experts"},
+        "latest.expert_view",
+    )
+    require_string(expert["status"], "latest.expert_view.status")
+    evidence = require_object(expert["evidence"], "latest.expert_view.evidence")
+    require_keys(evidence, {"forecast_id", "model_version"}, "latest.expert_view.evidence")
+    require(
+        evidence["forecast_id"] == latest.get("forecast_id"),
+        "expert evidence forecast_id must exactly match latest.forecast_id",
+    )
+    model = require_object(latest.get("model"), "latest.model")
+    require(
+        evidence["model_version"] == model.get("version"),
+        "expert evidence model_version must exactly match latest.model.version",
+    )
+    if "frozen_at" in evidence:
+        parse_timestamp(evidence["frozen_at"], "latest.expert_view.evidence.frozen_at")
+    if "data_cutoff" in evidence:
+        require(evidence["data_cutoff"] == latest.get("data_cutoff"), "expert evidence data_cutoff must match latest")
+    if "empirical_curve" in evidence:
+        empirical_curve = validate_horizon_map(
+            evidence["empirical_curve"],
+            "latest.expert_view.evidence.empirical_curve",
+            minimum=0,
+            maximum=100,
+        )
+        require(dict(empirical_curve) == dict(latest["curve"]), "expert evidence empirical_curve must match latest")
+
+    house = require_object(expert["house"], "latest.expert_view.house")
+    require_keys(house, {"curve", "confidence", "summary"}, "latest.expert_view.house")
+    house_curve = validate_horizon_map(house["curve"], "latest.expert_view.house.curve", minimum=0, maximum=100)
+    house_confidence = house["confidence"]
+    if isinstance(house_confidence, dict):
+        require_keys(house_confidence, {"score", "label"}, "latest.expert_view.house.confidence")
+        require_number(house_confidence["score"], "latest.expert_view.house.confidence.score", minimum=0, maximum=100)
+        require_string(house_confidence["label"], "latest.expert_view.house.confidence.label")
+    else:
+        require_number(house_confidence, "latest.expert_view.house.confidence", minimum=0, maximum=100)
+    require_string(house["summary"], "latest.expert_view.house.summary")
+    aggregation = house.get("aggregation", house.get("aggregation_method", house.get("method")))
+    aggregation = require_string(aggregation, "latest.expert_view.house.aggregation")
+    require("weight" in aggregation.casefold(), "expert house aggregation must disclose its weighting method")
+
+    disagreement = require_object(expert["disagreement"], "latest.expert_view.disagreement")
+    require_keys(disagreement, {"ranges", "minority_view", "stress_view"}, "latest.expert_view.disagreement")
+    ranges = require_object(disagreement["ranges"], "latest.expert_view.disagreement.ranges")
+    require(set(ranges) == HORIZON_SET, "expert disagreement ranges must match canonical horizons")
+    for horizon in HORIZONS:
+        interval = require_object(ranges[horizon], f"expert disagreement range {horizon}")
+        require_keys(interval, {"min", "max"}, f"expert disagreement range {horizon}")
+        lower = require_number(interval["min"], f"expert disagreement range {horizon}.min", minimum=0, maximum=100)
+        upper = require_number(interval["max"], f"expert disagreement range {horizon}.max", minimum=0, maximum=100)
+        require(lower <= float(house_curve[horizon]) <= upper, f"expert house curve.{horizon} must lie inside disagreement range")
+    require_string(disagreement["minority_view"], "latest.expert_view.disagreement.minority_view")
+    require_string(disagreement["stress_view"], "latest.expert_view.disagreement.stress_view")
+
+    members = require_list(expert["final_experts"], "latest.expert_view.final_experts", nonempty=True)
+    require(len(members) == 4, "latest.expert_view.final_experts must contain exactly four core roles")
+    expected_roles = {"atlas", "bosphorus", "flow", "vega"}
+    observed_roles: set[str] = set()
+    for index, raw_member in enumerate(members):
+        member = require_object(raw_member, f"latest.expert_view.final_experts[{index}]")
+        require_keys(member, {"curve", "confidence", "stance"}, f"latest.expert_view.final_experts[{index}]")
+        role = require_string(member.get("role", member.get("name")), f"expert member {index}.role").casefold()
+        observed_roles.add(role)
+        validate_horizon_map(member["curve"], f"expert member {role}.curve", minimum=0, maximum=100)
+        require_number(member["confidence"], f"expert member {role}.confidence", minimum=0, maximum=100)
+        require_string(member["stance"], f"expert member {role}.stance")
+        if "rationale" in member:
+            require_string(member["rationale"], f"expert member {role}.rationale")
+    require(observed_roles == expected_roles, "expert final roles must be Atlas, Bosphorus, Flow and Vega")
+
+
 def iter_health_sources(data_health: Mapping[str, Any]) -> list[tuple[str, Mapping[str, Any]]]:
     raw = data_health.get("sources", [])
     if isinstance(raw, dict):
@@ -444,6 +598,10 @@ def validate_latest(latest: Any) -> Mapping[str, Any]:
         validate_uncertainty(latest["uncertainty"], curve)
         validate_data_health(latest["data_health"], generated_at=generated_at)
         validate_calibration(latest["calibration"], model)
+        if "path_risk" in latest:
+            validate_path_risk(latest["path_risk"], thresholds)
+        if "expert_view" in latest:
+            validate_expert_view(latest["expert_view"], latest)
         if "forecast_id" in history_entry:
             require(history_entry["forecast_id"] == forecast_id, "history_entry forecast_id must match latest")
     return latest
@@ -489,10 +647,19 @@ def ledger_entries(value: Any) -> list[Any]:
     return require_list(ledger[key], f"forecast ledger.{key}", nonempty=True)
 
 
-def canonical_ledger_content_digest(issue: Mapping[str, Any]) -> str:
-    """Recompute the content address used by v2 issuance events."""
+def canonical_ledger_content_digest(
+    issue: Mapping[str, Any],
+    identity_version: str | None = None,
+) -> str:
+    """Recompute a v2 or v3 issuance content address independently."""
 
-    content = {key: issue[key] for key in LEDGER_CONTENT_KEYS}
+    if identity_version is None:
+        identity = issue.get("identity")
+        identity_version = identity.get("version") if isinstance(identity, dict) else None
+    keys = LEDGER_CONTENT_KEYS_BY_VERSION.get(str(identity_version))
+    require(keys is not None, "forecast ledger has unsupported identity version")
+    require_keys(issue, keys, "forecast ledger identity content")
+    content = {key: issue[key] for key in keys}
     try:
         canonical = json.dumps(
             content,
@@ -511,11 +678,12 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
     require(bool(entries), "forecast ledger must not be empty")
     forecast_ids: set[str] = set()
     event_ids: set[str] = set()
-    resolution_keys: set[tuple[str, str]] = set()
+    resolution_keys: set[tuple[str, str, str]] = set()
     previous: datetime | None = None
     issued: list[Mapping[str, Any]] = []
     issued_by_id: dict[str, Mapping[str, Any]] = {}
-    resolutions: list[Mapping[str, Any]] = []
+    terminal_resolutions: list[Mapping[str, Any]] = []
+    path_resolutions: list[Mapping[str, Any]] = []
     for index, raw in enumerate(entries):
         entry = require_object(raw, f"forecast ledger[{index}]")
         # Production uses an append-only event log. Keep the early entry-list
@@ -602,14 +770,24 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
             if identity_raw is not None:
                 identity = require_object(identity_raw, f"forecast ledger[{index}].identity")
                 require_keys(identity, {"version", "content_sha256"}, f"forecast ledger[{index}].identity")
+                identity_version = require_string(
+                    identity["version"],
+                    f"forecast ledger[{index}].identity.version",
+                )
                 require(
-                    identity["version"] == LEDGER_IDENTITY_VERSION,
+                    identity_version in LEDGER_CONTENT_KEYS_BY_VERSION,
                     f"forecast ledger[{index}] has unsupported identity version",
                 )
-                require_keys(entry, LEDGER_CONTENT_KEYS, f"forecast ledger[{index}] identity content")
+                identity_keys = LEDGER_CONTENT_KEYS_BY_VERSION[identity_version]
+                require_keys(entry, identity_keys, f"forecast ledger[{index}] identity content")
+                if identity_version == LEDGER_IDENTITY_VERSION_V2:
+                    require(
+                        "path_risk" not in entry,
+                        f"forecast ledger[{index}] v2 identity must not carry unsealed path risk",
+                    )
                 digest = require_string(identity["content_sha256"], f"forecast ledger[{index}].identity.content_sha256")
                 require(bool(re.fullmatch(r"[0-9a-f]{64}", digest)), f"forecast ledger[{index}] has invalid content digest")
-                recomputed = canonical_ledger_content_digest(entry)
+                recomputed = canonical_ledger_content_digest(entry, identity_version)
                 require(digest == recomputed, f"forecast ledger[{index}] content digest does not match issued content")
                 expected_id = f"fxtry-{entry['data_cutoff']}-{digest[:LEDGER_IDENTITY_DIGEST_LENGTH]}"
                 require(forecast_id == expected_id, f"forecast ledger[{index}] forecast_id does not match issued content")
@@ -620,6 +798,8 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
                     for horizon in HORIZONS
                 }
                 validate_event_definition(entry["event_definition"], event_thresholds)
+                if identity_version == LEDGER_IDENTITY_VERSION:
+                    validate_path_risk(entry["path_risk"], event_thresholds)
 
             issued.append(entry)
             issued_by_id[forecast_id] = entry
@@ -640,7 +820,7 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
             )
             horizon = require_string(entry["horizon"], f"forecast ledger[{index}].horizon")
             require(horizon in HORIZON_SET, f"forecast ledger[{index}] has unsupported resolved horizon")
-            resolution_key = (forecast_id, horizon)
+            resolution_key = (forecast_id, "terminal", horizon)
             require(resolution_key not in resolution_keys, f"duplicate resolution for {forecast_id}.{horizon}")
             resolution_keys.add(resolution_key)
             require(
@@ -653,7 +833,80 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
             require_number(entry["threshold_percent"], f"forecast ledger[{index}].threshold_percent", minimum=0.000001, maximum=100)
             require(entry["outcome"] in {0, 1}, f"forecast ledger[{index}].outcome must be 0 or 1")
             require_number(entry["issued_probability"], f"forecast ledger[{index}].issued_probability", minimum=0, maximum=100)
-            resolutions.append(entry)
+            terminal_resolutions.append(entry)
+        elif event_type == "path_outcome_resolved":
+            require_keys(
+                entry,
+                {
+                    "horizon",
+                    "contract",
+                    "event_definition",
+                    "window_sessions",
+                    "window_start_observation_date",
+                    "window_end_observation_date",
+                    "peak_observation_date",
+                    "peak_value",
+                    "max_move_percent",
+                    "threshold_percent",
+                    "outcome",
+                    "issued_probability",
+                    "model_version",
+                },
+                f"forecast ledger[{index}]",
+            )
+            horizon = require_string(entry["horizon"], f"forecast ledger[{index}].horizon")
+            require(horizon in HORIZON_SET, f"forecast ledger[{index}] has unsupported path horizon")
+            resolution_key = (forecast_id, "path", horizon)
+            require(
+                resolution_key not in resolution_keys,
+                f"duplicate path resolution for {forecast_id}.{horizon}",
+            )
+            resolution_keys.add(resolution_key)
+            require(
+                event_id == f"{forecast_id}:path:{horizon}:resolved",
+                f"forecast ledger[{index}] path resolution event_id is not canonical",
+            )
+            require(
+                require_string(entry["contract"], f"forecast ledger[{index}].contract").casefold()
+                == "any_time_breach",
+                f"forecast ledger[{index}] path contract must be any_time_breach",
+            )
+            sessions = entry["window_sessions"]
+            require(
+                isinstance(sessions, int) and not isinstance(sessions, bool) and sessions > 0,
+                f"forecast ledger[{index}].window_sessions must be a positive integer",
+            )
+            parse_temporal(
+                entry["window_start_observation_date"],
+                f"forecast ledger[{index}].window_start_observation_date",
+            )
+            parse_temporal(
+                entry["window_end_observation_date"],
+                f"forecast ledger[{index}].window_end_observation_date",
+            )
+            parse_temporal(
+                entry["peak_observation_date"],
+                f"forecast ledger[{index}].peak_observation_date",
+            )
+            require_number(entry["peak_value"], f"forecast ledger[{index}].peak_value", minimum=0.000001)
+            require_number(entry["max_move_percent"], f"forecast ledger[{index}].max_move_percent")
+            require_number(
+                entry["threshold_percent"],
+                f"forecast ledger[{index}].threshold_percent",
+                minimum=0.000001,
+                maximum=100,
+            )
+            require(
+                isinstance(entry["outcome"], bool),
+                f"forecast ledger[{index}].outcome must be boolean for path risk",
+            )
+            require_number(
+                entry["issued_probability"],
+                f"forecast ledger[{index}].issued_probability",
+                minimum=0,
+                maximum=100,
+            )
+            path_resolutions.append(entry)
         else:
             raise ValidationError(f"forecast ledger[{index}] has unsupported event_type {event_type!r}")
     require(bool(issued), "forecast ledger must contain a forecast_issued event")
@@ -685,15 +938,38 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
         require(specification["uncertainty"] == latest_uncertainty[horizon], f"latest uncertainty.{horizon} does not match its issuance event")
         if isinstance(latest_sessions, dict):
             require(specification["sessions"] == latest_sessions[horizon], f"latest sessions.{horizon} does not match its issuance event")
-    if "identity" in latest_issue and "forecast" in latest:
+    published_forecast: Mapping[str, Any] | None = None
+    if "forecast" in latest:
         published_forecast = require_object(latest["forecast"], "latest.forecast")
-        for key in LEDGER_CONTENT_KEYS:
+    top_level_path = latest.get("path_risk")
+    nested_path = published_forecast.get("path_risk") if published_forecast is not None else None
+    if top_level_path is not None and nested_path is not None:
+        require(top_level_path == nested_path, "latest path_risk disagrees with latest.forecast.path_risk")
+    latest_path = top_level_path if top_level_path is not None else nested_path
+    issue_path = latest_issue.get("path_risk")
+    latest_identity = latest_issue.get("identity")
+    latest_identity_version = (
+        latest_identity.get("version") if isinstance(latest_identity, dict) else None
+    )
+    if latest_identity_version == LEDGER_IDENTITY_VERSION:
+        require(latest_path is not None, "latest path_risk is missing from its v3 issuance")
+        require(issue_path == latest_path, "latest path_risk does not match its issuance event")
+    else:
+        require(latest_path is None, "latest path_risk is not sealed by a v3 issuance identity")
+
+    if "identity" in latest_issue and published_forecast is not None:
+        identity_keys = LEDGER_CONTENT_KEYS_BY_VERSION.get(str(latest_identity_version), ())
+        for key in identity_keys:
             require(
                 latest_issue[key] == published_forecast.get(key),
                 f"latest forecast.{key} does not match its content-addressed issuance event",
             )
 
-    for resolution in resolutions:
+    terminal_by_key = {
+        (str(resolution["forecast_id"]), str(resolution["horizon"])): resolution
+        for resolution in terminal_resolutions
+    }
+    for resolution in terminal_resolutions:
         forecast_id = resolution["forecast_id"]
         require(forecast_id in issued_by_id, f"resolution references unknown forecast_id {forecast_id}")
         issue = issued_by_id[forecast_id]
@@ -734,6 +1010,111 @@ def validate_ledger(value: Any, latest: Mapping[str, Any]) -> None:
         require(target_date > baseline_date, f"resolution target must follow baseline for {forecast_id}.{horizon}")
         implied = int(float(resolution["realized_move_percent"]) >= float(resolution["threshold_percent"]))
         require(resolution["outcome"] == implied, f"resolution outcome is inconsistent for {forecast_id}.{horizon}")
+
+    for resolution in path_resolutions:
+        forecast_id = str(resolution["forecast_id"])
+        require(forecast_id in issued_by_id, f"path resolution references unknown forecast_id {forecast_id}")
+        issue = issued_by_id[forecast_id]
+        identity = issue.get("identity")
+        require(
+            isinstance(identity, dict) and identity.get("version") == LEDGER_IDENTITY_VERSION,
+            f"path resolution references an issue without a sealed v3 path contract: {forecast_id}",
+        )
+        path_risk = require_object(issue.get("path_risk"), f"issued forecast {forecast_id}.path_risk")
+        path_horizons = require_object(
+            path_risk.get("horizons"),
+            f"issued forecast {forecast_id}.path_risk.horizons",
+        )
+        horizon = str(resolution["horizon"])
+        specification = require_object(
+            path_horizons.get(horizon),
+            f"issued path forecast {forecast_id}.{horizon}",
+        )
+        require(
+            resolution["issued_probability"] == specification.get("probability"),
+            f"path resolution probability does not match issued forecast {forecast_id}.{horizon}",
+        )
+        require(
+            resolution["threshold_percent"] == specification.get("threshold_percent"),
+            f"path resolution threshold does not match issued forecast {forecast_id}.{horizon}",
+        )
+        require(
+            resolution["window_sessions"] == specification.get("sessions"),
+            f"path resolution window does not match issued forecast {forecast_id}.{horizon}",
+        )
+        require(
+            resolution["model_version"] == issue["model_version"],
+            f"path resolution model version does not match issued forecast {forecast_id}",
+        )
+        issued_definition = require_object(
+            path_risk.get("event_definition"),
+            f"issued forecast {forecast_id}.path_risk.event_definition",
+        )
+        require(
+            resolution["event_definition"] == issued_definition,
+            f"path resolution event definition does not match issued forecast {forecast_id}.{horizon}",
+        )
+
+        baseline = require_object(issue["baseline"], f"issued forecast {forecast_id}.baseline")
+        baseline_value = require_number(
+            baseline.get("value"),
+            f"issued forecast {forecast_id}.baseline.value",
+            minimum=0.000001,
+        )
+        baseline_date = parse_temporal(
+            baseline.get("observation_date", issue["data_cutoff"]),
+            f"issued forecast {forecast_id}.baseline.observation_date",
+        )
+        window_start = parse_temporal(
+            resolution["window_start_observation_date"],
+            f"path resolution {forecast_id}.{horizon}.window_start_observation_date",
+        )
+        window_end = parse_temporal(
+            resolution["window_end_observation_date"],
+            f"path resolution {forecast_id}.{horizon}.window_end_observation_date",
+        )
+        peak_date = parse_temporal(
+            resolution["peak_observation_date"],
+            f"path resolution {forecast_id}.{horizon}.peak_observation_date",
+        )
+        require(
+            baseline_date < window_start <= peak_date <= window_end,
+            f"path resolution window/peak dates are inconsistent for {forecast_id}.{horizon}",
+        )
+
+        terminal = terminal_by_key.get((forecast_id, horizon))
+        require(
+            terminal is not None,
+            f"path resolution requires a terminal resolution for the complete window {forecast_id}.{horizon}",
+        )
+        terminal_date = parse_temporal(
+            terminal["target_observation_date"],
+            f"terminal resolution {forecast_id}.{horizon}.target_observation_date",
+        )
+        require(
+            window_end == terminal_date,
+            f"path resolution window end does not match t+h for {forecast_id}.{horizon}",
+        )
+        peak_value = float(resolution["peak_value"])
+        require(
+            peak_value >= float(terminal["target_value"]),
+            f"path peak must include the terminal observation for {forecast_id}.{horizon}",
+        )
+        expected_move = ((peak_value / baseline_value) - 1.0) * 100.0
+        require(
+            math.isclose(float(resolution["max_move_percent"]), expected_move, abs_tol=0.00001),
+            f"path resolution move was not calculated from immutable issued baseline for {forecast_id}.{horizon}",
+        )
+        implied = expected_move >= float(resolution["threshold_percent"])
+        require(
+            resolution["outcome"] is implied,
+            f"path resolution outcome is inconsistent for {forecast_id}.{horizon}",
+        )
+        if terminal["outcome"] == 1:
+            require(
+                resolution["outcome"] is True,
+                f"path outcome must include a positive terminal event for {forecast_id}.{horizon}",
+            )
 
 
 def validate_cache_coherence(

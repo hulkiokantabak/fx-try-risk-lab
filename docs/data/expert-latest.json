@@ -1,0 +1,695 @@
+{
+  "schema_version": "1.0",
+  "status": "published",
+  "assessed_at": "2026-07-13T10:58:08Z",
+  "primary_horizon": "1m",
+  "implementation_review": {
+    "status": "implemented",
+    "empirical_contract": "Exact-terminal derived ECB USD/TRY reference-rate event remains the primary model output.",
+    "path_contract": "A separately trained any-reference-fix breach curve now covers the complete t+1 through t+h observation window without claiming intraday coverage.",
+    "coherence_rule": "Published path probability is constrained to be no lower than the matched exact-terminal probability; unconstrained estimates and adjustment diagnostics remain disclosed.",
+    "ledger_contract": "Terminal and path issuances are sealed together under sha256-canonical-json-v3 and resolve as separate append-only events.",
+    "expert_contract": "This archive is attached only to the exact forecast ID and model version below and is never blended into the empirical curve."
+  },
+  "evidence": {
+    "forecast_id": "fxtry-2026-07-10T00:00:00Z-1f76a32e5b4454bab76d6cff",
+    "model_version": "empirical-regime-v2.2.0",
+    "frozen_at": "2026-07-13T10:32:23Z",
+    "data_cutoff": "2026-07-10T00:00:00Z",
+    "baseline": {
+      "pair": "USD/TRY",
+      "value": 46.985039,
+      "observation_date": "2026-07-10",
+      "observed_at": "2026-07-10T00:00:00Z",
+      "source": "ECB reference rates, USD/TRY derived as EUR/TRY divided by EUR/USD",
+      "price_type": "daily reference rate"
+    },
+    "exact_event": {
+      "direction": "TRY depreciation / USD/TRY increase",
+      "measurement": "ECB reference-rate close to close over an exact count of trading observations",
+      "operator": ">=",
+      "thresholds_percent": {
+        "1w": 2,
+        "1m": 5,
+        "3m": 10,
+        "6m": 15,
+        "1y": 25
+      },
+      "horizon_sessions": {
+        "1w": 5,
+        "1m": 22,
+        "3m": 66,
+        "6m": 132,
+        "1y": 264
+      },
+      "statement": "At each horizon, the event occurs only when the USD/TRY ECB-derived reference rate at the exact target observation is at least the baseline multiplied by one plus that horizon's threshold. It is not an intraday, executable-price, or any-time-touch event."
+    },
+    "empirical_curve": {
+      "1w": 9.1,
+      "1m": 9.2,
+      "3m": 19.8,
+      "6m": 26.8,
+      "1y": 43.9
+    },
+    "model_status_by_horizon": {
+      "1w": "calibrated",
+      "1m": "calibrated",
+      "3m": "experimental",
+      "6m": "experimental",
+      "1y": "experimental"
+    },
+    "known_unknowns": [
+      "Fresh CBRT policy-rate evidence was unavailable.",
+      "A reconciled multi-week reserve series with swaps, liabilities, release timestamps and vintages was unavailable.",
+      "Reproducible NDF, forward, implied-volatility, skew and liquidity histories were unavailable.",
+      "The empirical curve describes exact terminal reference-fix events and does not measure intraday or offshore path stress."
+    ]
+  },
+  "house": {
+    "method": "fx-experts-v1-fixed-horizon-role-weights",
+    "weights": {
+      "unit": "whole-number shares summing to 100",
+      "1w": {
+        "Atlas": 15,
+        "Bosphorus": 20,
+        "Flow": 35,
+        "Vega": 30
+      },
+      "1m": {
+        "Atlas": 20,
+        "Bosphorus": 30,
+        "Flow": 25,
+        "Vega": 25
+      },
+      "3m": {
+        "Atlas": 30,
+        "Bosphorus": 35,
+        "Flow": 15,
+        "Vega": 20
+      },
+      "6m": {
+        "Atlas": 35,
+        "Bosphorus": 35,
+        "Flow": 15,
+        "Vega": 15
+      },
+      "1y": {
+        "Atlas": 40,
+        "Bosphorus": 40,
+        "Flow": 10,
+        "Vega": 10
+      }
+    },
+    "curve": {
+      "1w": 6.5,
+      "1m": 9.0,
+      "3m": 20.6,
+      "6m": 32.8,
+      "1y": 48.8
+    },
+    "confidence": {
+      "score": 37,
+      "label": "low"
+    },
+    "summary": "The fixed-weight house view keeps the exact 1m terminal-fix event low at 9.0 on the 0-100 scale, while risk rises materially over 6m and 1y. Calm reference-rate behavior and low realized volatility support the near-term result, but missing domestic balance-sheet evidence, absent derivative pricing and weak long-horizon backtest authority keep confidence low.",
+    "specialist_adjustment": {
+      "1w": 0,
+      "1m": 0,
+      "3m": 0,
+      "6m": 0,
+      "1y": 0
+    },
+    "specialist_adjustment_reason": "Ledger and Meridian supplied contextual overlays only. Neither had evidence sufficient to justify a numeric adjustment under the published specialist-overlay rule."
+  },
+  "disagreement": {
+    "ranges": {
+      "1w": {
+        "min": 6,
+        "max": 7
+      },
+      "1m": {
+        "min": 9,
+        "max": 9
+      },
+      "3m": {
+        "min": 18,
+        "max": 22
+      },
+      "6m": {
+        "min": 29,
+        "max": 34
+      },
+      "1y": {
+        "min": 47,
+        "max": 50
+      }
+    },
+    "summary": "Core-expert ranges are 6–7% at 1w, 9–9% at 1m, 18–22% at 3m, 29–34% at 6m, and 47–50% at 1y. The narrow range does not remove the shared data blind spots.",
+    "minority_view": "There is no distant numeric dissenter this round. The preserved minority warning is that UNKNOWN domestic evidence must not be converted into a bearish signal.",
+    "stress_flag": true,
+    "stress_view": "Stress flag: terminal daily-fix probabilities can miss a discrete devaluation followed by reversal, and intraday or offshore stress that does not survive into an ECB reference fixing.",
+    "stress_flag_interpretation": "This flag identifies an event-definition blind spot. It is not a claim that near-term exact terminal-fix probability is high."
+  },
+  "final_experts": [
+    {
+      "role": "Atlas",
+      "mandate": "Global Macro Economist",
+      "stance": "neutral",
+      "primary_horizon": "1m",
+      "primary_risk_score": 9,
+      "curve": {
+        "1w": 7,
+        "1m": 9,
+        "3m": 20,
+        "6m": 33,
+        "1y": 48
+      },
+      "confidence": 36,
+      "confidence_label": "low",
+      "rationale": "Contained volatility and the absence of a broad global funding shock argue against a high exact 1m terminal-fix probability. Firm US yields and dollar pressure still matter over longer windows, but no global input in the frozen pack has a point-in-time causal link strong enough to override the empirical signal.",
+      "counterevidence": "A sudden Fed repricing, global dollar shortage or energy shock could make the calm regime obsolete before the next reference fixing.",
+      "watch_triggers": [
+        "A simultaneous jump in broad-dollar momentum, VIX and EM volatility",
+        "A violent repricing of the Fed path or US real yields",
+        "An energy-price shock that worsens Turkey's external funding need"
+      ],
+      "changed_since_round_2": "Raised 1m, 3m, 6m and 1y after conceding that calm global aggregates do not eliminate Turkey-specific jump risk; kept 1w unchanged."
+    },
+    {
+      "role": "Bosphorus",
+      "mandate": "Turkey Macro Economist",
+      "stance": "bearish TRY",
+      "primary_horizon": "1m",
+      "primary_risk_score": 9,
+      "curve": {
+        "1w": 6,
+        "1m": 9,
+        "3m": 22,
+        "6m": 34,
+        "1y": 50
+      },
+      "confidence": 39,
+      "confidence_label": "low",
+      "rationale": "The 1m exact-event score remains low because the observed reference-rate tape is orderly. Structural depreciation risk remains highest at 6m and 1y, but missing current CBRT and reserve evidence is UNKNOWN rather than proof of either support or fragility, so the final curve is lower than the initial view.",
+      "counterevidence": "Verified positive real-rate persistence, improving net reserves after swaps and credible disinflation would weaken the long-horizon bearish stance.",
+      "watch_triggers": [
+        "A reconciled deterioration in net reserve buffers or external funding",
+        "A policy-rate or liquidity decision inconsistent with the disinflation path",
+        "A material inflation-expectations or policy-credibility break"
+      ],
+      "changed_since_round_2": "Cut 1m through 1y after accepting that unavailable domestic evidence cannot be scored as adverse; left 1w unchanged."
+    },
+    {
+      "role": "Flow",
+      "mandate": "EM FX Spot Trader",
+      "stance": "neutral",
+      "primary_horizon": "1m",
+      "primary_risk_score": 9,
+      "curve": {
+        "1w": 6,
+        "1m": 9,
+        "3m": 22,
+        "6m": 33,
+        "1y": 49
+      },
+      "confidence": 39,
+      "confidence_label": "low",
+      "rationale": "The tape shows gradual USD/TRY appreciation and unusually low realized volatility rather than acute dislocation. That supports a low exact 1m terminal event score, but the lack of forwards, NDF liquidity, intervention footprints and executable pricing prevents the calm fix from being treated as full market confirmation.",
+      "counterevidence": "A managed or illiquid fixing can suppress visible volatility and then gap, while offshore stress may never be visible in the reference close.",
+      "watch_triggers": [
+        "An abrupt acceleration in 5-session and 20-session USD/TRY momentum",
+        "A widening offshore-onshore basis or deterioration in NDF liquidity",
+        "A reference-rate gap inconsistent with peer and broad-dollar moves"
+      ],
+      "changed_since_round_2": "Reduced 1m through 1y after distinguishing a plausible path-stress narrative from the narrower exact terminal-fix event; left 1w unchanged."
+    },
+    {
+      "role": "Vega",
+      "mandate": "FX Options and Volatility Trader",
+      "stance": "neutral",
+      "primary_horizon": "1m",
+      "primary_risk_score": 9,
+      "curve": {
+        "1w": 7,
+        "1m": 9,
+        "3m": 18,
+        "6m": 29,
+        "1y": 47
+      },
+      "confidence": 34,
+      "confidence_label": "low",
+      "rationale": "Low realized volatility is compatible with a low near-term exact fixing event, but it says little about unobserved skew or jump premium. Without reproducible implied volatility, risk reversals, tenor controls and bid-ask evidence, an options-based adjustment would be invented rather than measured.",
+      "counterevidence": "A priced tail in liquid USD/TRY options or NDF options could show that the empirical terminal distribution understates discontinuous risk.",
+      "watch_triggers": [
+        "A reproducible rise in short-dated implied volatility or topside skew",
+        "Event premium around a policy decision or material political event",
+        "A widening gap between terminal-fix and any-fix-touch probabilities"
+      ],
+      "changed_since_round_2": "Cut 1w and 1m after separating unpriced path-risk concern from the scored terminal event; retained the 3m, 6m and 1y curve."
+    }
+  ],
+  "specialists": [
+    {
+      "role": "Ledger",
+      "mandate": "Sovereign Credit and Reserves Analyst",
+      "activation_reason": "Reserve adequacy, intervention and funding fragility were material to the agenda, while the frozen evidence lacked a reconciled current reserve history.",
+      "overlay_type": "contextual",
+      "numeric_adjustment": {
+        "1w": 0,
+        "1m": 0,
+        "3m": 0,
+        "6m": 0,
+        "1y": 0
+      },
+      "finding": "Reserve and funding risk cannot be scored responsibly until gross and net reserves, swaps, liabilities, analytical balance-sheet items, SDDS data and release vintages reconcile. Missing evidence remains UNKNOWN.",
+      "watch_triggers": [
+        "Reconciled reserve depletion after swaps and near-term liabilities",
+        "A material intervention footprint without reserve replenishment",
+        "CDS, Eurobond or rollover stress confirmed by reproducible pricing"
+      ]
+    },
+    {
+      "role": "Meridian",
+      "mandate": "Global Cycle and Liquidity Strategist",
+      "activation_reason": "Dollar strength, US-rate repricing and global contagion were material transmission channels in the debate.",
+      "overlay_type": "contextual",
+      "numeric_adjustment": {
+        "1w": 0,
+        "1m": 0,
+        "3m": 0,
+        "6m": 0,
+        "1y": 0
+      },
+      "finding": "Current global readings provide context but are not vintage-safe model predictors. No numeric overlay is warranted until timestamped point-in-time histories demonstrate incremental walk-forward value against the ECB-fix event contract.",
+      "watch_triggers": [
+        "A synchronized dollar, real-yield and EM-volatility shock",
+        "A global funding squeeze that reaches EM FX basis and liquidity",
+        "A commodity-cycle or energy shock with direct Turkish balance-of-payments impact"
+      ]
+    }
+  ],
+  "accepted_improvements": [
+    {
+      "id": "horizon_authority_gates",
+      "decision": "accepted",
+      "improvement": "Apply horizon-specific backtest authority gates so passing 1w and 1m evidence cannot promote 3m, 6m or 1y outputs that fail their own challenger and calibration tests."
+    },
+    {
+      "id": "model_expert_identity_binding",
+      "decision": "accepted",
+      "improvement": "Bind every published expert assessment to the exact forecast_id and model_version while keeping empirical probabilities and expert judgment separately labeled and stored."
+    },
+    {
+      "id": "fixed_weight_dissent_archive",
+      "decision": "accepted",
+      "improvement": "Publish the fixed-weight house curve beside all role curves, every horizon's minimum and maximum, the minority warning, stress flag and round-by-round revisions."
+    },
+    {
+      "id": "unknown_claim_kill_switch",
+      "decision": "accepted",
+      "improvement": "Block model and editorial claims that infer neutral, supportive or bearish conditions from missing, stale or semantically invalid evidence."
+    },
+    {
+      "id": "terminal_and_touch_contracts",
+      "decision": "accepted",
+      "improvement": "Estimate and label the exact terminal reference-fix event separately from an any-reference-fix-touch event; neither may be described as intraday or executable risk."
+    },
+    {
+      "id": "challenger_visibility",
+      "decision": "accepted",
+      "improvement": "Expose the target-purged as-of climatology challenger and its horizon-specific Brier skill beside model results."
+    },
+    {
+      "id": "event_integrity_tests",
+      "decision": "accepted",
+      "improvement": "Test event-calendar and session-count integrity so baseline, target, threshold and resolved outcome use the same exact observation contract."
+    }
+  ],
+  "deferred_improvements": [
+    {
+      "id": "reserve_covariates",
+      "decision": "deferred",
+      "prerequisites": "Reconcile EVDS, the CBRT analytical balance sheet and SDDS series with swaps, liabilities, release timestamps and historical vintages before using reserves in prediction."
+    },
+    {
+      "id": "global_covariates",
+      "decision": "deferred",
+      "prerequisites": "Build timestamped point-in-time global histories aligned to the ECB fixing and demonstrate incremental walk-forward value before admitting global variables to the model."
+    },
+    {
+      "id": "ndf_and_options_covariates",
+      "decision": "deferred",
+      "prerequisites": "Obtain licensed or otherwise reproducible NDF and options histories with tenor, bid-ask, timestamp and liquidity controls."
+    },
+    {
+      "id": "intraday_offshore_hazard",
+      "decision": "deferred",
+      "prerequisites": "Obtain executable high-frequency onshore and offshore data and define a separately backtestable intraday path-risk contract."
+    },
+    {
+      "id": "event_calendar_predictors",
+      "decision": "deferred",
+      "prerequisites": "Construct vintage-safe release and event histories whose availability timestamps predate each forecast."
+    }
+  ],
+  "rejected_changes": [
+    {
+      "change": "Convert missing evidence into a neutral, supportive or bearish input.",
+      "reason": "Absence of evidence is UNKNOWN and carries no directional information."
+    },
+    {
+      "change": "Silently blend expert views or contextual macro data into the empirical model curve.",
+      "reason": "That would destroy model identity, calibration provenance and auditability."
+    },
+    {
+      "change": "Promote every horizon because one or two horizons pass their authority gates.",
+      "reason": "Forecast authority is horizon specific."
+    },
+    {
+      "change": "Weight core votes by self-reported confidence.",
+      "reason": "The operating specification fixes role weights by horizon."
+    },
+    {
+      "change": "Apply a specialist adjustment without an explicit numeric recommendation in the allowed -5 to 5 range.",
+      "reason": "Contextual concern alone does not authorize an invented overlay."
+    },
+    {
+      "change": "Describe an ECB-derived daily reference rate as executable, intraday or offshore pricing.",
+      "reason": "The evidence and event contract do not support that claim."
+    },
+    {
+      "change": "Hide disagreement because the final curves are close.",
+      "reason": "Shared blind spots can produce false consensus and must remain visible."
+    },
+    {
+      "change": "Use an equal-role mean as the canonical house curve.",
+      "reason": "The published v1 protocol requires fixed horizon-specific role weights."
+    }
+  ],
+  "protocol": {
+    "name": "FX Experts five-round project protocol",
+    "version": "v1",
+    "source": "legacy/product-design/fx-experts-skill/references/operating-spec.md",
+    "primary_horizon": "1m",
+    "core_roles": [
+      "Atlas",
+      "Bosphorus",
+      "Flow",
+      "Vega"
+    ],
+    "activated_specialists": [
+      "Ledger",
+      "Meridian"
+    ],
+    "principles": [
+      "Freeze evidence before scoring.",
+      "Preserve dissent and revision provenance.",
+      "Use fixed horizon-specific role weights.",
+      "Require evidence for every numeric specialist adjustment.",
+      "Keep empirical model output separate from expert judgment.",
+      "Score only the stated exact event."
+    ],
+    "model_expert_separation": "The empirical curve is reproduced only as frozen evidence. The house and role curves are human-style structured judgments and do not alter model probabilities, calibration metrics, ledger identity or backtest outcomes."
+  },
+  "rounds": [
+    {
+      "round": 0,
+      "name": "Frozen evidence pack",
+      "completed_at": "2026-07-13T10:32:23Z",
+      "result": "The forecast snapshot, exact terminal-fix event, baseline, model version, empirical curve, horizon authority and data-health gaps were frozen before any expert score was admitted.",
+      "facts": [
+        "The empirical curve was 9.1, 9.2, 19.8, 26.8 and 43.9 for 1w through 1y.",
+        "Only 1w and 1m met the model's horizon-specific authority gate.",
+        "Domestic policy-rate and reconciled reserve evidence were unavailable.",
+        "Options, NDF, executable intraday and offshore path histories were unavailable.",
+        "Ledger and Meridian were activated for reserve and global-liquidity context."
+      ]
+    },
+    {
+      "round": 1,
+      "name": "Independent agenda",
+      "agenda_by_role": {
+        "Atlas": "Distinguish a genuinely calm global regime from latent dollar-funding and energy-shock risk.",
+        "Bosphorus": "Do not infer domestic support or fragility from missing CBRT and reserve evidence.",
+        "Flow": "Test whether an orderly reference-rate tape reflects liquidity and positioning or merely suppresses a jump.",
+        "Vega": "Separate an exact terminal-fix event from path, touch and jump risk, and admit that options pricing is absent."
+      },
+      "merged_agenda": [
+        "Calm regime versus suppressed jump risk",
+        "Horizon-specific forecast authority",
+        "Missing domestic and market-pricing evidence",
+        "Terminal-fix risk versus path and touch risk",
+        "Challenger visibility and point-in-time data vintages"
+      ]
+    },
+    {
+      "round": 2,
+      "name": "Independent initial views",
+      "views": [
+        {
+          "role": "Atlas",
+          "curve": {
+            "1w": 7,
+            "1m": 8,
+            "3m": 17,
+            "6m": 32,
+            "1y": 47
+          },
+          "confidence": 38,
+          "stance": "neutral",
+          "rationale": "Current global conditions did not justify a large near-term terminal-fix premium, while dollar and external-balance risks accumulated with horizon."
+        },
+        {
+          "role": "Bosphorus",
+          "curve": {
+            "1w": 6,
+            "1m": 10,
+            "3m": 24,
+            "6m": 36,
+            "1y": 54
+          },
+          "confidence": 42,
+          "stance": "bearish TRY",
+          "rationale": "Structural domestic-policy and balance-sheet uncertainty warranted the highest medium- and long-horizon curve, subject to the evidence being incomplete."
+        },
+        {
+          "role": "Flow",
+          "curve": {
+            "1w": 6,
+            "1m": 11,
+            "3m": 25,
+            "6m": 35,
+            "1y": 52
+          },
+          "confidence": 42,
+          "stance": "bearish TRY",
+          "rationale": "The calm fixing limited the very short horizon, but potential managed-price and jump dynamics initially lifted 1m through 1y."
+        },
+        {
+          "role": "Vega",
+          "curve": {
+            "1w": 8,
+            "1m": 10,
+            "3m": 18,
+            "6m": 29,
+            "1y": 47
+          },
+          "confidence": 38,
+          "stance": "neutral",
+          "rationale": "Low realized volatility supported low near-term terminal scores, but unobserved skew and jump premium kept confidence low."
+        }
+      ],
+      "specialist_overlays": "Ledger and Meridian identified material evidence prerequisites but recommended no numeric adjustment."
+    },
+    {
+      "round": 3,
+      "name": "Challenges and revisions",
+      "debate": [
+        {
+          "role": "Atlas",
+          "challenges": [
+            "Bosphorus had a valid structural concern but no fresh domestic evidence that timed the exact 1m event.",
+            "Flow's tape evidence was useful near term but could not settle 6m and 1y global transmission."
+          ],
+          "weak_assumption": "A calm global aggregate regime maps cleanly to Turkey-specific fixing risk.",
+          "ignored_scenario": "A Turkey-specific gap without a broad EM shock.",
+          "own_view_may_be_wrong": "Global liquidity can turn faster than daily macro indicators reveal.",
+          "round_2_curve": {
+            "1w": 7,
+            "1m": 8,
+            "3m": 17,
+            "6m": 32,
+            "1y": 47
+          },
+          "round_3_curve": {
+            "1w": 7,
+            "1m": 9,
+            "3m": 20,
+            "6m": 33,
+            "1y": 48
+          },
+          "confidence_after_debate": 36,
+          "revision_reason": "Raised the curve beyond 1w to admit Turkey-specific discontinuity and reduced confidence because the relevant domestic evidence was missing."
+        },
+        {
+          "role": "Bosphorus",
+          "challenges": [
+            "Atlas could not use benign global averages as a substitute for missing Turkish balance-sheet evidence.",
+            "Vega's terminal framing was correct but did not remove the possibility of policy-driven discontinuity."
+          ],
+          "weak_assumption": "Missing reserve and policy evidence is directionally adverse.",
+          "ignored_scenario": "Domestic policy credibility and reserve buffers may have improved materially.",
+          "own_view_may_be_wrong": "The orderly fixing could reflect durable policy restraint rather than temporary suppression.",
+          "round_2_curve": {
+            "1w": 6,
+            "1m": 10,
+            "3m": 24,
+            "6m": 36,
+            "1y": 54
+          },
+          "round_3_curve": {
+            "1w": 6,
+            "1m": 9,
+            "3m": 22,
+            "6m": 34,
+            "1y": 50
+          },
+          "confidence_after_debate": 39,
+          "revision_reason": "Lowered 1m through 1y because UNKNOWN domestic evidence cannot carry a bearish score."
+        },
+        {
+          "role": "Flow",
+          "challenges": [
+            "Bosphorus could not convert unavailable reserve data into a tradeable bearish catalyst.",
+            "Vega could not infer a priced options tail without a reproducible volatility surface."
+          ],
+          "weak_assumption": "Calm daily fixes fully describe executable and offshore market stress.",
+          "ignored_scenario": "A discrete devaluation followed by reversal before the exact target fixing.",
+          "own_view_may_be_wrong": "The tape may be orderly because policy is genuinely credible and liquidity is adequate.",
+          "round_2_curve": {
+            "1w": 6,
+            "1m": 11,
+            "3m": 25,
+            "6m": 35,
+            "1y": 52
+          },
+          "round_3_curve": {
+            "1w": 6,
+            "1m": 9,
+            "3m": 22,
+            "6m": 33,
+            "1y": 49
+          },
+          "confidence_after_debate": 39,
+          "revision_reason": "Lowered 1m through 1y after separating concern about the unmeasured path from the exact terminal event being scored."
+        },
+        {
+          "role": "Vega",
+          "challenges": [
+            "Flow's calm-tape concession did not exclude gap risk or hidden offshore stress.",
+            "Atlas's macro regime did not directly identify the terminal distribution at each exact target fixing."
+          ],
+          "weak_assumption": "Low realized volatility implies low latent jump premium.",
+          "ignored_scenario": "A short-lived devaluation or intraday stress episode that never appears in the target fixing.",
+          "own_view_may_be_wrong": "A missing options surface may conceal materially expensive topside skew.",
+          "round_2_curve": {
+            "1w": 8,
+            "1m": 10,
+            "3m": 18,
+            "6m": 29,
+            "1y": 47
+          },
+          "round_3_curve": {
+            "1w": 7,
+            "1m": 9,
+            "3m": 18,
+            "6m": 29,
+            "1y": 47
+          },
+          "confidence_after_debate": 34,
+          "revision_reason": "Lowered 1w and 1m because unmeasured path risk cannot be inserted into the narrower terminal-fix score."
+        }
+      ]
+    },
+    {
+      "round": 4,
+      "name": "Final verdict",
+      "result": "All core roles retained their Round 3 curves. The house curve was computed from the published fixed horizon-specific role weights, with no confidence weighting and no specialist numeric adjustment.",
+      "final_curve_provenance": {
+        "Atlas": {
+          "round_3": {
+            "1w": 7,
+            "1m": 9,
+            "3m": 20,
+            "6m": 33,
+            "1y": 48
+          },
+          "round_4": {
+            "1w": 7,
+            "1m": 9,
+            "3m": 20,
+            "6m": 33,
+            "1y": 48
+          },
+          "most_important_trigger": "A synchronized dollar, real-yield and EM-volatility shock."
+        },
+        "Bosphorus": {
+          "round_3": {
+            "1w": 6,
+            "1m": 9,
+            "3m": 22,
+            "6m": 34,
+            "1y": 50
+          },
+          "round_4": {
+            "1w": 6,
+            "1m": 9,
+            "3m": 22,
+            "6m": 34,
+            "1y": 50
+          },
+          "most_important_trigger": "A reconciled deterioration in reserves after swaps and near-term liabilities."
+        },
+        "Flow": {
+          "round_3": {
+            "1w": 6,
+            "1m": 9,
+            "3m": 22,
+            "6m": 33,
+            "1y": 49
+          },
+          "round_4": {
+            "1w": 6,
+            "1m": 9,
+            "3m": 22,
+            "6m": 33,
+            "1y": 49
+          },
+          "most_important_trigger": "An abrupt USD/TRY acceleration confirmed by offshore liquidity deterioration."
+        },
+        "Vega": {
+          "round_3": {
+            "1w": 7,
+            "1m": 9,
+            "3m": 18,
+            "6m": 29,
+            "1y": 47
+          },
+          "round_4": {
+            "1w": 7,
+            "1m": 9,
+            "3m": 18,
+            "6m": 29,
+            "1y": 47
+          },
+          "most_important_trigger": "A reproducible rise in short-dated topside skew or any-fix-touch risk."
+        }
+      },
+      "house_primary_score": 9.0,
+      "house_confidence": {
+        "score": 37,
+        "label": "low"
+      }
+    }
+  ]
+}

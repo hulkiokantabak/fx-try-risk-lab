@@ -42,7 +42,26 @@ The output is always expressed as a percentage. The browser labels it an
 it is not a validated forecast probability. A horizon passes only with at least
 50 walk-forward forecasts, positive Brier skill versus expanding climatology,
 and expected calibration error no greater than 0.100. The model-level gate
-requires every horizon to pass.
+requires every horizon to pass and at least 20 resolved local calibration
+analogs for each current estimate. A horizon can therefore have limited
+historical authority while the aggregate model output remains experimental.
+
+The primary curve is an **exact-terminal** contract: it evaluates the reference
+rate at exactly `t + N`. An optional **any-time-breach** curve evaluates whether
+any observed ECB daily reference-rate observation from `t + 1` through `t + N`,
+inclusive, meets the threshold. It does not observe intraday touches. The path
+event has separate labels, training outcomes, calibration, uncertainty, and
+diagnostics; it is not interchangeable with terminal probability. Because the
+terminal event is a subset of the inclusive path event, the separately trained
+path estimate is floored by the matched terminal estimate before its diagnostics
+and gate are published. The unconstrained estimate and adjustment remain in the
+machine-readable snapshot.
+
+Authority is disclosed by horizon. A horizon that passes the historical gate is
+labeled **limited authority**, because the live ledger is still young; a
+failing horizon is labeled **experimental**. This does not override the
+model-level experimental label while any horizon fails or a current estimate
+lacks the required local calibration evidence.
 
 ## Quantitative method
 
@@ -65,6 +84,12 @@ backtest diagnostics. Brier score, log loss, calibration error, and Brier skill
 against expanding climatology are reported by horizon when samples are
 sufficient.
 
+The interface also shows a current, target-purged climatology challenger for
+each terminal horizon. It is a Laplace-smoothed historical event rate formed
+only from complete target windows. It is a benchmark—not an uncertainty bound,
+expert judgment, or substitute for the walk-forward comparison used in Brier
+skill.
+
 ### What the model does not use
 
 Current macro, reserve, volatility, and news values are contextual evidence; they
@@ -80,9 +105,10 @@ These are intentionally separate:
   model comparison. It can still be affected by regime change and research
   choices.
 - **Forecast ledger:** an append-only event log of estimates actually issued by
-  the application. When an exact target observation becomes available, a
-  resolution event records the realized move and outcome without rewriting the
-  original forecast.
+  the application. Terminal and any-time-breach outcomes are separate events.
+  Both resolve only after the complete target window is available; path
+  resolution records the peak in-window daily reference rate. Resolution never
+  rewrites the original forecast.
 
 Forecast IDs bind the data cutoff, model version, and event thresholds. The
 ledger is the authoritative live record; forecasts issued and horizon outcomes
@@ -102,6 +128,9 @@ source's status, observation date, age, cache use, and most recent error. If the
 ECB inputs required by the forecast are unusable, publication is blocked instead
 of manufacturing a precise-looking estimate.
 
+“Evidence coverage” describes how many contextual feeds are usable. It is not
+forecast confidence, calibration, model authority, or expert confidence.
+
 Source families include ECB exchange-rate reference data, FRED global rates and
 dollar measures, Cboe volatility indices, CBRT policy and reserve publications,
 and public headline feeds. Only the ECB-derived USD/TRY history drives the
@@ -117,9 +146,18 @@ The project retains four explicit analytical roles from its FX Experts method:
 - **Vega:** model risk, calibration, uncertainty, and falsification.
 
 When a structured expert round is published, every role receives the same frozen
-evidence pack. The house view, confidence, and dissent remain visible. Expert
-judgment is an overlay, not silently mixed into the statistical estimate; no
-expert view is shown when a round has not been published.
+evidence pack. The archive is attached to `latest.json` only when its forecast ID
+and model version exactly match the current empirical snapshot. The house view,
+confidence, horizon min–max range, dissent, and stress view remain visible.
+Expert judgment is an overlay, not silently mixed into the statistical estimate;
+the interface labels it **expert judgment—not model**, and no view is carried
+forward after an unmatched model refresh.
+
+The house curve follows the project FX Experts protocol's fixed horizon weights
+for Atlas/Bosphorus/Flow/Vega: `15/20/35/30` at 1w, `20/30/25/25` at 1m,
+`30/35/15/20` at 3m, `35/35/15/15` at 6m, and `40/40/10/10` at 1y. The expert
+range is disagreement, not a statistical confidence interval, and expert
+confidence is a separate 0–100 judgment score.
 
 ## Static application architecture
 
@@ -175,9 +213,10 @@ number.
 ## Security and contributions
 
 The application is static and has no first-party account or user database.
-Feed-derived content is rendered as text rather than raw HTML; a Content Security
-Policy, strict referrer policy, semantic validator, CodeQL, and Dependabot reduce
-the attack surface. Personal notes stay in browser local storage.
+Feed-derived content is rendered as text rather than raw HTML. The site loads no
+third-party scripts; a self-only Content Security Policy, strict referrer policy,
+semantic validator, CodeQL, and Dependabot reduce the attack surface. Personal
+notes stay in browser local storage.
 
 See [SECURITY.md](./SECURITY.md) for private vulnerability reporting,
 [CONTRIBUTING.md](./CONTRIBUTING.md) for model and data standards,

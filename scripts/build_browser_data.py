@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import struct
 import sys
 import zipfile
 from csv import DictReader
@@ -11,12 +12,12 @@ from email.utils import parsedate_to_datetime
 from html import unescape
 from html.parser import HTMLParser
 from io import BytesIO, StringIO
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from statistics import mean
 from time import sleep
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urljoin
-from urllib.request import Request, urlopen
+from urllib.parse import quote, urljoin, urlsplit
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 from xml.etree import ElementTree
 
 
@@ -24,9 +25,9 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from risklab.forecast import MODEL_VERSION, build_empirical_forecast
-from risklab.ledger import ledger_summary, update_forecast_ledger
-from risklab.quality import (
+from risklab.forecast import MODEL_VERSION, build_empirical_forecast  # noqa: E402
+from risklab.ledger import ledger_summary, update_forecast_ledger  # noqa: E402
+from risklab.quality import (  # noqa: E402
     age_days,
     checksum,
     ensure_fresh,
@@ -45,6 +46,7 @@ LATEST_PATH = DATA_DIR / "latest.json"
 HISTORY_PATH = DATA_DIR / "history.json"
 SOURCE_CACHE_PATH = DATA_DIR / "source_cache.json"
 FORECAST_LEDGER_PATH = DATA_DIR / "forecast_ledger.json"
+EXPERT_PATH = DATA_DIR / "expert-latest.json"
 
 THRESHOLDS = {
     "1w": 2,
@@ -102,6 +104,40 @@ CBRT_IRFCL_ROW_LABELS = {
     "fx_reserves": "I.A.1 Foreign currency reserves (in convertible foreign currencies)",
 }
 
+# Remote inputs are untrusted even when they come from an expected public
+# institution.  These limits bound the refresh job's memory/CPU exposure and
+# prevent a compromised source page from turning its downloadable link into an
+# arbitrary request from the GitHub Actions runner.
+ALLOWED_REMOTE_HOSTS = frozenset(
+    {
+        "cdn.cboe.com",
+        "data-api.ecb.europa.eu",
+        "fred.stlouisfed.org",
+        "news.google.com",
+        "tcmb.gov.tr",
+        "www.reddit.com",
+        "www.tcmb.gov.tr",
+    }
+)
+ALLOWED_REMOTE_HOST_SUFFIXES = (".tcmb.gov.tr",)
+MAX_TEXT_RESPONSE_BYTES = 8 * 1024 * 1024
+MAX_BINARY_RESPONSE_BYTES = 32 * 1024 * 1024
+MAX_OUTER_ARCHIVE_ENTRIES = 32
+MAX_WORKBOOK_ARCHIVE_ENTRIES = 2_048
+MAX_WORKBOOK_BYTES = 32 * 1024 * 1024
+MAX_ARCHIVE_MEMBER_BYTES = 32 * 1024 * 1024
+MAX_ARCHIVE_TOTAL_BYTES = 128 * 1024 * 1024
+MAX_ARCHIVE_COMPRESSION_RATIO = 250
+MAX_CENTRAL_DIRECTORY_BYTES_PER_ENTRY = 2_048
+MAX_SHARED_STRINGS = 100_000
+MAX_SHEET_ROWS = 20_000
+MAX_SHEET_CELLS = 500_000
+MAX_FEED_TITLE_CHARS = 500
+MAX_FEED_LINK_CHARS = 2_048
+MAX_HTML_TEXT_PARTS = 100_000
+MAX_HTML_ANCHORS = 10_000
+MAX_TABULAR_ROWS = 100_000
+
 SOURCE_RULES = {
     "ecb_eurtry": (lambda value: validate_series(value, minimum_count=750, positive=True), 10),
     "ecb_eurusd": (lambda value: validate_series(value, minimum_count=750, positive=True), 10),
@@ -151,6 +187,44 @@ class FeedEntry:
     published_at: datetime
 
 
+class UnsafeRemoteDataError(ValueError):
+    """Raised when a remote response violates an explicit trust boundary."""
+
+
+def validate_remote_url(url: str) -> None:
+    """Require HTTPS, a trusted host and no embedded credentials."""
+
+    try:
+        parsed = urlsplit(url)
+        port = parsed.port
+    except ValueError as exc:
+        raise UnsafeRemoteDataError("remote URL is malformed") from exc
+    host = (parsed.hostname or "").casefold().rstrip(".")
+    allowed_host = host in ALLOWED_REMOTE_HOSTS or any(
+        host.endswith(suffix) and host != suffix.removeprefix(".")
+        for suffix in ALLOWED_REMOTE_HOST_SUFFIXES
+    )
+    if parsed.scheme.casefold() != "https":
+        raise UnsafeRemoteDataError("remote URL must use HTTPS")
+    if not allowed_host:
+        raise UnsafeRemoteDataError(f"remote host {host or '<missing>'!r} is not allowlisted")
+    if parsed.username is not None or parsed.password is not None:
+        raise UnsafeRemoteDataError("remote URL must not contain credentials")
+    if port not in (None, 443):
+        raise UnsafeRemoteDataError("remote URL must use the default HTTPS port")
+
+
+class SafeRedirectHandler(HTTPRedirectHandler):
+    """Validate every redirect before urllib makes the follow-up request."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: ANN001, ANN201
+        validate_remote_url(newurl)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+REMOTE_OPENER = build_opener(SafeRedirectHandler())
+
+
 class VisibleTextParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
@@ -159,6 +233,8 @@ class VisibleTextParser(HTMLParser):
     def handle_data(self, data: str) -> None:
         cleaned = data.strip()
         if cleaned:
+            if len(self.parts) >= MAX_HTML_TEXT_PARTS:
+                raise UnsafeRemoteDataError("HTML response contains too many text parts")
             self.parts.append(unescape(cleaned))
 
     def text(self) -> str:
@@ -171,10 +247,14 @@ class AnchorCollector(HTMLParser):
         self.anchors: list[tuple[str, str]] = []
         self._href: str | None = None
         self._parts: list[str] = []
+        self._anchor_count = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         if tag.casefold() != "a":
             return
+        if self._anchor_count >= MAX_HTML_ANCHORS:
+            raise UnsafeRemoteDataError("HTML response contains too many anchors")
+        self._anchor_count += 1
         attr_map = {key.casefold(): value for key, value in attrs}
         self._href = attr_map.get("href")
         self._parts = []
@@ -217,8 +297,6 @@ def main() -> None:
 def build_snapshot(source_cache: dict[str, object]) -> dict:
     generated_at = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     warnings: list[str] = []
-    source_health: dict[str, dict] = {}
-
     eur_try = try_fetch(
         "ECB EUR/TRY",
         lambda: fetch_ecb_series(ECB_SERIES["EURTRY"]),
@@ -413,12 +491,15 @@ def build_snapshot(source_cache: dict[str, object]) -> dict:
         "macro_regime": macro["regime_label"],
         "headline": briefing["house_call"],
         "stance": briefing["stance"],
-        "confidence": briefing["confidence"],
+        "evidence_coverage": briefing["evidence_coverage"],
+        # Retained for schema compatibility with older history consumers. This
+        # describes contextual data coverage, not forecast confidence.
+        "confidence": briefing["evidence_coverage"],
         "forecast_id": forecast_id,
         "model_version": MODEL_VERSION,
         "data_cutoff": forecast["data_cutoff"],
     }
-    return {
+    snapshot = {
         "schema_version": "2.0",
         "forecast_id": forecast_id,
         "generated_at": generated_at,
@@ -467,6 +548,82 @@ def build_snapshot(source_cache: dict[str, object]) -> dict:
         },
         "_ledger_payload": ledger,
     }
+    path_risk = build_path_risk(forecast)
+    if path_risk is not None:
+        snapshot["path_risk"] = path_risk
+    expert_view = load_expert_view(
+        EXPERT_PATH,
+        forecast_id=forecast_id,
+        model_version=MODEL_VERSION,
+    )
+    if expert_view is not None:
+        snapshot["expert_view"] = expert_view
+    return snapshot
+
+
+def build_path_risk(forecast: dict[str, object]) -> dict[str, object] | None:
+    """Normalize an optional any-time-breach contract for the browser bundle.
+
+    The empirical terminal forecast remains the primary ``curve``.  This
+    secondary object has its own event definition, labels and calibration so a
+    probability of touching a level anywhere in the window cannot be mistaken
+    for the probability at the exact terminal observation.
+    """
+
+    published = forecast.get("path_risk")
+    if isinstance(published, dict):
+        return published
+
+    horizons = forecast.get("touch_horizons")
+    event_definition = forecast.get("touch_event_definition")
+    if not isinstance(horizons, dict) or not isinstance(event_definition, dict):
+        return None
+    normalized_event = dict(event_definition)
+    normalized_event.setdefault(
+        "relationship_to_terminal",
+        (
+            "A breach at any observed ECB daily reference-rate observation from t+1 through t+h is a different "
+            "event from the primary exact-terminal event at t+h. The two probabilities are not "
+            "interchangeable."
+        ),
+    )
+    return {
+        "contract": "any_time_breach",
+        "event_definition": normalized_event,
+        "horizons": horizons,
+        "backtest": forecast.get("touch_backtest"),
+        "signed_drivers": forecast.get("touch_signed_drivers"),
+    }
+
+
+def load_expert_view(
+    path: Path,
+    *,
+    forecast_id: str,
+    model_version: str,
+) -> dict[str, object] | None:
+    """Load judgment only when it was formed from this exact frozen forecast.
+
+    A model refresh intentionally makes an older debate disappear from the
+    live snapshot until experts have reviewed the new evidence.  The archive
+    remains available in ``expert-latest.json``; it is never silently carried
+    over or blended into the empirical estimate.
+    """
+
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"invalid expert archive {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError(f"invalid expert archive {path}: root must be an object")
+    evidence = payload.get("evidence")
+    if not isinstance(evidence, dict):
+        raise ValueError(f"invalid expert archive {path}: evidence must be an object")
+    if evidence.get("forecast_id") != forecast_id or evidence.get("model_version") != model_version:
+        return None
+    return payload
 
 
 def atomic_write_json(path: Path, payload: object) -> None:
@@ -516,7 +673,16 @@ def try_fetch(
         entry = sources.get(cache_key) if cache_key else None
         if isinstance(entry, dict) and "payload" in entry and deserializer is not None:
             try:
-                cached = deserializer(entry["payload"])
+                cached_payload = entry["payload"]
+                recorded_checksum = entry.get("checksum_sha256")
+                actual_checksum = checksum(cached_payload)
+                if not isinstance(recorded_checksum, str) or not re.fullmatch(
+                    r"[0-9a-f]{64}", recorded_checksum
+                ):
+                    raise UnsafeRemoteDataError("cached payload has no valid SHA-256 checksum")
+                if recorded_checksum != actual_checksum:
+                    raise UnsafeRemoteDataError("cached payload checksum does not match its content")
+                cached = deserializer(cached_payload)
                 validator(cached)
                 ensure_fresh(cached, maximum_age_days=maximum_age_days)
             except Exception as cache_exc:  # noqa: BLE001
@@ -829,43 +995,6 @@ def normalized_change_points(points: list[SeriesPoint], lookback: int) -> list[d
     ]
 
 
-def build_risk_curve(market: dict, macro: dict, news: dict) -> dict[str, float]:
-    market_pressure = market["scores"]["market_pressure"]
-    volatility_pressure = market["scores"]["volatility_pressure"]
-    global_pressure = macro["scores"]["global_pressure"]
-    domestic_pressure = macro["scores"]["domestic_pressure"]
-    news_pressure = news["score"]
-
-    weights = {
-        "1w": (0.40, 0.35, 0.15, 0.05, 0.05),
-        "1m": (0.30, 0.25, 0.20, 0.20, 0.05),
-        "3m": (0.20, 0.15, 0.25, 0.30, 0.10),
-        "6m": (0.15, 0.10, 0.25, 0.35, 0.15),
-        "1y": (0.10, 0.05, 0.25, 0.40, 0.20),
-    }
-    curve: dict[str, float] = {}
-    for horizon, (w_market, w_vol, w_global, w_domestic, w_news) in weights.items():
-        available = [
-            (market_pressure, w_market),
-            (volatility_pressure, w_vol),
-            (global_pressure, w_global),
-            (domestic_pressure, w_domestic),
-            (news_pressure, w_news),
-        ]
-        available = [(value, weight) for value, weight in available if value is not None]
-        if not available:
-            continue
-        score = sum(value * weight for value, weight in available) / sum(weight for _, weight in available)
-        curve[horizon] = round(max(5.0, min(95.0, score)), 1)
-    return curve
-
-
-def build_headline(primary_score: float, market_regime: str, macro_regime: str) -> str:
-    return (
-        f"{risk_band_label(primary_score)}: {market_regime.lower()} while {macro_regime.lower()}."
-    )
-
-
 def build_summary(primary_score: float, market: dict, macro: dict, news: dict, briefing: dict) -> dict:
     return {
         "deck": briefing["house_call"],
@@ -888,13 +1017,16 @@ def build_briefing(
     warnings: list[str],
 ) -> dict:
     stance = risk_band_label(primary_score).replace(" risk", "").replace(" backdrop", "")
-    confidence = infer_confidence(market, macro, warnings)
+    evidence_coverage = infer_evidence_coverage(market, macro, warnings)
     caveat = build_caveat_summary(macro, warnings)
     return {
         "stance": stance,
         "probability": round(primary_score, 1),
         "primary_horizon": primary_horizon,
-        "confidence": confidence,
+        "evidence_coverage": evidence_coverage,
+        # Compatibility alias for the v2 browser schema. It must not be
+        # interpreted as statistical or expert confidence.
+        "confidence": evidence_coverage,
         "caveat_severity": caveat["severity"],
         "caveat_message": caveat["message"],
         "house_call": build_house_call(primary_score, market, macro, news, caveat),
@@ -905,7 +1037,7 @@ def build_why_read(market: dict, macro: dict, news: dict, briefing: dict) -> lis
     return [
         {
             "label": "Pressure",
-            "title": "Spot pressure is still live",
+            "title": "Reference-rate pressure is visible",
             "detail": (
                 f"TRY is {format_change(market['try_gap_20d'])} weaker than the peer basket over 20 sessions, "
                 f"while USD/TRY is {format_change(market['usd_try']['change_20d'])} over the same window."
@@ -930,7 +1062,8 @@ def build_trigger_cards(market: dict, macro: dict, news: dict) -> list[dict]:
             "title": "TRY vs peers",
             "detail": (
                 f"If TRY keeps lagging the peer basket beyond the current {format_change(market['try_gap_20d'])} gap, "
-                "the read should move more bearish."
+                "that would strengthen the contextual depreciation-pressure case. It does not mechanically "
+                "change the empirical curve."
             ),
             "now": f"Now {format_change(market['try_gap_20d'])} over 20 sessions",
         },
@@ -940,7 +1073,10 @@ def build_trigger_cards(market: dict, macro: dict, news: dict) -> list[dict]:
                 "A fresh multi-week CBRT reserve series is required before reserve momentum can be described as "
                 "supportive or deteriorating."
                 if macro["turkey"]["official_reserve_assets_change_4w"] is None
-                else "If reserve momentum rolls over from its current trend, the domestic cushion gets thinner."
+                else (
+                    "A renewed decline would weaken the contextual reserve cushion. It does not mechanically "
+                    "change the empirical curve."
+                )
             ),
             "now": (
                 "Unavailable in this snapshot"
@@ -955,10 +1091,10 @@ def build_trigger_cards(market: dict, macro: dict, news: dict) -> list[dict]:
             {
                 "title": "Global macro clarity",
                 "detail": (
-                    "If the missing global-rates and dollar feeds come back showing stronger USD pressure, the current "
-                    "neutral external read should move higher."
+                    "Global-rates and dollar context is UNKNOWN until valid feeds return. Stronger USD pressure in "
+                    "restored data would strengthen the contextual risk case; no value is assumed in the meantime."
                 ),
-                "now": "Now external macro read is neutralized by missing feeds",
+                "now": "Now: UNKNOWN — required global feeds are unavailable",
             }
         )
     else:
@@ -966,7 +1102,8 @@ def build_trigger_cards(market: dict, macro: dict, news: dict) -> list[dict]:
             {
                 "title": "Volatility regime",
                 "detail": (
-                    "If global and EM volatility break higher together, shorter-horizon TRY risk should rise quickly."
+                    "If global and EM volatility break higher together, that would flag greater short-horizon "
+                    "contextual stress. The empirical estimate changes only with its price-history inputs."
                 ),
                 "now": (
                     f"Now VIX/VXEEM are {format_number(market['volatility']['VIX'])}/"
@@ -979,8 +1116,8 @@ def build_trigger_cards(market: dict, macro: dict, news: dict) -> list[dict]:
         triggers[2] = {
             "title": "Headline intensity",
             "detail": (
-                "If policy, inflation, or sanctions headlines start clustering more aggressively, the read should turn "
-                "less patient."
+                "A denser cluster of policy, inflation, or sanctions headlines would raise qualitative event-risk "
+                "attention; headline counts do not enter the empirical estimate."
             ),
             "now": f"Now {format_count(news['headline_count_14d'])} news items in 14 days",
         }
@@ -1056,21 +1193,32 @@ def risk_band_label(primary_score: float) -> str:
     if primary_score >= 50:
         return "Elevated depreciation risk"
     if primary_score >= 35:
-        return "Balanced but fragile backdrop"
+        return "Moderate depreciation risk"
     return "Contained depreciation risk"
 
 
 def build_house_call(primary_score: float, market: dict, macro: dict, news: dict, caveat: dict) -> str:
+    model_read = (
+        f"The primary exact-terminal estimate is {primary_score:.1f}% "
+        f"({risk_band_label(primary_score).lower()})."
+    )
     if caveat["severity"] == "high":
-        return "TRY is lagging peers, while incomplete domestic context limits the macro interpretation of the experimental price-history signal."
+        return (
+            f"{model_read} Material contextual evidence is unavailable and remains UNKNOWN; "
+            "inspect source health before drawing a macro conclusion."
+        )
     if count_at_least(news["headline_count_14d"], 6):
-        return "TRY is under pressure and the headline backdrop is getting busier; domestic context should be read only where its source panel is fresh."
-    if primary_score >= 50:
-        return "TRY is under visible market pressure; the domestic evidence is shown separately and does not alter the experimental model output."
-    return "TRY market pressure is contained in this snapshot; incomplete domestic evidence prevents a stronger policy or reserve conclusion."
+        return (
+            f"{model_read} Public headline volume is elevated, but it remains contextual and is not an input "
+            "to the empirical estimate."
+        )
+    return (
+        f"{model_read} Market, macro and news lenses are displayed separately and do not alter this model output."
+    )
 
 
-def infer_confidence(market: dict, macro: dict, warnings: list[str]) -> str:
+def infer_evidence_coverage(market: dict, macro: dict, warnings: list[str]) -> str:
+    """Classify contextual feed coverage; this is not forecast confidence."""
     score = 0
     if market["usd_try"]["latest"] is not None:
         score += 2
@@ -1177,7 +1325,8 @@ def build_data_health(source_cache: dict[str, object], warnings: list[str]) -> d
     forecast_required = ("ecb_eurtry", "ecb_eurusd")
     forecast_ready = all(status_by_key.get(key) in usable_statuses for key in forecast_required)
     unavailable = [source["key"] for source in sources if source["status"] not in usable_statuses]
-    overall = "healthy" if not unavailable and not warnings else "degraded"
+    unavailable_or_stale = [source["key"] for source in sources if source["status"] != "fresh"]
+    overall = "healthy" if not unavailable_or_stale and not warnings else "degraded"
     if not forecast_ready:
         overall = "blocked"
     fresh_count = sum(source["status"] == "fresh" for source in sources)
@@ -1196,7 +1345,8 @@ def build_data_health(source_cache: dict[str, object], warnings: list[str]) -> d
         "coverage_ratio": round(
             sum(source["status"] in usable_statuses for source in sources) / len(sources), 3
         ) if sources else 0.0,
-        "unavailable_or_stale_sources": unavailable,
+        "unavailable_sources": unavailable,
+        "unavailable_or_stale_sources": unavailable_or_stale,
         "missing_data_policy": (
             "Missing, stale, empty or semantically invalid inputs are unavailable; they are never converted to neutral evidence."
         ),
@@ -1212,9 +1362,12 @@ def build_unclear_message(macro: dict, news: dict, briefing: dict) -> str:
     if briefing["caveat_severity"] == "high":
         return briefing["caveat_message"]
     if news["headline_count_14d"] == 0 and news["chatter_count_14d"] == 0:
-        return "Headline flow is quiet, so the model leans more on market and macro signals than on narrative stress."
+        return (
+            "Available public feeds captured no recent items. This is descriptive context and does not change "
+            "the price-history model."
+        )
     if macro["global"]["broad_dollar_change_20d"] is None:
-        return "The external macro read is still softer than the market read because key global-rate feeds were incomplete."
+        return "The external macro lens is UNKNOWN because key global-rate feeds were incomplete."
     return briefing["caveat_message"]
 
 
@@ -1297,7 +1450,7 @@ def serialize_series(points: list[SeriesPoint], keep: int = 800) -> list[dict]:
 
 
 def serialize_series_long(points: list[SeriesPoint]) -> list[dict]:
-    """Retain the long spot/peer history required by the empirical model."""
+    """Retain the long FX/peer history required by the empirical model."""
     return serialize_series(points, keep=5000)
 
 
@@ -1384,7 +1537,9 @@ def fetch_ecb_series(series_code: str, *, last_n: int = 5000) -> list[SeriesPoin
     )
     csv_text = fetch_text(url, accept="text/csv, */*")
     points: list[SeriesPoint] = []
-    for row in DictReader(StringIO(csv_text)):
+    for row_index, row in enumerate(DictReader(StringIO(csv_text))):
+        if row_index >= MAX_TABULAR_ROWS:
+            raise UnsafeRemoteDataError("ECB response contains too many rows")
         date_value = parse_date(row.get("TIME_PERIOD"))
         close_value = parse_float(row.get("OBS_VALUE"))
         if date_value is None or close_value is None:
@@ -1397,9 +1552,11 @@ def fetch_fred_series(series_code: str) -> list[SeriesPoint]:
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={quote(series_code)}"
     csv_text = fetch_text(url, accept="text/csv, */*")
     points: list[SeriesPoint] = []
-    for row in DictReader(StringIO(csv_text)):
+    for row_index, row in enumerate(DictReader(StringIO(csv_text))):
+        if row_index >= MAX_TABULAR_ROWS:
+            raise UnsafeRemoteDataError("FRED response contains too many rows")
         # FRED changed this export header from DATE to observation_date. Accept
-        # both so an upstream naming change cannot silently neutralize the lens.
+        # both so an upstream naming change cannot silently erase the lens.
         date_value = parse_date(row.get("observation_date") or row.get("DATE"))
         close_value = parse_float(row.get(series_code))
         if date_value is None or close_value is None:
@@ -1412,7 +1569,9 @@ def fetch_cboe_series(symbol: str) -> list[SeriesPoint]:
     url = f"https://cdn.cboe.com/api/global/us_indices/daily_prices/{symbol}_History.csv"
     csv_text = fetch_text(url, accept="text/csv, */*")
     points: list[SeriesPoint] = []
-    for row in DictReader(StringIO(csv_text)):
+    for row_index, row in enumerate(DictReader(StringIO(csv_text))):
+        if row_index >= MAX_TABULAR_ROWS:
+            raise UnsafeRemoteDataError("Cboe response contains too many rows")
         date_value = parse_date(row.get("DATE"))
         close_value = parse_float(
             row.get("CLOSE")
@@ -1456,7 +1615,7 @@ def fetch_cbrt_reserves() -> dict[str, list[SeriesPoint]]:
 
 def fetch_rss_entries(url: str) -> list[FeedEntry]:
     xml_text = fetch_text(url, accept="application/rss+xml, application/xml, text/xml, */*")
-    root = ElementTree.fromstring(xml_text)
+    root = parse_xml_document(xml_text, label="RSS feed")
     channel = root.find("channel")
     items = channel.findall("item") if channel is not None else root.findall(".//item")
     entries: list[FeedEntry] = []
@@ -1464,6 +1623,11 @@ def fetch_rss_entries(url: str) -> list[FeedEntry]:
         title = clean_xml_text(item.findtext("title")) or "Untitled entry"
         link = clean_xml_text(item.findtext("link"))
         published = parse_feed_datetime(clean_xml_text(item.findtext("pubDate")))
+        if published is None:
+            continue
+        title = title[:MAX_FEED_TITLE_CHARS]
+        if link is not None:
+            link = sanitize_feed_link(link)
         entries.append(FeedEntry(title=title, link=link, published_at=published))
     return entries
 
@@ -1479,7 +1643,29 @@ def derive_usd_cross(series_in_quote: list[SeriesPoint], eur_usd: list[SeriesPoi
     return derived
 
 
+def read_bounded_response(response, *, maximum_bytes: int, label: str) -> bytes:  # noqa: ANN001
+    """Read at most ``maximum_bytes`` and reject misleading length metadata."""
+
+    raw_length = response.headers.get("Content-Length")
+    if raw_length is not None:
+        try:
+            declared_length = int(raw_length)
+        except (TypeError, ValueError) as exc:
+            raise UnsafeRemoteDataError(f"{label} has an invalid Content-Length") from exc
+        if declared_length < 0:
+            raise UnsafeRemoteDataError(f"{label} has a negative Content-Length")
+        if declared_length > maximum_bytes:
+            raise UnsafeRemoteDataError(
+                f"{label} declares {declared_length} bytes; limit is {maximum_bytes}"
+            )
+    payload = response.read(maximum_bytes + 1)
+    if len(payload) > maximum_bytes:
+        raise UnsafeRemoteDataError(f"{label} exceeds the {maximum_bytes}-byte limit")
+    return payload
+
+
 def fetch_text(url: str, *, accept: str | None = None) -> str:
+    validate_remote_url(url)
     last_error: Exception | None = None
     user_agents = [
         (
@@ -1498,8 +1684,16 @@ def fetch_text(url: str, *, accept: str | None = None) -> str:
             },
         )
         try:
-            with urlopen(request, timeout=15) as response:
-                return response.read().decode("utf-8", errors="replace")
+            with REMOTE_OPENER.open(request, timeout=15) as response:
+                validate_remote_url(response.geturl())
+                payload = read_bounded_response(
+                    response,
+                    maximum_bytes=MAX_TEXT_RESPONSE_BYTES,
+                    label="text response",
+                )
+                return payload.decode("utf-8", errors="replace")
+        except UnsafeRemoteDataError:
+            raise
         except (HTTPError, URLError, TimeoutError) as exc:
             last_error = exc
             if attempt < 1:
@@ -1508,6 +1702,7 @@ def fetch_text(url: str, *, accept: str | None = None) -> str:
 
 
 def fetch_bytes(url: str) -> bytes:
+    validate_remote_url(url)
     last_error: Exception | None = None
     user_agents = [
         (
@@ -1525,13 +1720,41 @@ def fetch_bytes(url: str) -> bytes:
             },
         )
         try:
-            with urlopen(request, timeout=15) as response:
-                return response.read()
+            with REMOTE_OPENER.open(request, timeout=15) as response:
+                validate_remote_url(response.geturl())
+                return read_bounded_response(
+                    response,
+                    maximum_bytes=MAX_BINARY_RESPONSE_BYTES,
+                    label="binary response",
+                )
+        except UnsafeRemoteDataError:
+            raise
         except (HTTPError, URLError, TimeoutError) as exc:
             last_error = exc
             if attempt < 1:
                 sleep(1)
     raise RuntimeError(f"Fetch failed for {url}: {last_error}") from last_error
+
+
+def sanitize_feed_link(value: str) -> str | None:
+    """Retain only bounded HTTPS navigation links from untrusted feeds."""
+
+    if len(value) > MAX_FEED_LINK_CHARS:
+        return None
+    try:
+        parsed = urlsplit(value)
+        port = parsed.port
+    except ValueError:
+        return None
+    if (
+        parsed.scheme.casefold() != "https"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or port not in (None, 443)
+    ):
+        return None
+    return value
 
 
 def extract_cbrt_irfcl_zip_url(html_text: str, base_url: str) -> str:
@@ -1541,28 +1764,168 @@ def extract_cbrt_irfcl_zip_url(html_text: str, base_url: str) -> str:
         if ".zip" not in href.casefold():
             continue
         if CBRT_IRFCL_WEEKLY_ZIP_TEXT in anchor_text.casefold():
-            return urljoin(base_url, href)
+            zip_url = urljoin(base_url, href)
+            validate_remote_url(zip_url)
+            return zip_url
     for href, _anchor_text in parser.anchors:
         if ".zip" in href.casefold():
-            return urljoin(base_url, href)
+            zip_url = urljoin(base_url, href)
+            validate_remote_url(zip_url)
+            return zip_url
     raise RuntimeError("Could not find the CBRT reserve ZIP link.")
 
 
+def preflight_zip_bytes(
+    payload: bytes,
+    *,
+    label: str,
+    maximum_bytes: int,
+    maximum_entries: int,
+) -> None:
+    """Bound a ZIP central directory before ``ZipFile`` allocates its entries."""
+
+    if len(payload) > maximum_bytes:
+        raise UnsafeRemoteDataError(f"{label} exceeds its compressed size limit")
+    # EOCD is at least 22 bytes and can be followed only by its declared
+    # comment (maximum 65,535 bytes). ZIP64 and split archives are unnecessary
+    # for this feed and expand the parser attack surface, so they are rejected.
+    search_start = max(0, len(payload) - (22 + 65_535))
+    eocd_offset = payload.rfind(b"PK\x05\x06", search_start)
+    if eocd_offset < 0 or eocd_offset + 22 > len(payload):
+        raise UnsafeRemoteDataError(f"{label} has no valid ZIP end record")
+    (
+        _signature,
+        disk_number,
+        central_disk,
+        entries_on_disk,
+        total_entries,
+        central_size,
+        central_offset,
+        comment_length,
+    ) = struct.unpack_from("<4s4H2LH", payload, eocd_offset)
+    if eocd_offset + 22 + comment_length != len(payload):
+        raise UnsafeRemoteDataError(f"{label} has inconsistent trailing data")
+    if disk_number != 0 or central_disk != 0 or entries_on_disk != total_entries:
+        raise UnsafeRemoteDataError(f"{label} uses an unsupported split archive")
+    if total_entries == 0xFFFF or central_size == 0xFFFFFFFF or central_offset == 0xFFFFFFFF:
+        raise UnsafeRemoteDataError(f"{label} uses unsupported ZIP64 metadata")
+    if total_entries > maximum_entries:
+        raise UnsafeRemoteDataError(f"{label} contains too many entries")
+    central_limit = max(
+        65_536,
+        maximum_entries * MAX_CENTRAL_DIRECTORY_BYTES_PER_ENTRY,
+    )
+    if central_size > central_limit:
+        raise UnsafeRemoteDataError(f"{label} central directory is oversized")
+    if central_offset + central_size > eocd_offset:
+        raise UnsafeRemoteDataError(f"{label} has an invalid central directory")
+
+
+def validate_zip_archive(
+    archive: zipfile.ZipFile,
+    *,
+    label: str,
+    maximum_entries: int,
+    maximum_member_bytes: int,
+    maximum_total_bytes: int,
+) -> None:
+    """Reject encrypted, oversized, unusual or path-confusing ZIP members."""
+
+    members = archive.infolist()
+    if len(members) > maximum_entries:
+        raise UnsafeRemoteDataError(f"{label} contains too many entries")
+    total_size = 0
+    for info in members:
+        path = PurePosixPath(info.filename)
+        if (
+            not info.filename
+            or "\\" in info.filename
+            or path.is_absolute()
+            or ".." in path.parts
+        ):
+            raise UnsafeRemoteDataError(f"{label} contains an unsafe member path")
+        if info.flag_bits & 0x1:
+            raise UnsafeRemoteDataError(f"{label} contains an encrypted member")
+        if info.compress_type not in {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}:
+            raise UnsafeRemoteDataError(f"{label} uses an unsupported compression method")
+        if info.is_dir():
+            continue
+        if info.file_size > maximum_member_bytes:
+            raise UnsafeRemoteDataError(f"{label} contains an oversized member")
+        total_size += info.file_size
+        if total_size > maximum_total_bytes:
+            raise UnsafeRemoteDataError(f"{label} expands beyond its total size limit")
+        if info.file_size:
+            if info.compress_size <= 0:
+                raise UnsafeRemoteDataError(f"{label} member has an invalid compressed size")
+            ratio = info.file_size / info.compress_size
+            if ratio > MAX_ARCHIVE_COMPRESSION_RATIO:
+                raise UnsafeRemoteDataError(f"{label} member exceeds the compression-ratio limit")
+
+
+def read_zip_member(archive: zipfile.ZipFile, name: str) -> bytes:
+    try:
+        info = archive.getinfo(name)
+    except KeyError as exc:
+        raise UnsafeRemoteDataError(f"workbook is missing required member {name!r}") from exc
+    if info.file_size > MAX_ARCHIVE_MEMBER_BYTES:
+        raise UnsafeRemoteDataError(f"workbook member {name!r} is oversized")
+    return archive.read(info)
+
+
+def parse_xml_document(payload: str | bytes, *, label: str) -> ElementTree.Element:
+    """Parse bounded XML after rejecting DTD/entity declarations."""
+
+    raw = payload.encode("utf-8") if isinstance(payload, str) else payload
+    if re.search(br"<!\s*(?:DOCTYPE|ENTITY)\b", raw, flags=re.IGNORECASE):
+        raise UnsafeRemoteDataError(f"{label} contains a forbidden DTD or entity declaration")
+    try:
+        return ElementTree.fromstring(raw)
+    except ElementTree.ParseError as exc:
+        raise UnsafeRemoteDataError(f"{label} is not well-formed XML") from exc
+
+
 def parse_cbrt_irfcl_points(zip_bytes: bytes, target_label: str) -> list[SeriesPoint]:
+    preflight_zip_bytes(
+        zip_bytes,
+        label="CBRT reserve archive",
+        maximum_bytes=MAX_BINARY_RESPONSE_BYTES,
+        maximum_entries=MAX_OUTER_ARCHIVE_ENTRIES,
+    )
     with zipfile.ZipFile(BytesIO(zip_bytes)) as outer_zip:
-        workbook_name = next(
+        validate_zip_archive(
+            outer_zip,
+            label="CBRT reserve archive",
+            maximum_entries=MAX_OUTER_ARCHIVE_ENTRIES,
+            maximum_member_bytes=MAX_WORKBOOK_BYTES,
+            maximum_total_bytes=MAX_WORKBOOK_BYTES,
+        )
+        workbook_info = next(
             (
-                info.filename
+                info
                 for info in outer_zip.infolist()
                 if info.filename.casefold().endswith(".xlsx")
             ),
             None,
         )
-        if workbook_name is None:
+        if workbook_info is None:
             raise RuntimeError("CBRT reserve ZIP did not contain an XLSX workbook.")
-        workbook_bytes = outer_zip.read(workbook_name)
+        workbook_bytes = outer_zip.read(workbook_info)
 
+    preflight_zip_bytes(
+        workbook_bytes,
+        label="CBRT reserve workbook",
+        maximum_bytes=MAX_WORKBOOK_BYTES,
+        maximum_entries=MAX_WORKBOOK_ARCHIVE_ENTRIES,
+    )
     with zipfile.ZipFile(BytesIO(workbook_bytes)) as workbook_zip:
+        validate_zip_archive(
+            workbook_zip,
+            label="CBRT reserve workbook",
+            maximum_entries=MAX_WORKBOOK_ARCHIVE_ENTRIES,
+            maximum_member_bytes=MAX_ARCHIVE_MEMBER_BYTES,
+            maximum_total_bytes=MAX_ARCHIVE_TOTAL_BYTES,
+        )
         shared_strings = read_shared_strings(workbook_zip)
         sheet_rows = read_sheet_rows(workbook_zip, shared_strings)
 
@@ -1600,31 +1963,42 @@ def parse_cbrt_irfcl_points(zip_bytes: bytes, target_label: str) -> list[SeriesP
 
 
 def read_shared_strings(workbook_zip: zipfile.ZipFile) -> list[str]:
-    shared_strings_xml = workbook_zip.read("xl/sharedStrings.xml")
-    root = ElementTree.fromstring(shared_strings_xml)
+    shared_strings_xml = read_zip_member(workbook_zip, "xl/sharedStrings.xml")
+    root = parse_xml_document(shared_strings_xml, label="workbook shared strings")
     namespace = {"a": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     values: list[str] = []
     for item in root.findall("a:si", namespace):
+        if len(values) >= MAX_SHARED_STRINGS:
+            raise UnsafeRemoteDataError("workbook contains too many shared strings")
         values.append("".join(node.text or "" for node in item.iterfind(".//a:t", namespace)))
     return values
 
 
 def read_sheet_rows(workbook_zip: zipfile.ZipFile, shared_strings: list[str]) -> dict[int, dict[str, str]]:
-    sheet_xml = workbook_zip.read("xl/worksheets/sheet1.xml")
-    root = ElementTree.fromstring(sheet_xml)
+    sheet_xml = read_zip_member(workbook_zip, "xl/worksheets/sheet1.xml")
+    root = parse_xml_document(sheet_xml, label="workbook worksheet")
     namespace = {"a": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
     rows: dict[int, dict[str, str]] = {}
+    cell_count = 0
     for row in root.findall(".//a:sheetData/a:row", namespace):
+        if len(rows) >= MAX_SHEET_ROWS:
+            raise UnsafeRemoteDataError("workbook contains too many worksheet rows")
         row_number = int(row.attrib["r"])
         values: dict[str, str] = {}
         for cell in row.findall("a:c", namespace):
+            cell_count += 1
+            if cell_count > MAX_SHEET_CELLS:
+                raise UnsafeRemoteDataError("workbook contains too many worksheet cells")
             reference = cell.attrib.get("r", "")
             column = "".join(character for character in reference if character.isalpha())
             raw_value = cell.findtext("a:v", default="", namespaces=namespace)
             if not column or raw_value == "":
                 continue
             if cell.attrib.get("t") == "s":
-                value = shared_strings[int(raw_value)]
+                shared_index = int(raw_value)
+                if not 0 <= shared_index < len(shared_strings):
+                    raise UnsafeRemoteDataError("workbook references an invalid shared string")
+                value = shared_strings[shared_index]
             else:
                 value = raw_value
             values[column] = value
@@ -1736,13 +2110,13 @@ def clean_xml_text(value: str | None) -> str | None:
     return cleaned or None
 
 
-def parse_feed_datetime(value: str | None) -> datetime:
+def parse_feed_datetime(value: str | None) -> datetime | None:
     if not value:
-        return datetime.now(UTC).replace(tzinfo=None)
+        return None
     try:
         parsed = parsedate_to_datetime(value)
     except (TypeError, ValueError, IndexError):
-        return datetime.now(UTC).replace(tzinfo=None)
+        return None
     if parsed.tzinfo is None:
         return parsed
     return parsed.astimezone(UTC).replace(tzinfo=None)
@@ -1866,7 +2240,7 @@ def build_global_reason(macro: dict) -> str:
     broad_dollar = macro["global"]["broad_dollar_change_20d"]
     us_2y = macro["global"]["us_2y"]
     if broad_dollar is None and us_2y is None:
-        return "Global-rates feeds were incomplete, so this snapshot kept the global backdrop neutral."
+        return "Global-rates and broad-dollar context is UNKNOWN because the required feeds were incomplete."
     return (
         f"Broad dollar is {format_change(broad_dollar)} over 20 sessions, "
         f"with US 2Y at {format_number(us_2y)}%."

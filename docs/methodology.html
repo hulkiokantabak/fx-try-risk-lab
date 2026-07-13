@@ -1,20 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Methodology — FX TRY Risk Lab</title>
-    <meta name="theme-color" content="#0b1f2a" />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="theme-color" content="#0b1f2a">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self'; img-src 'self' data:; connect-src 'self' https://hulkiokantabak.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
-    />
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+    >
     <meta
       name="description"
       content="Event definitions, forecasting design, validation, source-health rules and limitations for FX TRY Risk Lab."
-    />
-    <link rel="stylesheet" href="./style.css" />
+    >
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to methodology</a>
@@ -45,13 +45,13 @@
             empirical USD/TRY history. It publishes the precise event, a frozen data cutoff,
             uncertainty, source condition and out-of-sample diagnostics alongside the result.
           </p>
-          <div class="method-nav" aria-label="On this page">
+          <nav class="method-nav" aria-label="On this page">
             <a href="#event">1. Event specification</a>
             <a href="#model">2. Forecast mechanism</a>
             <a href="#validation">3. Validation</a>
             <a href="#data">4. Data integrity</a>
             <a href="#experts">5. Expert overlay</a>
-          </div>
+          </nav>
         </div>
         <aside class="method-status">
           <p class="eyebrow">Language rule</p>
@@ -78,6 +78,24 @@
           series contains only dates on which both required ECB observations exist. In the formula,
           <var>t</var> is the baseline aligned observation and <var>t + N</var> is exactly the
           <var>N</var>th later aligned ECB trading observation—not an approximate calendar date.
+        </p>
+        <h3>Terminal probability and path risk are different events</h3>
+        <p>
+          The primary curve asks whether the threshold is met at exactly <var>t + N</var>. When the
+          separate any-time-breach curve is published, it asks whether at least one observed ECB
+          daily reference-rate observation from <var>t + 1</var> through <var>t + N</var>, inclusive, meets the same
+          threshold. A pair can breach early and finish below the threshold, so the two events and
+          their probabilities are not interchangeable. The path measure observes daily reference
+          observations, not intraday prices, and is trained, calibrated and reported under its own labels.
+        </p>
+        <p class="callout">
+          Exact-terminal breach is a subset of any-time breach over the same window. The published
+          path probability is therefore the greater of its separately trained estimate and the
+          matched terminal estimate. This coherence floor is also applied to matched walk-forward
+          predictions before path metrics and authority are calculated. The unconstrained path
+          estimate and any adjustment remain machine-readable. A path outcome—positive or
+          negative—is scored only after the complete <var>t + 1</var> through <var>t + N</var>
+          window is available.
         </p>
         <div class="table-wrap">
           <table class="info-table">
@@ -115,6 +133,14 @@
           reliability adjustment can then use only earlier, already resolved walk-forward forecasts
           near the current raw estimate.
         </p>
+        <h3>Current challenger</h3>
+        <p>
+          Each terminal horizon is shown beside a target-purged climatology challenger: the
+          Laplace-smoothed event rate among historical labels whose complete target windows have
+          ended by the cutoff. It is a descriptive benchmark, not an uncertainty bound, expert
+          view, or replacement for the expanding as-of climatology used to score every backtest
+          forecast.
+        </p>
         <h3>What does not enter the probability</h3>
         <p>
           Current global rates, volatility indices, CBRT policy and reserves, peer currencies,
@@ -138,9 +164,11 @@
           <p class="eyebrow">Uncertainty</p>
           <h2>An interval, not false precision</h2>
           <p>
-            The published 90% interval is a shrinkage-adjusted Bernoulli sampling interval based on
-            the effective conditional and calibration sample. It does not cover model misspecification,
-            regime breaks, data revisions or geopolitical discontinuities.
+            The published 90% sampling interval is a percentile interval from a deterministic
+            moving-block bootstrap of resolved regime-matched and reliability-calibration evidence.
+            Blocking retains observed local dependence. The interval is conditional on fixed
+            features and regime rules; it does not cover model misspecification, regime breaks,
+            data revisions or geopolitical discontinuities.
           </p>
         </article>
       </section>
@@ -156,7 +184,17 @@
         <p class="callout">
           A horizon passes the published gate only when its walk-forward sample has at least 50
           forecasts, Brier skill versus expanding climatology is positive, and expected calibration
-          error is at most 0.100. The model-level gate passes only when every horizon passes.
+          error is at most 0.100. The model-level gate passes only when every horizon passes and each
+          current estimate has at least 20 resolved forecasts in its local reliability-calibration
+          neighbourhood.
+        </p>
+        <p>
+          The monitor also publishes authority by horizon. A horizon that passes this historical
+          gate receives <strong>limited authority</strong>, reflecting evidence from its backtest but
+          not yet a mature live record. A failing horizon remains <strong>experimental</strong>. The
+          model-level label remains experimental until every horizon passes and the current local
+          calibration-evidence minimum is met. A horizon can therefore have limited authority while
+          the aggregate output is still experimental.
         </p>
         <div class="table-wrap">
           <table class="info-table">
@@ -168,6 +206,7 @@
               <tr><th scope="row">Brier skill vs climatology</th><td>Improvement over an expanding historical event-rate forecast</td><td>Positive is better</td></tr>
               <tr><th scope="row">Expected calibration error (ECE)</th><td>Weighted gap between forecast rates and realized frequencies</td><td>≤ 0.100 for the gate</td></tr>
               <tr><th scope="row">Backtest N</th><td>Number of walk-forward evaluations behind the metric</td><td>≥ 50 for the gate</td></tr>
+              <tr><th scope="row">Current calibration N</th><td>Resolved prior forecasts near the current raw estimate</td><td>≥ 20 for the model-level gate</td></tr>
             </tbody>
           </table>
         </div>
@@ -175,9 +214,11 @@
         <p>
           Backtest results are research evidence, not live outcomes. Each newly issued forecast is
           recorded in an append-only ledger with its forecast ID, model version, data cutoff,
-          baseline, horizon estimates and uncertainty. Outcomes are attached only when their target
-          observations later become available. The interface reports live forecasts issued and live
-          horizon outcomes resolved separately from each horizon's backtest N.
+          baseline, horizon estimates and uncertainty. Exact-terminal and any-time-breach outcomes
+          are distinct ledger events and are attached only when the complete target window is
+          available. Path resolution records the peak observed daily reference rate in that window.
+          The interface reports live forecasts issued and resolved outcomes separately from each
+          horizon's backtest N.
         </p>
       </section>
 
@@ -195,6 +236,12 @@
           score. The public snapshot reports source status, latest observation, age, cache use and
           technical warnings. If either ECB series required for derived USD/TRY is unusable, the
           quantitative forecast build is blocked.
+        </p>
+        <p>
+          Evidence coverage is a source-availability measure. It is not statistical confidence,
+          model calibration, horizon authority or the experts' separate 0–100 confidence judgment.
+          An unavailable source can retain a last-observation date for audit history while its
+          current status remains explicitly unavailable.
         </p>
         <div class="table-wrap">
           <table class="info-table">
@@ -216,16 +263,27 @@
         <h2>Structured judgment stays separate from the statistical forecast</h2>
         <p>
           When published, the Atlas, Bosphorus, Flow and Vega specialist views receive the same
-          frozen evidence pack. Their house view, confidence and dissent are displayed as an overlay,
-          not silently blended into the statistical result. This separation preserves both model
+          frozen evidence pack identified by forecast ID and model version. Their house view,
+          confidence, horizon ranges, dissent and stress view are displayed as an overlay, not
+          silently blended into the statistical result. A debate is attached to the live snapshot
+          only when both identifiers exactly match; a model refresh therefore removes a stale
+          overlay until the new evidence has been debated. This separation preserves model
           auditability and meaningful disagreement.
         </p>
         <ul>
           <li><strong>Atlas</strong> examines global macro and broad-dollar conditions.</li>
           <li><strong>Bosphorus</strong> examines Turkish policy, inflation credibility and reserves.</li>
-          <li><strong>Flow</strong> examines spot, peers, positioning proxies and market microstructure.</li>
+          <li><strong>Flow</strong> examines price action, peers, positioning proxies and market microstructure.</li>
           <li><strong>Vega</strong> examines volatility, tails and event asymmetry.</li>
         </ul>
+        <p>
+          The house curve uses the FX Experts protocol's fixed role weights rather than a simple
+          average. Atlas/Bosphorus/Flow/Vega weights are 15/20/35/30% at 1w, 20/30/25/25% at 1m,
+          30/35/15/20% at 3m, 35/35/15/15% at 6m, and 40/40/10/10% at 1y. The displayed min–max
+          range is not an uncertainty interval; it preserves the spread of final expert judgments.
+          Confidence is shown on a separate 0–100 judgment scale. Every expert panel is explicitly
+          labeled <strong>expert judgment—not model</strong>.
+        </p>
       </section>
 
       <section class="panel prose-card" id="limits">
@@ -244,8 +302,7 @@
 
     <footer class="site-footer">
       <div><strong>FX TRY Risk Lab</strong><p>Independent public research. Not investment advice.</p></div>
-      <div><a href="./index.html">Return to monitor</a><a href="./data/latest.json">Machine-readable snapshot</a><a href="https://github.com/hulkiokantabak/fx-try-risk-lab" target="_blank" rel="noopener noreferrer">GitHub <span class="external" aria-label="opens in a new tab">↗</span></a></div>
+      <div><a href="./index.html">Return to monitor</a><a href="./data/latest.json">Machine-readable snapshot</a><a href="https://github.com/hulkiokantabak/fx-try-risk-lab" target="_blank" rel="noopener noreferrer">GitHub <span class="external" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></div>
     </footer>
-    <script data-goatcounter="https://hulkiokantabak.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
   </body>
 </html>
