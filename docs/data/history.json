@@ -1037,20 +1037,44 @@
     "confidence": "medium"
   },
   {
-    "as_of": "2026-07-13T09:47:17Z",
+    "as_of": "2026-07-12T23:00:39Z",
     "primary_horizon": "1m",
-    "primary_score": 39.5,
+    "primary_score": 9.2,
     "curve": {
-      "1w": 38.1,
-      "1m": 39.5,
-      "3m": 38.8,
-      "6m": 37.2,
-      "1y": 35.5
+      "1w": 9.1,
+      "1m": 9.2,
+      "3m": 19.8,
+      "6m": 26.8,
+      "1y": 43.9
     },
     "market_regime": "Market pressure contained",
     "macro_regime": "Domestic policy and reserves are supportive",
     "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
-    "stance": "Balanced but fragile",
-    "confidence": "medium"
+    "stance": "Contained depreciation",
+    "confidence": "medium",
+    "forecast_id": "fxtry-2026-07-10T00:00:00Z-e540c3aa93355f8f",
+    "model_version": "empirical-regime-v2.0.0",
+    "data_cutoff": "2026-07-10T00:00:00Z"
+  },
+  {
+    "as_of": "2026-07-13T11:25:06Z",
+    "primary_horizon": "1m",
+    "primary_score": 9.2,
+    "curve": {
+      "1w": 9.1,
+      "1m": 9.2,
+      "3m": 19.8,
+      "6m": 26.8,
+      "1y": 43.9
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic-policy and reserve data unavailable",
+    "headline": "The primary exact-terminal estimate is 9.2% (contained depreciation risk). Material contextual evidence is unavailable and remains UNKNOWN; inspect source health before drawing a macro conclusion.",
+    "stance": "Contained depreciation",
+    "evidence_coverage": "medium",
+    "confidence": "medium",
+    "forecast_id": "fxtry-2026-07-10T00:00:00Z-1f76a32e5b4454bab76d6cff",
+    "model_version": "empirical-regime-v2.2.0",
+    "data_cutoff": "2026-07-10T00:00:00Z"
   }
 ]

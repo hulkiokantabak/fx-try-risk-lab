@@ -1,231 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FX TRY Risk Lab</title>
-    <meta name="theme-color" content="#1d5c4b" />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FX TRY Risk Lab — USD/TRY Research Monitor</title>
+    <meta name="theme-color" content="#0b1f2a">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://hulkiokantabak.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
-    />
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+    >
     <meta
       name="description"
-      content="A lean browser-based monitor for Turkish lira depreciation risk."
-    />
-    <link rel="stylesheet" href="./style.css" />
+      content="A transparent, horizon-specific research monitor for Turkish lira depreciation risk, data health, evidence and forecast validation."
+    >
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
-    <main class="shell">
-      <section class="hero">
+    <a class="skip-link" href="#main-content">Skip to analysis</a>
+
+    <header class="site-header">
+      <div class="nav-shell">
+        <a class="brand" href="./index.html" aria-label="FX TRY Risk Lab home">
+          <span class="brand-mark" aria-hidden="true">FX</span>
+          <span><strong>TRY Risk Lab</strong><small>Public research monitor</small></span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <a href="#overview">Overview</a>
+          <a href="#drivers">Drivers</a>
+          <a href="#evidence">Evidence</a>
+          <a href="#validation">Validation</a>
+          <a href="#sources">Sources</a>
+          <a href="./methodology.html">Method</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="shell" id="main-content">
+      <div class="data-alert" id="data-alert" role="status" aria-live="polite">
+        <span class="status-dot" aria-hidden="true"></span>
+        <div>
+          <strong id="data-alert-title">Checking source health…</strong>
+          <span id="data-alert-detail">Loading the latest evidence pack.</span>
+        </div>
+        <a href="#sources">Inspect sources</a>
+      </div>
+      <noscript>
+        <div class="data-alert critical">
+          <span class="status-dot" aria-hidden="true"></span>
+          <div><strong>JavaScript is required for the interactive monitor.</strong><span>Read the <a href="./data/latest.json">latest machine-readable snapshot</a> and <a href="./methodology.html">methodology</a> directly.</span></div>
+        </div>
+      </noscript>
+
+      <section class="hero" id="overview" aria-labelledby="page-title">
         <div class="hero-copy">
-          <p class="eyebrow">TRY Depreciation Risk Monitor</p>
-          <h1>FX TRY Risk Lab</h1>
-          <p class="eyebrow">House Call</p>
-          <h2 id="house-call-title">Loading...</h2>
+          <p class="eyebrow">USD/TRY · Horizon-specific event monitor</p>
+          <h1 id="page-title">Turkish lira risk, with the evidence attached.</h1>
+          <div class="stance-line">
+            <span class="signal-chip" id="house-call-title">Loading…</span>
+            <span id="generated-at">Waiting for snapshot</span>
+          </div>
           <p class="deck" id="house-call-text" aria-live="polite">
-            Loading the latest browser snapshot...
+            Loading the latest published assessment…
           </p>
 
-          <div class="pill-row">
-            <article class="pill">
-              <span class="eyebrow">Primary horizon</span>
-              <strong id="briefing-horizon">--</strong>
-            </article>
-            <article class="pill">
-              <span class="eyebrow">Confidence</span>
-              <strong id="briefing-confidence">--</strong>
-            </article>
-            <article class="pill">
-              <span class="eyebrow">Caveat load</span>
-              <strong id="briefing-caveat">--</strong>
-            </article>
-          </div>
-
-          <div class="hero-actions">
-            <a
-              class="button ghost"
-              href="./data/latest.json"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Open raw snapshot
-            </a>
-            <a class="button ghost" href="./methodology.html">Read methodology</a>
-            <a
-              class="button ghost"
-              href="https://github.com/hulkiokantabak/fx-try-risk-lab/blob/main/CHANGELOG.md"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View changelog
-            </a>
-          </div>
+          <dl class="event-definition">
+            <div><dt>Baseline reference rate</dt><dd id="baseline-spot">—</dd></div>
+            <div><dt>Observed</dt><dd id="baseline-date">—</dd></div>
+            <div><dt>Target rule</dt><dd id="target-rule">—</dd></div>
+            <div><dt>Event threshold</dt><dd id="target-spot">—</dd></div>
+          </dl>
+          <p class="event-copy" id="event-definition">Event definition loading…</p>
         </div>
 
-        <aside class="hero-score">
-          <span class="eyebrow">Primary Probability</span>
-          <strong id="primary-score">--</strong>
-          <p id="primary-meta">Loading...</p>
+        <aside class="hero-score" aria-labelledby="score-label">
+          <div class="score-head">
+            <span class="eyebrow" id="score-label">Primary assessment</span>
+            <span class="model-tag" id="model-tag">Model —</span>
+          </div>
+          <div class="score-value" id="primary-score">—</div>
+          <p class="score-meta" id="primary-meta">Loading horizon assessment…</p>
+          <p class="uncertainty" id="uncertainty-label" hidden></p>
+          <div class="horizon-control" role="group" aria-label="Select forecast horizon" id="horizon-selector"></div>
+          <p class="sr-only" id="horizon-status" role="status" aria-live="polite" aria-atomic="true"></p>
+          <div class="coverage-row">
+            <span>Evidence coverage <strong id="briefing-coverage">—</strong></span>
+            <span>Data <strong id="briefing-caveat">—</strong></span>
+          </div>
         </aside>
       </section>
 
-      <section class="card" aria-labelledby="why-title">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Why This Read</p>
-            <h2 id="why-title">The three things driving today's call</h2>
-          </div>
-          <p class="stamp" id="generated-at">Waiting for data...</p>
-        </div>
-        <div class="briefing-grid" id="why-read-grid"></div>
+      <section class="workstation-grid snapshot-strip" aria-label="Current market snapshot">
+        <article class="compact-metric"><span>USD/TRY reference rate</span><strong id="quick-spot">—</strong><small id="quick-spot-date">—</small></article>
+        <article class="compact-metric"><span>20-session move</span><strong id="quick-spot-change">—</strong><small id="quick-spot-change-date">—</small></article>
+        <article class="compact-metric"><span>TRY vs peers</span><strong id="quick-peer-gap">—</strong><small id="quick-peer-date">—</small></article>
+        <article class="compact-metric"><span>CBRT policy rate</span><strong id="quick-policy">—</strong><small id="quick-policy-date">—</small></article>
       </section>
 
-      <section class="card" aria-labelledby="trigger-title">
+      <section class="panel" aria-labelledby="term-title">
         <div class="section-head">
-          <div>
-            <p class="eyebrow">What Would Change It</p>
-            <h2 id="trigger-title">Three triggers that would move the read</h2>
-          </div>
+          <div><p class="eyebrow">Term structure</p><h2 id="term-title">Assessment across horizons</h2></div>
+          <p class="section-note" id="term-note">The solid line is the exact-terminal event. The dashed path estimate uses its own labels and is floored by terminal probability because terminal breach is a subset. It covers daily ECB observations—not intraday prices.</p>
         </div>
-        <div class="briefing-grid" id="trigger-grid"></div>
+        <ul class="authority-list" id="authority-badges" aria-label="Model authority by horizon"></ul>
+        <div class="chart-shell term-shell">
+          <svg id="term-chart" viewBox="0 0 640 250" role="img" aria-labelledby="term-chart-title term-chart-desc">
+            <title id="term-chart-title">Exact-terminal and path-risk estimate term structure</title>
+            <desc id="term-chart-desc">Loading chart data.</desc>
+          </svg>
+        </div>
+        <ul class="term-legend" id="term-legend" aria-label="Term chart legend"></ul>
+        <p class="section-note challenger-note" id="challenger-note" hidden></p>
+        <details class="data-disclosure">
+          <summary>View term-structure data table</summary>
+          <div class="table-wrap"><table class="data-table"><caption>Published exact-terminal estimates, optional any-time-breach estimates, current climatology challengers and authority</caption><thead><tr><th scope="col">Horizon</th><th scope="col">Target rule</th><th scope="col" id="term-value-heading">Exact-terminal estimate</th><th scope="col">Inclusive threshold</th><th scope="col">Terminal interval</th><th scope="col">Any-time breach (interval)</th><th scope="col">Terminal climatology challenger</th><th scope="col">Authority</th></tr></thead><tbody id="term-table-body"></tbody></table></div>
+        </details>
       </section>
 
-      <section class="curve" id="full-brief" aria-labelledby="curve-title">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Full Brief</p>
-            <h2 id="curve-title">Probability curve across the full horizon set</h2>
-          </div>
+      <section class="driver-layout" id="drivers" aria-labelledby="drivers-title">
+        <div class="section-head full-span">
+          <div><p class="eyebrow">Signed drivers</p><h2 id="drivers-title">What raises risk—and what cushions it</h2></div>
+          <p class="section-note">Model-only historical associations for the selected horizon. Contextual macro, market and news lenses do not enter these estimates.</p>
         </div>
-        <div class="curve-grid" id="curve-grid"></div>
+        <article class="panel driver-panel risk-up"><div class="driver-heading"><span aria-hidden="true">↑</span><div><p class="eyebrow">Risk raisers</p><h3>Pressure on TRY</h3></div></div><div id="risk-raisers"></div></article>
+        <article class="panel driver-panel risk-down"><div class="driver-heading"><span aria-hidden="true">↓</span><div><p class="eyebrow">Risk cushions</p><h3>Support for TRY</h3></div></div><div id="risk-cushions"></div></article>
+        <article class="panel driver-neutral" id="neutral-driver-panel" hidden><p class="eyebrow">Near-zero association</p><h3>No material directional classification</h3><div id="neutral-drivers"></div></article>
       </section>
 
-      <section class="grid" aria-label="Charts">
-        <article class="card chart-card">
-          <p class="eyebrow">Market Trend</p>
-          <h3>USD/TRY vs peer basket</h3>
-          <p class="deck" id="market-chart-meta">Loading market trend...</p>
-          <div class="chart-shell">
-            <svg id="market-chart" viewBox="0 0 360 180" role="img" aria-label="USD/TRY and peer basket trend chart"></svg>
-          </div>
+      <section class="workstation-grid" id="evidence" aria-labelledby="evidence-title">
+        <div class="section-head full-span">
+          <div><p class="eyebrow">Evidence desk</p><h2 id="evidence-title">Markets, macro and published signals</h2></div>
+          <p class="section-note">Values show units and observation dates wherever the feed supplies them.</p>
+        </div>
+        <article class="panel chart-card">
+          <div class="panel-kicker"><div><p class="eyebrow">Market trend</p><h3>USD/TRY vs peer basket</h3></div><span class="freshness" id="market-freshness">—</span></div>
+          <p class="chart-meta" id="market-chart-meta">Loading market trend…</p>
+          <div class="chart-shell"><svg id="market-chart" viewBox="0 0 640 280" role="img" aria-labelledby="market-chart-title market-chart-desc"><title id="market-chart-title">USD/TRY and peer basket trend</title><desc id="market-chart-desc">Loading chart data.</desc></svg></div>
           <div class="chart-legend" id="market-chart-legend"></div>
+          <details class="data-disclosure"><summary>View accessible chart data</summary><div id="market-chart-table"></div></details>
         </article>
-        <article class="card chart-card">
-          <p class="eyebrow">Score History</p>
-          <h3>Primary score over time</h3>
-          <p class="deck" id="score-chart-meta">Loading score history...</p>
-          <div class="chart-shell">
-            <svg id="score-chart" viewBox="0 0 360 180" role="img" aria-label="Primary risk score history chart"></svg>
-          </div>
+        <article class="panel chart-card">
+          <div class="panel-kicker"><div><p class="eyebrow">Publication history</p><h3>Current-model estimate over time</h3></div><span class="freshness" id="score-freshness">Same model only</span></div>
+          <p class="chart-meta" id="score-chart-meta">Loading assessment history…</p>
+          <div class="chart-shell"><svg id="score-chart" viewBox="0 0 640 280" role="img" aria-labelledby="score-chart-title score-chart-desc"><title id="score-chart-title">Current-model probability estimate history</title><desc id="score-chart-desc">Loading chart data.</desc></svg></div>
           <div class="chart-legend" id="score-chart-legend"></div>
+          <details class="data-disclosure"><summary>View accessible chart data</summary><div id="score-chart-table"></div></details>
         </article>
+
+        <article class="panel evidence-panel"><div class="panel-kicker"><div><p class="eyebrow">Market lens</p><h3 id="market-regime">Loading…</h3></div><span class="freshness" id="market-lens-date">—</span></div><div class="metric-grid" id="market-metrics"></div></article>
+        <article class="panel evidence-panel"><div class="panel-kicker"><div><p class="eyebrow">Macro lens</p><h3 id="macro-regime">Loading…</h3></div><span class="freshness" id="macro-lens-date">—</span></div><div class="metric-grid" id="macro-metrics"></div></article>
       </section>
 
-      <section class="grid">
-        <article class="card">
-          <p class="eyebrow">Market Lens</p>
-          <h3 id="market-regime">Loading...</h3>
-          <div class="metric-grid" id="market-metrics"></div>
-        </article>
-        <article class="card">
-          <p class="eyebrow">Macro Lens</p>
-          <h3 id="macro-regime">Loading...</h3>
-          <div class="metric-grid" id="macro-metrics"></div>
-        </article>
-      </section>
-
-      <section class="grid">
-        <article class="card">
-          <p class="eyebrow">Supporting Reasons</p>
-          <h3>How the model is ranking the evidence</h3>
-          <div id="reasons"></div>
-        </article>
-        <article class="card">
-          <p class="eyebrow">Extended Watchlist</p>
-          <h3>Additional items worth following</h3>
-          <ul id="watchlist" class="list"></ul>
-        </article>
-      </section>
-
-      <section class="card">
-        <p class="eyebrow">History</p>
-        <h3>Previous published estimates</h3>
-        <div class="history-wrap">
-          <table class="history-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Primary horizon</th>
-                <th>Primary score</th>
-                <th>Market regime</th>
-                <th>Macro regime</th>
-              </tr>
-            </thead>
-            <tbody id="history-body"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="grid">
-        <article class="card">
-          <p class="eyebrow">Recent Headlines</p>
-          <h3>Context, not commands</h3>
-          <ul id="headline-list" class="list"></ul>
-        </article>
-        <article class="card">
-          <p class="eyebrow">My Notes</p>
-          <h3>Saved only in this browser</h3>
-          <label class="note-label" for="local-note">
-            Add your own observations or trade-desk notes.
-          </label>
-          <textarea id="local-note" rows="8" placeholder="Write here..."></textarea>
-          <div class="hero-actions">
-            <button class="button primary" type="button" data-save-note>Save note</button>
-            <button class="button ghost" type="button" data-export-note>Export note</button>
-            <span class="stamp" id="note-status">Nothing saved yet.</span>
+      <section class="workstation-grid" aria-label="Expert assessment">
+        <article class="panel expert-panel">
+          <div class="section-head"><div><p class="eyebrow">Expert overlay · separate judgment layer</p><h2>House view and disagreement</h2></div><span class="model-tag judgment-tag" id="expert-status">Awaiting data</span></div>
+          <p id="expert-summary" class="deck">The structured expert overlay has not loaded.</p>
+          <p id="expert-meta" class="section-note">Expert judgment is never substituted for the empirical model.</p>
+          <div class="expert-house" id="expert-house-wrap" hidden>
+            <div><p class="eyebrow">Weighted house curve</p><h3>Expert judgment—not model</h3><p>Fixed role weights vary by horizon. The range preserves the lowest and highest final specialist view.</p></div>
+            <div class="table-wrap"><table class="data-table"><caption>Weighted expert house judgment and final specialist disagreement range</caption><thead><tr><th scope="col">Horizon</th><th scope="col">House</th><th scope="col">Expert min–max</th></tr></thead><tbody id="expert-house-body"></tbody></table></div>
           </div>
+          <div id="expert-members" class="expert-grid"></div>
+          <div class="expert-caveats"><div id="expert-dissent" class="dissent-box" hidden></div><div id="expert-stress" class="dissent-box stress-box" hidden></div></div>
+        </article>
+        <article class="panel trigger-panel">
+          <p class="eyebrow">Context watchpoints · not model rules</p><h2>What would change the qualitative context</h2>
+          <div id="trigger-grid" class="trigger-list"></div>
         </article>
       </section>
 
-      <section class="card method">
-        <p class="eyebrow">Method</p>
-        <h3>What this lean browser edition does</h3>
-        <p>
-          This site is a static GitHub Pages app. It publishes a prebuilt daily snapshot using
-          public ECB, FRED, Cboe, CBRT, and RSS data, then scores TRY depreciation risk from five
-          lenses: price action, volatility, global macro, Turkey policy/reserves, and headline
-          intensity.
-        </p>
-        <p>
-          The goal is to lead with one clear read first, then show the evidence below it. It is
-          not a trading instruction engine and it does not promise perfect forecasts.
-        </p>
-        <div class="hero-actions">
-          <a class="button ghost" href="./methodology.html">Methodology page</a>
-          <a
-            class="button ghost"
-            href="https://github.com/hulkiokantabak/fx-try-risk-lab/blob/main/CHANGELOG.md"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Project changelog
-          </a>
-        </div>
+      <section class="workstation-grid" id="validation" aria-labelledby="validation-title">
+        <div class="section-head full-span"><div><p class="eyebrow">Validation desk</p><h2 id="validation-title">Calibration and track record</h2></div><p class="section-note">Forecast quality must be demonstrated, not implied.</p></div>
+        <article class="panel validation-card">
+          <div class="validation-state" id="calibration-state"><span aria-hidden="true">○</span><div><h3>Validation loading</h3><p>Checking the forecast ledger.</p></div></div>
+          <dl class="validation-metrics" id="calibration-summary"></dl>
+        </article>
+        <article class="panel">
+          <div class="panel-kicker"><div><p class="eyebrow">Horizon diagnostics</p><h3>Out-of-sample evidence</h3></div><a href="./methodology.html#validation">How to read this</a></div>
+          <p class="section-note">A horizon passes with backtest N ≥ 50, positive Brier skill and ECE ≤ 0.100. The model-level gate additionally requires current calibration N ≥ 20 at every horizon.</p>
+          <div class="table-wrap"><table class="data-table"><caption>Backtest diagnostics, current local calibration evidence and historical gate by horizon; live outcomes are reported separately</caption><thead><tr><th scope="col">Horizon</th><th scope="col">Backtest N</th><th scope="col">Brier</th><th scope="col">Log loss</th><th scope="col">Brier skill</th><th scope="col">ECE</th><th scope="col">Current calibration N</th><th scope="col">Horizon gate</th></tr></thead><tbody id="calibration-body"></tbody></table></div>
+        </article>
       </section>
 
-      <section class="card caveats" id="caveats" hidden>
-        <p class="eyebrow">Data Caveats</p>
-        <h3>Some public feeds were incomplete in this snapshot</h3>
-        <p class="deck" id="caveat-message">
-          The model still publishes a usable estimate, but these source issues can make the read
-          more neutral than usual.
-        </p>
-        <ul id="warning-list" class="list"></ul>
+      <section class="panel" id="sources" aria-labelledby="sources-title">
+        <div class="section-head"><div><p class="eyebrow">Source health</p><h2 id="sources-title">Freshness, failures and fallbacks</h2></div><ul class="health-counts" id="health-counts" aria-label="Source status counts"></ul></div>
+        <div class="source-grid" id="source-grid"></div>
+        <details class="warning-disclosure" id="warning-disclosure"><summary>Technical warnings <span id="warning-count"></span></summary><ul id="warning-list" class="plain-list"></ul></details>
+      </section>
+
+      <section class="workstation-grid">
+        <article class="panel">
+          <div class="panel-kicker"><div><p class="eyebrow">Recent publications</p><h2>Compact history</h2></div><span class="freshness">Latest 12</span></div>
+          <p class="section-note">Only publications from the current model version are included.</p>
+          <div class="table-wrap"><table class="data-table"><caption>Recent current-model probability estimates</caption><thead><tr><th scope="col">Date</th><th scope="col">Horizon</th><th scope="col">Estimate</th><th scope="col">Stance</th></tr></thead><tbody id="history-body"></tbody></table></div>
+        </article>
+        <article class="panel">
+          <p class="eyebrow">Context feed</p><h2>Recent headlines</h2><p class="section-note">News is contextual evidence, not a trading signal.</p>
+          <ul id="headline-list" class="headline-list"></ul>
+        </article>
+      </section>
+
+      <section class="panel research-notes">
+        <div><p class="eyebrow">Private workspace</p><h2>Browser notes</h2><p class="section-note">Stored only in this browser. Notes are never uploaded.</p></div>
+        <div><label class="sr-only" for="local-note">Your research notes</label><textarea id="local-note" rows="4" placeholder="Add observations, assumptions or questions…"></textarea><div class="note-actions"><button class="button primary" type="button" data-save-note>Save locally</button><button class="button secondary" type="button" data-export-note>Export JSON</button><span id="note-status" class="section-note" role="status" aria-live="polite">Nothing saved yet.</span></div></div>
       </section>
     </main>
+
+    <footer class="site-footer"><div><strong>FX TRY Risk Lab</strong><p>Independent public research. Not investment advice or a trading instruction.</p></div><div><a href="./methodology.html">Methodology</a><a href="./data/latest.json">Machine-readable snapshot</a><a href="https://github.com/hulkiokantabak/fx-try-risk-lab" target="_blank" rel="noopener noreferrer">GitHub <span class="external" aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a></div></footer>
+
     <script src="./app.js" defer></script>
-    <script data-goatcounter="https://hulkiokantabak.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
   </body>
 </html>
