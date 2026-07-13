@@ -3,9 +3,6 @@ name: Deploy Pages
 on:
   push:
     branches: ["main"]
-  workflow_run:
-    workflows: ["Refresh Browser Data"]
-    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -14,19 +11,22 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # For data-refresh chaining, only deploy when the upstream refresh
-    # succeeded. Direct pushes and manual dispatches always proceed.
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # Deploy the immutable commit that triggered this run. Scheduled
+          # refreshes push one commit, which in turn triggers this workflow.
+          ref: ${{ github.sha }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -35,6 +35,9 @@ jobs:
 
       - name: Validate browser bundle
         run: python scripts/validate_browser_bundle.py
+
+      - name: Check browser JavaScript syntax
+        run: node --check docs/app.js
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
@@ -47,6 +50,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

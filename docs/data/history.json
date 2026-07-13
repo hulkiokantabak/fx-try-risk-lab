@@ -1035,5 +1035,45 @@
     "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
     "stance": "Balanced but fragile",
     "confidence": "medium"
+  },
+  {
+    "as_of": "2026-07-12T23:00:39Z",
+    "primary_horizon": "1m",
+    "primary_score": 9.2,
+    "curve": {
+      "1w": 9.1,
+      "1m": 9.2,
+      "3m": 19.8,
+      "6m": 26.8,
+      "1y": 43.9
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic policy and reserves are supportive",
+    "headline": "TRY is lagging peers, but policy and reserves still cushion the read while global feeds remain incomplete.",
+    "stance": "Contained depreciation",
+    "confidence": "medium",
+    "forecast_id": "fxtry-2026-07-10T00:00:00Z-e540c3aa93355f8f",
+    "model_version": "empirical-regime-v2.0.0",
+    "data_cutoff": "2026-07-10T00:00:00Z"
+  },
+  {
+    "as_of": "2026-07-13T10:32:23Z",
+    "primary_horizon": "1m",
+    "primary_score": 9.2,
+    "curve": {
+      "1w": 9.1,
+      "1m": 9.2,
+      "3m": 19.8,
+      "6m": 26.8,
+      "1y": 43.9
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic-policy and reserve data unavailable",
+    "headline": "TRY is lagging peers, while incomplete domestic context limits the macro interpretation of the experimental price-history signal.",
+    "stance": "Contained depreciation",
+    "confidence": "medium",
+    "forecast_id": "fxtry-2026-07-10T00:00:00Z-c2b71ff28e672519d18904ac",
+    "model_version": "empirical-regime-v2.1.0",
+    "data_cutoff": "2026-07-10T00:00:00Z"
   }
 ]
