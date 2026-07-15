@@ -1097,5 +1097,26 @@
     "forecast_id": "fxtry-2026-07-13T00:00:00Z-14e52d72eb222b793d8f2c7f",
     "model_version": "empirical-regime-v2.2.0",
     "data_cutoff": "2026-07-13T00:00:00Z"
+  },
+  {
+    "as_of": "2026-07-15T07:00:58Z",
+    "primary_horizon": "1m",
+    "primary_score": 10.3,
+    "curve": {
+      "1w": 9.9,
+      "1m": 10.3,
+      "3m": 20.3,
+      "6m": 33.5,
+      "1y": 46.1
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic-policy and reserve data unavailable",
+    "headline": "The primary exact-terminal estimate is 10.3% (contained depreciation risk). Material contextual evidence is unavailable and remains UNKNOWN; inspect source health before drawing a macro conclusion.",
+    "stance": "Contained depreciation",
+    "evidence_coverage": "low",
+    "confidence": "low",
+    "forecast_id": "fxtry-2026-07-14T00:00:00Z-95d466fc720c3539be6cef6d",
+    "model_version": "empirical-regime-v2.2.0",
+    "data_cutoff": "2026-07-14T00:00:00Z"
   }
 ]
