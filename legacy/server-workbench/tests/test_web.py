@@ -9,6 +9,7 @@ import uuid
 import zipfile
 from io import BytesIO
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
 from fastapi.testclient import TestClient
@@ -779,6 +780,21 @@ def test_follow_up_delta_summary_flows_into_cycle_and_report(
     assert "House view rose from 44.0 to 58.0 (+14.0)." in html_report.text
     assert "Current watch triggers" in html_report.text
     assert "CBRT reserve drawdown" in html_report.text
+
+
+@pytest.mark.parametrize("action", ["refresh-sources", "generate-report"])
+@pytest.mark.parametrize("invalid_id", ["not-an-integer", "1.evil.invalid", "1%0D%0AX"])
+def test_assessment_redirect_actions_reject_non_integer_ids(
+    client: TestClient, action: str, invalid_id: str
+) -> None:
+    response = client.post(
+        f"/assessments/{invalid_id}/{action}",
+        data={"csrf_token": "must-not-reach-the-handler"},
+        follow_redirects=False,
+    )
+    assert response.status_code == 422
+    assert "location" not in response.headers
+    assert any(error["loc"] == ["path", "cycle_id"] for error in response.json()["detail"])
 
 
 def test_assessment_detail_can_refresh_queued_sources_from_cycle_screen(
@@ -1738,9 +1754,9 @@ def test_refresh_sources_executes_queued_runs(
             return _sample_cbrt_policy_rate_html()
         if "International%2BReserves%2Band%2BForeign%2BCurrency%2BLiquidity" in url:
             return _sample_cbrt_irfcl_html()
-        if "news.google.com" in url:
+        if urlsplit(url).hostname == "news.google.com":
             return _sample_feed("News Feed")
-        if "reddit.com" in url:
+        if urlsplit(url).hostname in {"reddit.com", "www.reddit.com"}:
             return _sample_feed("Chatter Feed")
         if "imf.org/external/datamapper/api/v1/" in url:
             return _sample_imf_payload()
@@ -1787,6 +1803,18 @@ def test_refresh_sources_executes_queued_runs(
         if url.endswith("irfcl_latest.zip"):
             return _sample_cbrt_irfcl_zip_bytes()
         raise AssertionError(f"Unexpected binary URL fetched in test: {url}")
+
+    # Fixture routing must not mistake a host mentioned elsewhere for its origin.
+    for deceptive_url in (
+        "https://news.google.com.evil.invalid/rss",
+        "https://news.google.com@evil.invalid/rss",
+        "https://evil.invalid/?next=news.google.com",
+        "https://www.reddit.com.evil.invalid/rss",
+        "https://reddit.com@evil.invalid/rss",
+        "https://evil.invalid/?next=reddit.com",
+    ):
+        with pytest.raises(AssertionError, match="Unexpected URL fetched in test"):
+            fake_fetch(deceptive_url)
 
     monkeypatch.setattr(source_refresh, "_fetch_text", fake_fetch)
     monkeypatch.setattr(source_refresh, "_fetch_bytes", fake_fetch_bytes)

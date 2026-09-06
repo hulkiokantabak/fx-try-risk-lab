@@ -1385,7 +1385,7 @@ def refresh_assessment_sources(
         summary = execute_queued_refreshes(db, settings)
     _set_flash_message(request, summary["message"])
     return RedirectResponse(
-        url=f"/assessments/{cycle_id}",
+        url=f"/assessments/{int(cycle_id)}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -1541,7 +1541,7 @@ def generate_report(
             raise HTTPException(status_code=400, detail=str(exc)) from exc
     _set_flash_message(request, f"Generated PDF and HTML report artifacts for cycle {cycle_id}.")
     return RedirectResponse(
-        url=f"/assessments/{cycle_id}",
+        url=f"/assessments/{int(cycle_id)}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
