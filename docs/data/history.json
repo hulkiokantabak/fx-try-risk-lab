@@ -1979,5 +1979,26 @@
     "forecast_id": "fxtry-2026-09-09T00:00:00Z-5566e53e8c4cfd9800b3ef4f",
     "model_version": "empirical-regime-v2.2.0",
     "data_cutoff": "2026-09-09T00:00:00Z"
+  },
+  {
+    "as_of": "2026-09-11T06:38:53Z",
+    "primary_horizon": "1m",
+    "primary_score": 9.0,
+    "curve": {
+      "1w": 10.2,
+      "1m": 9.0,
+      "3m": 18.7,
+      "6m": 26.1,
+      "1y": 43.7
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Reserve trend available; policy rate unavailable",
+    "headline": "The primary exact-terminal estimate is 9.0% (contained depreciation risk). Material contextual evidence is unavailable and remains UNKNOWN; inspect source health before drawing a macro conclusion.",
+    "stance": "Contained depreciation",
+    "evidence_coverage": "low",
+    "confidence": "low",
+    "forecast_id": "fxtry-2026-09-10T00:00:00Z-2cb75884e742f493fd52a3c2",
+    "model_version": "empirical-regime-v2.2.0",
+    "data_cutoff": "2026-09-10T00:00:00Z"
   }
 ]
