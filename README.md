@@ -171,8 +171,9 @@ The supported product is intentionally small:
 - `.github/workflows/`: CI, source refresh, CodeQL, and one-path Pages deployment;
 - `legacy/`: archived server-first prototype and original design material.
 
-The scheduled job refreshes data on weekday mornings. If artifacts change, its
-single bot commit triggers one Pages deployment of that immutable commit SHA.
+The scheduled job refreshes data on weekday mornings. If artifacts change, it
+pushes a single bot commit; when the refresh run succeeds, a `workflow_run`
+trigger deploys the latest `main` commit to Pages.
 
 ## Local verification and preview
 

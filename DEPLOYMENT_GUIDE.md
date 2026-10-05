@@ -10,15 +10,22 @@ The scheduled refresh and normal product deployment are deliberately separate:
 1. **Refresh Browser Data** checks out `main`, runs the snapshot builder, then
    runs unit, semantic, and JavaScript checks.
 2. If public data changed, it creates one bot commit and pushes it to `main`.
-3. That push triggers **Deploy Pages** exactly once.
-4. **Deploy Pages** checks out the immutable triggering SHA, validates the
-   bundle again, uploads `docs/`, and deploys it through the protected
-   `github-pages` environment.
+3. That push does **not** start any workflow: GitHub suppresses `on: push`
+   (and `pull_request`) runs for pushes made with the default `GITHUB_TOKEN`.
+4. When the refresh run completes successfully, a `workflow_run` trigger
+   starts **Deploy Pages** once. It checks out `github.sha`, which for
+   `workflow_run` is the latest commit on `main` (the refresh's bot commit),
+   never the refresh run's pre-refresh `head_sha`. It validates the bundle
+   again, uploads `docs/`, and deploys it through the protected
+   `github-pages` environment. On days with no data change it redeploys the
+   unchanged `main`, which is harmless.
 
-There is no `workflow_run` deployment trigger. That avoids duplicate deployment
-runs and avoids accidentally deploying the pre-refresh SHA. Concurrency groups
-cancel superseded CI/Page runs while never cancelling an in-progress data
-refresh. Every job has a bounded timeout.
+Human pushes to `main` and manual dispatches still deploy directly. Without
+the `workflow_run` trigger the live site silently stops receiving refreshed
+data while every workflow stays green (this happened from April to June 2026,
+and again from July to October 2026). Concurrency groups cancel superseded
+CI/Page runs while never cancelling an in-progress data refresh. Every job has
+a bounded timeout.
 
 ## One-time repository setup
 
