@@ -5,10 +5,6 @@
       "label": "ECB EUR/TRY",
       "payload": [
         {
-          "observed_at": "2007-03-28T00:00:00",
-          "value": 1.8612
-        },
-        {
           "observed_at": "2007-03-29T00:00:00",
           "value": 1.8598
         },
@@ -20003,13 +19999,17 @@
         {
           "observed_at": "2026-10-08T00:00:00",
           "value": 55.0523
+        },
+        {
+          "observed_at": "2026-10-09T00:00:00",
+          "value": 55.1033
         }
       ],
-      "fetched_at": "2026-10-09T06:45:23Z",
-      "last_attempt_at": "2026-10-09T06:45:23Z",
-      "latest_observation": "2026-10-08T00:00:00Z",
+      "fetched_at": "2026-10-12T07:02:19Z",
+      "last_attempt_at": "2026-10-12T07:02:19Z",
+      "latest_observation": "2026-10-09T00:00:00Z",
       "item_count": 5000,
-      "checksum_sha256": "72ec8cd624bc07e17de6def25c220a28eaffe8fc52a7b6f8c4d8a9e1269bdd39",
+      "checksum_sha256": "aca69168bf61bf5dd33f9bd3e9ad16e98e8779b22cc2224656489089646193c8",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -20018,10 +20018,6 @@
     "ecb_eurusd": {
       "label": "ECB EUR/USD",
       "payload": [
-        {
-          "observed_at": "2007-05-02T00:00:00",
-          "value": 1.3588
-        },
         {
           "observed_at": "2007-05-03T00:00:00",
           "value": 1.3613
@@ -39929,13 +39925,17 @@
         {
           "observed_at": "2026-10-08T00:00:00",
           "value": 1.1186
+        },
+        {
+          "observed_at": "2026-10-09T00:00:00",
+          "value": 1.1206
         }
       ],
-      "fetched_at": "2026-10-09T06:45:25Z",
-      "last_attempt_at": "2026-10-09T06:45:25Z",
-      "latest_observation": "2026-10-08T00:00:00Z",
+      "fetched_at": "2026-10-12T07:02:21Z",
+      "last_attempt_at": "2026-10-12T07:02:21Z",
+      "latest_observation": "2026-10-09T00:00:00Z",
       "item_count": 4978,
-      "checksum_sha256": "15affe411dc977a1047e5b65ad87864194c0b50c054be0ebaa6e73d02bb16db3",
+      "checksum_sha256": "598ecf2c3fac116265482111e0b5e68d27793758e182a8c3169acad92f349755",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -39944,10 +39944,6 @@
     "ecb_eurzar": {
       "label": "ECB EUR/ZAR",
       "payload": [
-        {
-          "observed_at": "2023-08-22T00:00:00",
-          "value": 20.3932
-        },
         {
           "observed_at": "2023-08-23T00:00:00",
           "value": 20.2097
@@ -43143,13 +43139,17 @@
         {
           "observed_at": "2026-10-08T00:00:00",
           "value": 18.6252
+        },
+        {
+          "observed_at": "2026-10-09T00:00:00",
+          "value": 18.527
         }
       ],
-      "fetched_at": "2026-10-09T06:45:26Z",
-      "last_attempt_at": "2026-10-09T06:45:26Z",
-      "latest_observation": "2026-10-08T00:00:00Z",
+      "fetched_at": "2026-10-12T07:02:23Z",
+      "last_attempt_at": "2026-10-12T07:02:23Z",
+      "latest_observation": "2026-10-09T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "6088e711d3417e7541b3e2b0de065c103d53216a874937893bb52a05b431551d",
+      "checksum_sha256": "7ce01c2b8f60e02b28994f745ab99a10a619f9b1133f1362b406072953a062ca",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -43158,10 +43158,6 @@
     "ecb_eurbrl": {
       "label": "ECB EUR/BRL",
       "payload": [
-        {
-          "observed_at": "2023-08-22T00:00:00",
-          "value": 5.3891
-        },
         {
           "observed_at": "2023-08-23T00:00:00",
           "value": 5.3306
@@ -46357,13 +46353,17 @@
         {
           "observed_at": "2026-10-08T00:00:00",
           "value": 5.6118
+        },
+        {
+          "observed_at": "2026-10-09T00:00:00",
+          "value": 5.6086
         }
       ],
-      "fetched_at": "2026-10-09T06:45:28Z",
-      "last_attempt_at": "2026-10-09T06:45:28Z",
-      "latest_observation": "2026-10-08T00:00:00Z",
+      "fetched_at": "2026-10-12T07:02:24Z",
+      "last_attempt_at": "2026-10-12T07:02:24Z",
+      "latest_observation": "2026-10-09T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "e551d206842d857929478aa934d85288fb2f9a16b7be14685d8a911b08724cf8",
+      "checksum_sha256": "9ab4f9d0b868f3ea48f51a3d541c2b5fffbf8e530d56fd52447cf2481ff9681d",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -46372,10 +46372,6 @@
     "ecb_eurhuf": {
       "label": "ECB EUR/HUF",
       "payload": [
-        {
-          "observed_at": "2023-08-22T00:00:00",
-          "value": 382.03
-        },
         {
           "observed_at": "2023-08-23T00:00:00",
           "value": 383.33
@@ -49571,13 +49567,17 @@
         {
           "observed_at": "2026-10-08T00:00:00",
           "value": 366.25
+        },
+        {
+          "observed_at": "2026-10-09T00:00:00",
+          "value": 365.08
         }
       ],
-      "fetched_at": "2026-10-09T06:45:29Z",
-      "last_attempt_at": "2026-10-09T06:45:29Z",
-      "latest_observation": "2026-10-08T00:00:00Z",
+      "fetched_at": "2026-10-12T07:02:25Z",
+      "last_attempt_at": "2026-10-12T07:02:25Z",
+      "latest_observation": "2026-10-09T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "75bad106f47dcea20124cf1080f56a1021b717f640a24bcd55e174e49d64240d",
+      "checksum_sha256": "bba0a3f01ac014fe6fa970f7571f3c0463eefc76bce84fa926d24f882ee489df",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -49586,10 +49586,6 @@
     "ecb_eurpln": {
       "label": "ECB EUR/PLN",
       "payload": [
-        {
-          "observed_at": "2023-08-22T00:00:00",
-          "value": 4.4643
-        },
         {
           "observed_at": "2023-08-23T00:00:00",
           "value": 4.4773
@@ -52785,13 +52781,17 @@
         {
           "observed_at": "2026-10-08T00:00:00",
           "value": 4.3753
+        },
+        {
+          "observed_at": "2026-10-09T00:00:00",
+          "value": 4.3835
         }
       ],
-      "fetched_at": "2026-10-09T06:45:30Z",
-      "last_attempt_at": "2026-10-09T06:45:30Z",
-      "latest_observation": "2026-10-08T00:00:00Z",
+      "fetched_at": "2026-10-12T07:02:26Z",
+      "last_attempt_at": "2026-10-12T07:02:26Z",
+      "latest_observation": "2026-10-09T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "01b4463293697cd87623c02f1c1bd7720c7a2927552a296a140f52f2a357fbe0",
+      "checksum_sha256": "fe5f9a4f107505a5e68825e11f5d9a24a81c595239bc9673b81852f244b5f1ea",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -56002,7 +56002,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:18Z",
-      "last_attempt_at": "2026-10-09T06:47:36Z",
+      "last_attempt_at": "2026-10-12T07:04:32Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "97d1e19b10f5902c9b0d94eb9a7ae33ae738ef744b64ca0f411dcac50338b46c",
@@ -59216,7 +59216,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-09T06:47:37Z",
+      "last_attempt_at": "2026-10-12T07:04:32Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "4f68dc3cf704b9fbf8ccaf13560366b00ce0cdaf05f46cae4826f7af8f8627c1",
@@ -62430,7 +62430,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-09T06:47:37Z",
+      "last_attempt_at": "2026-10-12T07:04:32Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "6da325d4a08479ad77cad1e426004f3f8d61c8dbb59996bbaf3c3c76130dbe88",
@@ -65644,7 +65644,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-09T06:47:37Z",
+      "last_attempt_at": "2026-10-12T07:04:32Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "257127c375e150f6ec595e463a4591219e610e8cf4a494d0bbd9ffcdab6f0f37",
@@ -68858,7 +68858,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-09T06:47:37Z",
+      "last_attempt_at": "2026-10-12T07:04:32Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "918952a2c51487c9e796a08c6a91e1a00201152d95288ecdc775146aab7b0a29",
@@ -72072,7 +72072,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-09T06:47:37Z",
+      "last_attempt_at": "2026-10-12T07:04:32Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "e151aa36d1c862e51f12c6350789d6638db784a7e34ffab6b5d0275c20455e36",
@@ -72314,14 +72314,14 @@
         }
       ],
       "fetched_at": "2026-07-12T23:01:30Z",
-      "last_attempt_at": "2026-10-09T06:47:37Z",
+      "last_attempt_at": "2026-10-12T07:04:33Z",
       "latest_observation": "2026-01-23T00:00:00Z",
       "item_count": 57,
       "checksum_sha256": "31f3bfd1d5c98b88bff0b73e3002bb453b8989afa6691ebeccec612da0dc303b",
       "status": "unavailable",
       "used_cache": false,
       "stale_after_days": 75,
-      "last_error": "latest observation is 259.3 days old; freshness gate is 75 days"
+      "last_error": "latest observation is 262.3 days old; freshness gate is 75 days"
     },
     "cbrt_reserves": {
       "label": "CBRT reserves",
@@ -72372,7 +72372,7 @@
         ]
       },
       "fetched_at": "2026-08-13T06:48:32Z",
-      "last_attempt_at": "2026-10-09T06:47:38Z",
+      "last_attempt_at": "2026-10-12T07:04:33Z",
       "latest_observation": "2026-07-31T00:00:00Z",
       "item_count": 10,
       "checksum_sha256": "a000e21b3c9639bf0b5369a3ba2909786c5f78715094a608c9f53559446557cf",
@@ -72390,34 +72390,19 @@
           "published_at": "2026-10-05T08:09:15"
         },
         {
-          "title": "Turkey\u2019s annual inflation slows to 29.7 percent in September - Turkish Minute",
-          "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNaF9EM2dHbHlVLWVvcUp2LUJhZEZiMjJSVnJobFZlZFU0d2t3WEtnRXN4Z0VFQlBpQmxwb2dXeUx4Um1zMWtvdVFnWGNTMk4ycXhhbjJUd3NoZGthVjJJTUpuQTllMGVCN1ZwaDhzZVNPendWSTBRdnRfTjdjdWhrOTBtNmdJOVVkUTdKcm9tZHlqLXVVVng1MEd0VDZxR2p3aVNz0gGoAUFVX3lxTE5DZ2JlU0d2bjQ0WFN2dDIwc0lkaWc4djhkWmtrajk4ZXU5bmxybE04WkVsYXRmbVJxdldvZnFHWk5iNXBBOWs5ZXlzdEZSMGNNbWNwTWhNdDg3c3QyTDVzT3NqckV2Vl9Jbld5X3Q3TFJRVW13MHhqS1E2eGNCRVE3QkhZclVfa0JTN2NUdUNFb1QtaXFadnpLLVh6cEYwZ1FzSjlRdUpTVA?oc=5",
-          "published_at": "2026-10-05T12:13:44"
-        },
-        {
           "title": "Turks often keep gold as a hedge against inflation. It may be hurting Turkey\u2019s future - NPR",
           "link": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOZnJkd2lDQUhSdUxXZ0tSbTdnakc4VGFTSGZaSWNLNnlEaG5sMDFLY2VJRm9IYkdsemNpLUQzV2U2dGk1WExXX3FTOS1uRFctR3lKaTNWUE0xN1ozSU5sSEEtT1RiVmo4TkZQYlBySEc0TFdxNmNFeGtoYkZzSmtwdGt1YzFSOWw3QnNsX1NtQm5yc3JpV0N1Q1RMd21jRzJyc0F3Q3h2TV9OdmZ5RFo0a1JFVXB5enN1ZkRsMUM0a3dwX1l5bnBR?oc=5",
           "published_at": "2026-09-15T07:00:00"
         },
         {
-          "title": "Surprise Slowdown in Turkish Prices Makes Case for Rate Cut - Bloomberg.com",
-          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPcWNLWUlMT05ndkUyMWZHdFF5RktkaFZIbXZSVC05Tml0REtYNjZ1MWdaMFVoNW9BZG9Rd3ZnMGtxbVA2TVJPemxLTDJPZ3JlRlZtTGpEamtNOURWUlVkLXdiU3k5S2w3ZDByQ2hLY3JrU1prNUItQXd3bHF1YmZkT2tJMUhrUDRnVXFBcUN4SXpIbXp1ejRwelZIcW1SMnhkR3hqTDZkZ05OMUlHeVhrRzFB?oc=5",
-          "published_at": "2026-10-05T07:37:43"
+          "title": "OECD raises Turkey inflation forecast, trims growth outlook - Reuters",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNM3VyZUFFSzh2MThMT2tXNW1PeTNhcmY0WlFLcUdzLW1vWG9uYlhIaC1uekZGX2xrYk5FUExtaEswQ0ZjQk1QNk5hU2haYkFlbWx2Z0ZtU2xsaTNVVzJhc3dvUUEzcUdOZDdPSnQwODFTUktXX3YyWDVvT20wVG5TZDlGVFV3bHgxZnFlczF2aTNJbFdvU21Ya3N2cWZ1VEhndlBKXzYyNS1UbGNZZFpxTnVn?oc=5",
+          "published_at": "2026-09-23T07:00:00"
         },
         {
-          "title": "Explainer: How Turkey's investment fund bubble burst - Reuters",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNZ0l1bkJFbVQwY0lWdXRvbmM1aUxFQUZVLWQwd1RPM1JINHhNLTZqLWY0cEFMb3RKVnFFbmQ2ZERnX0tuam9KdG90aW5RaGtsV0ZXOUd1WkdVNjUteXVTSHYxUTkwSWdZdnI3RXRmTEVMWEpyTXB0NF9GSnQ5UTNOU1V4ZWtLaUdTVFJQT1F5NG84cWdRVFZveXh3?oc=5",
-          "published_at": "2026-10-02T15:02:12"
-        },
-        {
-          "title": "Turkish Central Bank Keeps Rates Unchanged Amid Continued Inflation Risks - WSJ",
-          "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPUlJWUEplbGpRLUY1ajc5ZUxGNXQyVHF5Yi11RGN5UWd4NF93WVVUN1lqcjQ1LXpZQlhDTDZxVEEySlRtQXhwR1ZnbDFXc0M4dkFnV1I5T2tNMF9MRXpxZ3BDYUp0cXhkbXlLdGJfeXNFdWx4ODV0OVhWU05qOW5CZkZJTnlSTlNTR2twXzc0RlpqREF3OG44aTZKRmoxMXBtdEp4OGFrT242Z3lvVU1uY1EtRklWWFlrN2NmZi1HcEotS09C?oc=5",
-          "published_at": "2026-09-10T07:00:00"
-        },
-        {
-          "title": "Turkey Inflation Cools and Turkish Bank Stocks Move Back Into Focus - Simply Wall Street",
-          "link": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNeHE3bXZEb3dfQ2I0aHgwdl90LWtsbC12NVJTcTdxZDVMY0RoTldEZU12NVc0MDdpN1duOUd5cGNZTVl4eFFjSE9xQml4NFlnT2c4cTExOHIxY0pWcU9qcnVsVDdJRE9zVUozU0ctQmdpVVZld0NlU005dW5BMmpWc3Q0dEpSZzViZ3RvdTRodlpZVUl3WExWU3RxcmdpZWlzZUgzVExnbkEyVVBIZ0EzdFM2aUM0cTYzVk52bDV5S2Zqcmd5SWZSa2FuNF84aGJUcmUxNkZmakFRamdvMlHSAeMBQVVfeXFMUHdoX1B0cGMwVkJDTkxHc2gwQ3VtR1FEM2g2ajBiUjQ5UzE1bUt6UGdCT1dPWU9wejdDczBvVExHeVhvTF9JXzhxUlFiNmZ6M1ZZOHRSQzhGY3ZTeVEwTXA1TU52ZW1PWE1UNW9TdXZWRUZ1b2U4NF9DTWk4ZmxfeGVEZnZPRmQtSU9lWmdOZk9Gc0ZfRTVqclR4a1V6Z0xXMjNHSy1rTjdTVkNVZU5OdTdid3VUd3k0LVF0T3RRMUZsVFNEZjkxMXY5VlBHWWV2SWtVLUhOZXFVNVQ2V3VKeTBGdms?oc=5",
-          "published_at": "2026-10-05T19:02:20"
+          "title": "Turkey\u2019s annual inflation slows to 29.7 percent in September - Turkish Minute",
+          "link": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNaF9EM2dHbHlVLWVvcUp2LUJhZEZiMjJSVnJobFZlZFU0d2t3WEtnRXN4Z0VFQlBpQmxwb2dXeUx4Um1zMWtvdVFnWGNTMk4ycXhhbjJUd3NoZGthVjJJTUpuQTllMGVCN1ZwaDhzZVNPendWSTBRdnRfTjdjdWhrOTBtNmdJOVVkUTdKcm9tZHlqLXVVVng1MEd0VDZxR2p3aVNz0gGoAUFVX3lxTE5DZ2JlU0d2bjQ0WFN2dDIwc0lkaWc4djhkWmtrajk4ZXU5bmxybE04WkVsYXRmbVJxdldvZnFHWk5iNXBBOWs5ZXlzdEZSMGNNbWNwTWhNdDg3c3QyTDVzT3NqckV2Vl9Jbld5X3Q3TFJRVW13MHhqS1E2eGNCRVE3QkhZclVfa0JTN2NUdUNFb1QtaXFadnpLLVh6cEYwZ1FzSjlRdUpTVA?oc=5",
+          "published_at": "2026-10-05T12:13:44"
         },
         {
           "title": "Financing Ambition amid Crisis: Turkey's Economic Challenges, Strategic Partnerships, and Regional Power Projection - Moshe Dayan Center",
@@ -72425,9 +72410,14 @@
           "published_at": "2026-08-17T07:00:00"
         },
         {
-          "title": "T\u00fcrkiye\u2019s inflation falls below 30% for first time since 2021 - \u0648\u0643\u0627\u0644\u0629 \u0627\u0644\u0623\u0646\u0628\u0627\u0621 \u0627\u0644\u0633\u0648\u0631\u064a\u0629 \u2013 \u0633\u0627\u0646\u0627",
-          "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE5HZFJ0ZVpRSk1uZm51eGRRZnFOcjVDbWZpTEUwS3ZCNWdWRWVVazdjRl93dGZjN0FvZlFMbjMwRDVSNlh2d2VyZ1F4SGo?oc=5",
-          "published_at": "2026-10-05T11:01:18"
+          "title": "Surprise Slowdown in Turkish Prices Makes Case for Rate Cut - Bloomberg.com",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPcWNLWUlMT05ndkUyMWZHdFF5RktkaFZIbXZSVC05Tml0REtYNjZ1MWdaMFVoNW9BZG9Rd3ZnMGtxbVA2TVJPemxLTDJPZ3JlRlZtTGpEamtNOURWUlVkLXdiU3k5S2w3ZDByQ2hLY3JrU1prNUItQXd3bHF1YmZkT2tJMUhrUDRnVXFBcUN4SXpIbXp1ejRwelZIcW1SMnhkR3hqTDZkZ05OMUlHeVhrRzFB?oc=5",
+          "published_at": "2026-10-05T07:37:43"
+        },
+        {
+          "title": "Turkish Central Bank Keeps Rates Unchanged Amid Continued Inflation Risks - WSJ",
+          "link": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPUlJWUEplbGpRLUY1ajc5ZUxGNXQyVHF5Yi11RGN5UWd4NF93WVVUN1lqcjQ1LXpZQlhDTDZxVEEySlRtQXhwR1ZnbDFXc0M4dkFnV1I5T2tNMF9MRXpxZ3BDYUp0cXhkbXlLdGJfeXNFdWx4ODV0OVhWU05qOW5CZkZJTnlSTlNTR2twXzc0RlpqREF3OG44aTZKRmoxMXBtdEp4OGFrT242Z3lvVU1uY1EtRklWWFlrN2NmZi1HcEotS09C?oc=5",
+          "published_at": "2026-09-10T07:00:00"
         },
         {
           "title": "Financial engineering is no substitute for interest rates: Lessons from T\u00fcrkiye - CEPR",
@@ -72435,14 +72425,14 @@
           "published_at": "2026-08-29T07:00:00"
         },
         {
+          "title": "Turkey Inflation Cools and Turkish Bank Stocks Move Back Into Focus - Simply Wall Street",
+          "link": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNeHE3bXZEb3dfQ2I0aHgwdl90LWtsbC12NVJTcTdxZDVMY0RoTldEZU12NVc0MDdpN1duOUd5cGNZTVl4eFFjSE9xQml4NFlnT2c4cTExOHIxY0pWcU9qcnVsVDdJRE9zVUozU0ctQmdpVVZld0NlU005dW5BMmpWc3Q0dEpSZzViZ3RvdTRodlpZVUl3WExWU3RxcmdpZWlzZUgzVExnbkEyVVBIZ0EzdFM2aUM0cTYzVk52bDV5S2Zqcmd5SWZSa2FuNF84aGJUcmUxNkZmakFRamdvMlHSAeMBQVVfeXFMUHdoX1B0cGMwVkJDTkxHc2gwQ3VtR1FEM2g2ajBiUjQ5UzE1bUt6UGdCT1dPWU9wejdDczBvVExHeVhvTF9JXzhxUlFiNmZ6M1ZZOHRSQzhGY3ZTeVEwTXA1TU52ZW1PWE1UNW9TdXZWRUZ1b2U4NF9DTWk4ZmxfeGVEZnZPRmQtSU9lWmdOZk9Gc0ZfRTVqclR4a1V6Z0xXMjNHSy1rTjdTVkNVZU5OdTdid3VUd3k0LVF0T3RRMUZsVFNEZjkxMXY5VlBHWWV2SWtVLUhOZXFVNVQ2V3VKeTBGdms?oc=5",
+          "published_at": "2026-10-05T19:07:30"
+        },
+        {
           "title": "Turkish habit of stashing gold 'under the pillow' hurts economy, government says - NPR",
           "link": "https://news.google.com/rss/articles/CBMib0FVX3lxTFAwbkVibFM2bFh2eG9lY1EyRlJKbGYyb2xsOFFnY3lnaXU1SXEzWG5fQVUyazJMT19PbE5MdHRYYVlYYUt5dTRuYUYtNGlDa0huQ1oxdFVtRmdYRUhtYnp4V3E1UklkWTRVeEJHZFBHUQ?oc=5",
           "published_at": "2026-09-15T07:00:00"
-        },
-        {
-          "title": "The Turkish lira hit a new all-time low amid a stock market crash - UA.NEWS",
-          "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOeThFVkktWXRCbXRscExzYlotdW10d3BPbUxsTWFtQndxb0EtSkx3cllXYVlsUTdUNTE2bTROU213cTNLby0tVmhidUtLaEdMaGNNS2dFazBXMFdISGVtXzBjV09Jb0gxa3FZLW5KMVRRU1hxajhCXy1FNWFkdzRfSXRrNVRXTEJPUVo3akNEYnY4MkJzSEp5cnZtZEt1VkE?oc=5",
-          "published_at": "2026-09-18T07:00:00"
         },
         {
           "title": "Growth forecasts cut as Turkish inflation deters investment - Arabian Gulf Business Insight | AGBI",
@@ -72450,19 +72440,29 @@
           "published_at": "2026-09-25T07:00:00"
         },
         {
-          "title": "Mavi H1 2026 slides: margins expand amid Turkey inflation pressure - Investing.com",
-          "link": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOd21nRFBjSDNPNXFJdlRrYlRWbFFCMDhFTWZjeVlOVHBQNXgtVWtFZ3FTUnFEbUdFbUhvaGVPRUhKZGdvZWpndW9kS1RHd3F3bVFMdFpqeXgtTzJvdXhxWldXdEk0cWI3MHdseDNfRVpqYzJtVnRnUlV2MFA3WFd2VnpfOWRLV1pralB1eWZGOWEwcXhwRFpremQ4eWgzZEY1UDZtZVpiR3piVXlkSGtpV1FDcEdSdFQtcGdzWGpBTQ?oc=5",
-          "published_at": "2026-09-17T07:00:00"
+          "title": "Explainer: How Turkey's investment fund bubble burst - Reuters",
+          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNZ0l1bkJFbVQwY0lWdXRvbmM1aUxFQUZVLWQwd1RPM1JINHhNLTZqLWY0cEFMb3RKVnFFbmQ2ZERnX0tuam9KdG90aW5RaGtsV0ZXOUd1WkdVNjUteXVTSHYxUTkwSWdZdnI3RXRmTEVMWEpyTXB0NF9GSnQ5UTNOU1V4ZWtLaUdTVFJQT1F5NG84cWdRVFZveXh3?oc=5",
+          "published_at": "2026-10-03T07:00:00"
         },
         {
-          "title": "Turkish September inflation at 1.84%, below forecast | Gulf Times - Gulf Times",
-          "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOakJ4QUw3QnNEazNiYk1hZ0Rlc1FKR0RScEFUUTd0eDlVRmgtSkNMU2dMcXlqb3ZUSEM1a0VtbWl1MGV4azVzZW9oVzNyaFhYTUw2a1ZsRXVIWWZlR2d0amM3NDhndmdRNmp6NGF1SWxoeWsyV2VFLVBsZTNQekFva0ZuV1Byc0tab2dFSFhXcVhfemNlVktncDZSWnRObDExVEHSAacBQVVfeXFMT3B3TXFHSEQwb01JSnRXN2FUS2hhSExtTW1aTDlfcjdlYU1DV0xqdUNDcnhlNFRsQnZiRTBkR08ydmd5T3l2ZGpxeHk3amduMWNhaTVEQno5aHdOTFhiQVFtdEV2ZElveWlWN0VCb2xYSDU1VGVka1pIOEhQQjVmdHJ2ckdHZ1JRUll4VzgzQVMwdnpDTGNNLVJ6ajRadDNuaW5pSUg0TTQ?oc=5",
-          "published_at": "2026-10-05T16:15:00"
+          "title": "Turkish annual inflation eases in July, but underlying pressures pick up - ing think",
+          "link": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQYkFwVVNjb1NrQ3BzVGdfZ25rVWItS1lzXzIwaWVTa2cxeVN4NndCSUl5U3NUd2NMd0c4SGJCNzREN1R4U3pOZTFCdzhnR3FGTHpXek43Z296NU5wVEoyOVhacTJzSmowb2c3UHBwVXg0ZXdqQkNSMDZuZjVxdGxYcmVyYnBNcDN4cktWV0hJaU9lWjhjUEdYVllwZVlnSEVKdUJkb0xR?oc=5",
+          "published_at": "2026-08-03T07:00:00"
         },
         {
-          "title": "Dollar steady as traders await key US inflation data - Reuters",
-          "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPTzhZVWVFX0IxZHRHRTExeHVkajFlQ3U3X3RhbjdFbW5uNnFHR0lLNmd5ZVZRT0tqd1h2X090Snd4bk5VLWhKd0UwaTlDUTNkbnpsLWRIdXFJWE1wdDlUbVd0SXJjb1JYaVlKTVVxUllYQ2lRZjNZcFA1LWVEY2xZRTVHdkNEd3cyNGRNNDhHUDRYem15Szg5dFFadXRCNnFYNHQ1Yg?oc=5",
-          "published_at": "2026-08-11T07:00:00"
+          "title": "T\u00fcrkiye\u2019s inflation falls below 30% for first time since 2021 - \u0633\u0627\u0646\u0627",
+          "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE5HZFJ0ZVpRSk1uZm51eGRRZnFOcjVDbWZpTEUwS3ZCNWdWRWVVazdjRl93dGZjN0FvZlFMbjMwRDVSNlh2d2VyZ1F4SGo?oc=5",
+          "published_at": "2026-10-05T11:01:18"
+        },
+        {
+          "title": "The Turkish lira hit a new all-time low amid a stock market crash - UA.NEWS",
+          "link": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOeThFVkktWXRCbXRscExzYlotdW10d3BPbUxsTWFtQndxb0EtSkx3cllXYVlsUTdUNTE2bTROU213cTNLby0tVmhidUtLaEdMaGNNS2dFazBXMFdISGVtXzBjV09Jb0gxa3FZLW5KMVRRU1hxajhCXy1FNWFkdzRfSXRrNVRXTEJPUVo3akNEYnY4MkJzSEp5cnZtZEt1VkE?oc=5",
+          "published_at": "2026-09-18T07:00:00"
+        },
+        {
+          "title": "Turkish central bank lifts 2026 inflation forecast, vows tight stance - Daily Sabah",
+          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNeXAwOHNveUxnWkdKMjVrWGdYRU1zanc3NUQ2bXJUR3lfdWt0WmxFY1dydjFrNS1Od1l5dTRZek40VGo3X0NwTWRrdHE5ZHZ6ZEtLUG54Q0k3NkN2VmVBSEk0eFVhMjBTd25tZ0VTbUZ4aXJ6RnBZenNXWVNLcHBMXy1IcTgzcXdheDdkZVc4eGkxRVdQLVQxQWI0eG92aVRESHdNOVF1RXNaLV9xSC1BbDBn?oc=5",
+          "published_at": "2026-08-13T07:00:00"
         },
         {
           "title": "Turkey\u2019s finance minister says Iran war added 7 percentage points to inflation - Turkish Minute",
@@ -72470,19 +72470,9 @@
           "published_at": "2026-09-16T07:00:00"
         },
         {
-          "title": "Dollar rises, euro slips after ECB rate increase - Reuters",
-          "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOYU50UmRVNmIyeFBOSmd6azlDeDMxNlh1S0cycHpnYjU4NERYWjhoN2diSmthTngzdWZScmFTdldrTGtUcTh3SDFKbVIySmU2TUx3cnMtOEdKMnFkV3J1d3pYRmdvZDVWb2VPSXNjcG52cEVPTGtLNF9UT1BFSnJ3WlUzOXNuU1FwZmNSdGVTdV9Na1h6M3dPVGVtU0ttYlBlRWc0S1Q0Rl9HSmVCNlZaZXhjMVc0OUduMk1mOGRqVkxjY0d2SGhRbWJsUQ?oc=5",
-          "published_at": "2026-09-10T07:00:00"
-        },
-        {
-          "title": "Turkish inflation just above expectations at 1.7% monthly, 32.6% annually - Reuters",
-          "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNQkRCeU1kNm9vaHQ0c25NZWljY1pDNUI3RlFFUm1qS2JtSHVJRFRyaXpnSG8tc1lYN2pQZWNGNU1mVGRGeUo4LWk0XzFfR3dBalliY2NmR2pLM1l6aXBPYjJxcWlycUhSeHg1R0JkRWZLU2YzaHVvQ0RaR2JEYnNGMG5TTXpsUVhyWHhzVzlENldGSWxwVmwydHpEd19qMWxqdmpWT0VaYmpTTjhjLXIyTkdBY1N4LVhkMy1z?oc=5",
-          "published_at": "2026-06-05T07:00:00"
-        },
-        {
-          "title": "Turkish Lira Struggles as Inflation Pressures Persist - TradingPedia",
-          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOSW54Tlc2MkpubEdHOWJITXUyQkpjbUNiTnhReFFjU1ZjV1RHUEZRUWpnREU1V0tzdUIzUnZkN0RPT2FzMWkxOTBNalIwN3RxTXNXRVk0OWNKX1BHVDFGWmxROGs4bWc2VE9LLVVqTUY3NVFUS0xScVdsXzhiSDhHZmNaQ2xWZVdLRnBqTlk5RG52c0tST205cUNn?oc=5",
-          "published_at": "2026-07-13T07:00:00"
+          "title": "Dollar steady as traders await key US inflation data - Reuters",
+          "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPTzhZVWVFX0IxZHRHRTExeHVkajFlQ3U3X3RhbjdFbW5uNnFHR0lLNmd5ZVZRT0tqd1h2X090Snd4bk5VLWhKd0UwaTlDUTNkbnpsLWRIdXFJWE1wdDlUbVd0SXJjb1JYaVlKTVVxUllYQ2lRZjNZcFA1LWVEY2xZRTVHdkNEd3cyNGRNNDhHUDRYem15Szg5dFFadXRCNnFYNHQ1Yg?oc=5",
+          "published_at": "2026-08-11T07:00:00"
         },
         {
           "title": "Dollar gains, yen weakens as markets eye US CPI - Reuters",
@@ -72490,9 +72480,9 @@
           "published_at": "2026-08-10T07:00:00"
         },
         {
-          "title": "Turkish central bank lifts 2026 inflation forecast, vows tight stance - Daily Sabah",
-          "link": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNeXAwOHNveUxnWkdKMjVrWGdYRU1zanc3NUQ2bXJUR3lfdWt0WmxFY1dydjFrNS1Od1l5dTRZek40VGo3X0NwTWRrdHE5ZHZ6ZEtLUG54Q0k3NkN2VmVBSEk0eFVhMjBTd25tZ0VTbUZ4aXJ6RnBZenNXWVNLcHBMXy1IcTgzcXdheDdkZVc4eGkxRVdQLVQxQWI0eG92aVRESHdNOVF1RXNaLV9xSC1BbDBn?oc=5",
-          "published_at": "2026-08-13T07:00:00"
+          "title": "Turkish inflation just above expectations at 1.7% monthly, 32.6% annually - Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNQkRCeU1kNm9vaHQ0c25NZWljY1pDNUI3RlFFUm1qS2JtSHVJRFRyaXpnSG8tc1lYN2pQZWNGNU1mVGRGeUo4LWk0XzFfR3dBalliY2NmR2pLM1l6aXBPYjJxcWlycUhSeHg1R0JkRWZLU2YzaHVvQ0RaR2JEYnNGMG5TTXpsUVhyWHhzVzlENldGSWxwVmwydHpEd19qMWxqdmpWT0VaYmpTTjhjLXIyTkdBY1N4LVhkMy1z?oc=5",
+          "published_at": "2026-06-05T07:00:00"
         },
         {
           "title": "Dollar mixed after flat PPI, rate hike bets cool - Reuters",
@@ -72508,13 +72498,23 @@
           "title": "Deutsche Bank raises Turkey inflation forecast to 30 percent - Turkish Minute",
           "link": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNTVhySGE0bUJOWHlKSUFROGVQRHhRQ3A1RTR3NWw3aFlaazhtNnRTXzVpSnFGTkNVZV9ud3c5dzQ3b2YwR3h2Z2R6SVVZRmdiUjVNbXhON251NUJEcENuRkpCcWVDV2ZOS0taMnktVzhMZDhyQUdQUWJUWXAtak1Pd3NMOW10cnBkS1dPMU04eE93aGIwNUtCWmxlVGNJUXpEUTQ3UdIBqgFBVV95cUxNdkowbUM0aXp0RnJBckh6Rm1vN2NNS0hpWDE3SUdLdmtLRm40YWhoRXZEcEZHMEZVRU1ncGJxX0VTQkRrOEh5UWlHM3A0bXA0NHh6ZW1QUzBSSk9lQ1Z1RzZzdWdOZEhMYzZ6MXVvckZ4UVlROGE0anJPa0d1TFJXMEQ0SWRTWWZqX0FFQWlKbHdRX3VqejlnSlpCbkJZRTA2UnZDQlpzNkRzZw?oc=5",
           "published_at": "2026-07-25T07:00:00"
+        },
+        {
+          "title": "Turkish Lira Struggles as Inflation Pressures Persist - TradingPedia",
+          "link": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOSW54Tlc2MkpubEdHOWJITXUyQkpjbUNiTnhReFFjU1ZjV1RHUEZRUWpnREU1V0tzdUIzUnZkN0RPT2FzMWkxOTBNalIwN3RxTXNXRVk0OWNKX1BHVDFGWmxROGs4bWc2VE9LLVVqTUY3NVFUS0xScVdsXzhiSDhHZmNaQ2xWZVdLRnBqTlk5RG52c0tST205cUNn?oc=5",
+          "published_at": "2026-07-13T07:00:00"
+        },
+        {
+          "title": "Dollar rises, euro slips after ECB rate increase - Reuters",
+          "link": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOYU50UmRVNmIyeFBOSmd6azlDeDMxNlh1S0cycHpnYjU4NERYWjhoN2diSmthTngzdWZScmFTdldrTGtUcTh3SDFKbVIySmU2TUx3cnMtOEdKMnFkV3J1d3pYRmdvZDVWb2VPSXNjcG52cEVPTGtLNF9UT1BFSnJ3WlUzOXNuU1FwZmNSdGVTdV9Na1h6M3dPVGVtU0ttYlBlRWc0S1Q0Rl9HSmVCNlZaZXhjMVc0OUduMk1mOGRqVkxjY0d2SGhRbWJsUQ?oc=5",
+          "published_at": "2026-09-10T07:00:00"
         }
       ],
-      "fetched_at": "2026-10-09T06:47:39Z",
-      "last_attempt_at": "2026-10-09T06:47:39Z",
-      "latest_observation": "2026-10-05T19:02:20Z",
+      "fetched_at": "2026-10-12T07:04:35Z",
+      "last_attempt_at": "2026-10-12T07:04:35Z",
+      "latest_observation": "2026-10-05T19:07:30Z",
       "item_count": 25,
-      "checksum_sha256": "9a6ac9eabf36692b3c5dc96ae96c5fabf8eccdb6b624d56c2a7ee298af831966",
+      "checksum_sha256": "aa0375f987ba08e54e77075c7cf5662e9feae41eaac7bc7411dee6e3528b3676",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 14,
@@ -72524,7 +72524,7 @@
       "label": "reddit_rss",
       "payload": [],
       "fetched_at": "2026-07-10T09:52:55Z",
-      "last_attempt_at": "2026-10-09T06:47:40Z",
+      "last_attempt_at": "2026-10-12T07:04:36Z",
       "latest_observation": null,
       "item_count": 0,
       "checksum_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
@@ -75738,7 +75738,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:25:42Z",
-      "last_attempt_at": "2026-10-09T06:45:31Z",
+      "last_attempt_at": "2026-10-12T07:02:27Z",
       "latest_observation": "2026-06-01T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "6dea2cf29aa35bf1d298ffa2f3bbbb5239aea97fd124df59ee71996cd26388a9",
@@ -78952,7 +78952,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:25:47Z",
-      "last_attempt_at": "2026-10-09T06:46:03Z",
+      "last_attempt_at": "2026-10-12T07:02:59Z",
       "latest_observation": "2026-07-09T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "06e67bf28f2263881f36a0cd78169e64ad1e39833d04c8670b99a7d1835e72df",
@@ -82166,7 +82166,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:25:59Z",
-      "last_attempt_at": "2026-10-09T06:46:34Z",
+      "last_attempt_at": "2026-10-12T07:03:30Z",
       "latest_observation": "2026-07-09T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "ef8747613b324d35028f9884bf5bfbb39a67d2c33a0262b18edb8f515300395a",
@@ -85380,7 +85380,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:26:03Z",
-      "last_attempt_at": "2026-10-09T06:47:05Z",
+      "last_attempt_at": "2026-10-12T07:04:01Z",
       "latest_observation": "2026-07-02T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "b550082bd381dd506b38332f52e4c031a951c9b2485c416372a7bf90bfeca593",
@@ -85390,5 +85390,5 @@
       "last_error": "Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
     }
   },
-  "updated_at": "2026-10-09T06:45:23Z"
+  "updated_at": "2026-10-12T07:02:19Z"
 }
