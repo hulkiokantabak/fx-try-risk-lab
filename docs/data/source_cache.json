@@ -5,10 +5,6 @@
       "label": "ECB EUR/TRY",
       "payload": [
         {
-          "observed_at": "2007-04-20T00:00:00",
-          "value": 1.8217
-        },
-        {
           "observed_at": "2007-04-23T00:00:00",
           "value": 1.8205
         },
@@ -20003,13 +19999,17 @@
         {
           "observed_at": "2026-10-29T00:00:00",
           "value": 55.4691
+        },
+        {
+          "observed_at": "2026-10-30T00:00:00",
+          "value": 55.8015
         }
       ],
-      "fetched_at": "2026-10-30T06:30:48Z",
-      "last_attempt_at": "2026-10-30T06:30:48Z",
-      "latest_observation": "2026-10-29T00:00:00Z",
+      "fetched_at": "2026-11-02T06:34:17Z",
+      "last_attempt_at": "2026-11-02T06:34:17Z",
+      "latest_observation": "2026-10-30T00:00:00Z",
       "item_count": 5000,
-      "checksum_sha256": "e0fcb3373dc882a6d4b2b188d9714bd7c1da8fc1cfe11800a654e1e964f498d1",
+      "checksum_sha256": "01b4e802cf94a807a6b45bf867fe7c38745159fc42d335e0468762364dc9382d",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -20018,10 +20018,6 @@
     "ecb_eurusd": {
       "label": "ECB EUR/USD",
       "payload": [
-        {
-          "observed_at": "2007-05-23T00:00:00",
-          "value": 1.349
-        },
         {
           "observed_at": "2007-05-24T00:00:00",
           "value": 1.3448
@@ -39929,13 +39925,17 @@
         {
           "observed_at": "2026-10-29T00:00:00",
           "value": 1.113
+        },
+        {
+          "observed_at": "2026-10-30T00:00:00",
+          "value": 1.1172
         }
       ],
-      "fetched_at": "2026-10-30T06:30:50Z",
-      "last_attempt_at": "2026-10-30T06:30:50Z",
-      "latest_observation": "2026-10-29T00:00:00Z",
+      "fetched_at": "2026-11-02T06:34:19Z",
+      "last_attempt_at": "2026-11-02T06:34:19Z",
+      "latest_observation": "2026-10-30T00:00:00Z",
       "item_count": 4978,
-      "checksum_sha256": "ee435f9522a0d0a1c5b2a2bbaf262f5913a638b840516a0ec720872badad0804",
+      "checksum_sha256": "eb68987ace8b8d6412c4a30fb6210c8e94a9702b9f55d907d017aaa2fdaf6181",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -39944,10 +39944,6 @@
     "ecb_eurzar": {
       "label": "ECB EUR/ZAR",
       "payload": [
-        {
-          "observed_at": "2023-09-12T00:00:00",
-          "value": 20.3284
-        },
         {
           "observed_at": "2023-09-13T00:00:00",
           "value": 20.33
@@ -43143,13 +43139,17 @@
         {
           "observed_at": "2026-10-29T00:00:00",
           "value": 18.5218
+        },
+        {
+          "observed_at": "2026-10-30T00:00:00",
+          "value": 18.6455
         }
       ],
-      "fetched_at": "2026-10-30T06:30:51Z",
-      "last_attempt_at": "2026-10-30T06:30:51Z",
-      "latest_observation": "2026-10-29T00:00:00Z",
+      "fetched_at": "2026-11-02T06:34:21Z",
+      "last_attempt_at": "2026-11-02T06:34:21Z",
+      "latest_observation": "2026-10-30T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "73c10025ef415a39b3407e29fb5233024706fb9eb59359ee98b441b2ccec5ab3",
+      "checksum_sha256": "e79364cad85a062aa8f6487a66699e6620522179f0e28fcf455f86f06ac6837b",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -43158,10 +43158,6 @@
     "ecb_eurbrl": {
       "label": "ECB EUR/BRL",
       "payload": [
-        {
-          "observed_at": "2023-09-12T00:00:00",
-          "value": 5.292
-        },
         {
           "observed_at": "2023-09-13T00:00:00",
           "value": 5.313
@@ -46357,13 +46353,17 @@
         {
           "observed_at": "2026-10-29T00:00:00",
           "value": 5.9563
+        },
+        {
+          "observed_at": "2026-10-30T00:00:00",
+          "value": 6.0692
         }
       ],
-      "fetched_at": "2026-10-30T06:30:52Z",
-      "last_attempt_at": "2026-10-30T06:30:52Z",
-      "latest_observation": "2026-10-29T00:00:00Z",
+      "fetched_at": "2026-11-02T06:34:22Z",
+      "last_attempt_at": "2026-11-02T06:34:22Z",
+      "latest_observation": "2026-10-30T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "cb59958491fe469baa85f038a026cc9558effdc9ce375da69d9ef31f6a1687f2",
+      "checksum_sha256": "77154d7652394b0e9848e0095a00d10e3dae44bc0c007c718f847f1a6c6bfe68",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -46372,10 +46372,6 @@
     "ecb_eurhuf": {
       "label": "ECB EUR/HUF",
       "payload": [
-        {
-          "observed_at": "2023-09-12T00:00:00",
-          "value": 385.08
-        },
         {
           "observed_at": "2023-09-13T00:00:00",
           "value": 384.35
@@ -49571,13 +49567,17 @@
         {
           "observed_at": "2026-10-29T00:00:00",
           "value": 365.95
+        },
+        {
+          "observed_at": "2026-10-30T00:00:00",
+          "value": 366.33
         }
       ],
-      "fetched_at": "2026-10-30T06:30:53Z",
-      "last_attempt_at": "2026-10-30T06:30:53Z",
-      "latest_observation": "2026-10-29T00:00:00Z",
+      "fetched_at": "2026-11-02T06:34:22Z",
+      "last_attempt_at": "2026-11-02T06:34:22Z",
+      "latest_observation": "2026-10-30T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "0a561e8890d2f5a80b6d75257c7e17864b90966692412cd8c138b2e83be747a7",
+      "checksum_sha256": "7fe0129be5c13f4a3f24dec0cb11d4443f206b4368039c15f521f53133485a53",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -49586,10 +49586,6 @@
     "ecb_eurpln": {
       "label": "ECB EUR/PLN",
       "payload": [
-        {
-          "observed_at": "2023-09-12T00:00:00",
-          "value": 4.66
-        },
         {
           "observed_at": "2023-09-13T00:00:00",
           "value": 4.6243
@@ -52785,13 +52781,17 @@
         {
           "observed_at": "2026-10-29T00:00:00",
           "value": 4.3938
+        },
+        {
+          "observed_at": "2026-10-30T00:00:00",
+          "value": 4.4038
         }
       ],
-      "fetched_at": "2026-10-30T06:30:54Z",
-      "last_attempt_at": "2026-10-30T06:30:54Z",
-      "latest_observation": "2026-10-29T00:00:00Z",
+      "fetched_at": "2026-11-02T06:34:23Z",
+      "last_attempt_at": "2026-11-02T06:34:23Z",
+      "latest_observation": "2026-10-30T00:00:00Z",
       "item_count": 800,
-      "checksum_sha256": "67b5f8a6ea5759d01d5a4e71b090ebcf9039ce6fa2ddaf609c4259656114eeb6",
+      "checksum_sha256": "d245ccc8b95f94c8a4b6e27cd2cdc9f3de66f19adec648fbd7a0dafad66fb658",
       "status": "fresh",
       "used_cache": false,
       "stale_after_days": 10,
@@ -56002,7 +56002,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:18Z",
-      "last_attempt_at": "2026-10-30T06:33:00Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "97d1e19b10f5902c9b0d94eb9a7ae33ae738ef744b64ca0f411dcac50338b46c",
@@ -59216,7 +59216,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-30T06:33:00Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "4f68dc3cf704b9fbf8ccaf13560366b00ce0cdaf05f46cae4826f7af8f8627c1",
@@ -62430,7 +62430,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-30T06:33:00Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "6da325d4a08479ad77cad1e426004f3f8d61c8dbb59996bbaf3c3c76130dbe88",
@@ -65644,7 +65644,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-30T06:33:01Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "257127c375e150f6ec595e463a4591219e610e8cf4a494d0bbd9ffcdab6f0f37",
@@ -68858,7 +68858,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-30T06:33:01Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "918952a2c51487c9e796a08c6a91e1a00201152d95288ecdc775146aab7b0a29",
@@ -72072,7 +72072,7 @@
         }
       ],
       "fetched_at": "2026-09-25T06:44:19Z",
-      "last_attempt_at": "2026-10-30T06:33:01Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-09-22T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "e151aa36d1c862e51f12c6350789d6638db784a7e34ffab6b5d0275c20455e36",
@@ -72317,8 +72317,8 @@
           "value": 36.0
         }
       ],
-      "fetched_at": "2026-10-30T06:33:01Z",
-      "last_attempt_at": "2026-10-30T06:33:01Z",
+      "fetched_at": "2026-11-02T06:36:29Z",
+      "last_attempt_at": "2026-11-02T06:36:29Z",
       "latest_observation": "2026-10-23T00:00:00Z",
       "item_count": 58,
       "checksum_sha256": "18db1c34835c6373e598f3495a8c6b2c064cfabfd5587319132c1b233bb6d49e",
@@ -72376,14 +72376,14 @@
         ]
       },
       "fetched_at": "2026-08-13T06:48:32Z",
-      "last_attempt_at": "2026-10-30T06:33:05Z",
+      "last_attempt_at": "2026-11-02T06:36:33Z",
       "latest_observation": "2026-07-31T00:00:00Z",
       "item_count": 10,
       "checksum_sha256": "a000e21b3c9639bf0b5369a3ba2909786c5f78715094a608c9f53559446557cf",
       "status": "unavailable",
       "used_cache": false,
       "stale_after_days": 45,
-      "last_error": "expected at least 5 observations; received 3"
+      "last_error": "expected at least 5 observations; received 4"
     },
     "google_news_rss": {
       "label": "Google News RSS",
@@ -72515,20 +72515,20 @@
         }
       ],
       "fetched_at": "2026-10-30T06:33:09Z",
-      "last_attempt_at": "2026-10-30T06:33:09Z",
+      "last_attempt_at": "2026-11-02T06:36:37Z",
       "latest_observation": "2026-10-23T14:52:56Z",
       "item_count": 25,
       "checksum_sha256": "1dbbc6c34fc2ed4296da773b28ae91d662011a8a7701acf32222cc981ba20c82",
-      "status": "fresh",
-      "used_cache": false,
+      "status": "cached_fallback",
+      "used_cache": true,
       "stale_after_days": 14,
-      "last_error": null
+      "last_error": "latest observation is 60.0 days old; freshness gate is 14 days"
     },
     "reddit_rss": {
       "label": "reddit_rss",
       "payload": [],
       "fetched_at": "2026-07-10T09:52:55Z",
-      "last_attempt_at": "2026-10-30T06:33:09Z",
+      "last_attempt_at": "2026-11-02T06:36:37Z",
       "latest_observation": null,
       "item_count": 0,
       "checksum_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
@@ -75742,7 +75742,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:25:42Z",
-      "last_attempt_at": "2026-10-30T06:30:55Z",
+      "last_attempt_at": "2026-11-02T06:34:24Z",
       "latest_observation": "2026-06-01T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "6dea2cf29aa35bf1d298ffa2f3bbbb5239aea97fd124df59ee71996cd26388a9",
@@ -78956,7 +78956,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:25:47Z",
-      "last_attempt_at": "2026-10-30T06:31:27Z",
+      "last_attempt_at": "2026-11-02T06:34:55Z",
       "latest_observation": "2026-07-09T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "06e67bf28f2263881f36a0cd78169e64ad1e39833d04c8670b99a7d1835e72df",
@@ -82170,7 +82170,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:25:59Z",
-      "last_attempt_at": "2026-10-30T06:31:58Z",
+      "last_attempt_at": "2026-11-02T06:35:27Z",
       "latest_observation": "2026-07-09T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "ef8747613b324d35028f9884bf5bfbb39a67d2c33a0262b18edb8f515300395a",
@@ -85384,7 +85384,7 @@
         }
       ],
       "fetched_at": "2026-07-13T11:26:03Z",
-      "last_attempt_at": "2026-10-30T06:32:29Z",
+      "last_attempt_at": "2026-11-02T06:35:58Z",
       "latest_observation": "2026-07-02T00:00:00Z",
       "item_count": 800,
       "checksum_sha256": "b550082bd381dd506b38332f52e4c031a951c9b2485c416372a7bf90bfeca593",
@@ -85394,5 +85394,5 @@
       "last_error": "Fetch failed for https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTWEXBGS: The read operation timed out"
     }
   },
-  "updated_at": "2026-10-30T06:30:48Z"
+  "updated_at": "2026-11-02T06:34:17Z"
 }
