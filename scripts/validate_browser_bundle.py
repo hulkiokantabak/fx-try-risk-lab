@@ -611,7 +611,7 @@ def validate_history(history: Any, latest: Mapping[str, Any]) -> list[Mapping[st
     entries = require_list(history, "history.json", nonempty=True)
     validated: list[Mapping[str, Any]] = []
     previous: datetime | None = None
-    ids: set[str] = set()
+    forecasts_by_id: dict[str, dict[str, Any]] = {}
     for index, raw in enumerate(entries):
         entry = require_object(raw, f"history[{index}]")
         require_keys(entry, {"as_of", "primary_horizon", "primary_score", "curve"}, f"history[{index}]")
@@ -625,8 +625,20 @@ def validate_history(history: Any, latest: Mapping[str, Any]) -> list[Mapping[st
         require(score == float(curve[horizon]), f"history[{index}] score does not match its curve")
         if "forecast_id" in entry:
             forecast_id = require_string(entry["forecast_id"], f"history[{index}].forecast_id")
-            require(forecast_id not in ids, f"duplicate forecast_id in history: {forecast_id}")
-            ids.add(forecast_id)
+            # History records daily publications, not unique issuance events.
+            # An unchanged forecast may be republished while contextual feeds
+            # advance. Its immutable projection must still remain identical.
+            projection = {
+                key: entry.get(key)
+                for key in ("primary_horizon", "primary_score", "curve", "model_version", "data_cutoff")
+            }
+            if forecast_id in forecasts_by_id:
+                require(
+                    projection == forecasts_by_id[forecast_id],
+                    f"conflicting forecast content in history: {forecast_id}",
+                )
+            else:
+                forecasts_by_id[forecast_id] = projection
         validated.append(entry)
 
     newest = validated[-1]

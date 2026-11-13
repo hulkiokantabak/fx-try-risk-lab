@@ -177,6 +177,40 @@ class HistoryAndLedgerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValidationError, "strictly chronological"):
             validate_history(entries, latest)
 
+    def test_unchanged_forecast_can_be_published_on_later_day(self) -> None:
+        from unittest.mock import patch
+        from scripts import build_browser_data as builder
+
+        latest = v2_snapshot()
+        original = copy.deepcopy(latest["history_entry"])
+        latest["history_entry"]["as_of"] = "2026-01-02T12:00:00Z"
+        latest["history_entry"]["headline"] = "Updated contextual news"
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "history.json"
+            path.write_text(json.dumps([original]), encoding="utf-8")
+            with patch.object(builder, "HISTORY_PATH", path):
+                entries = builder.update_history(latest)
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0], original)
+        self.assertEqual(entries[0]["forecast_id"], entries[1]["forecast_id"])
+        validate_history(entries, latest)
+
+    def test_republished_forecast_cannot_change_immutable_projection(self) -> None:
+        for field, value in (
+            ("curve", {**HORIZONS, "1w": 11.0}),
+            ("model_version", "different-model"),
+            ("data_cutoff", "2026-01-02T00:00:00Z"),
+        ):
+            with self.subTest(field=field):
+                latest = v2_snapshot()
+                original = copy.deepcopy(latest["history_entry"])
+                newer = copy.deepcopy(original)
+                newer["as_of"] = "2026-01-02T12:00:00Z"
+                newer[field] = value
+                latest["history_entry"] = newer
+                with self.assertRaisesRegex(ValidationError, "conflicting forecast content"):
+                    validate_history([original, newer], latest)
+
     def test_duplicate_ledger_id_is_rejected(self) -> None:
         latest = v2_snapshot()
         entry = {
