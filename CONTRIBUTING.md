@@ -64,8 +64,11 @@ status is not sufficient validation.
 
 ## Forecast history and outcome ledger
 
-Forecast identifiers are unique and immutable. History and ledger timestamps
-must be strictly chronological. When an outcome becomes observable, append a
+Forecast issuance identifiers are unique and immutable in the ledger. Daily
+publication history may reference the same unchanged forecast on later days,
+but its curve, primary score/horizon, model version and data cutoff must agree.
+History timestamps must be strictly chronological; ledger events retain their
+existing append-only chronology checks. When an outcome becomes observable, append a
 new resolution event that references the immutable issued forecast; never fill
 or rewrite the issued row. Terminal and path outcomes use distinct resolution
 identities, and a path outcome must wait until its complete observation window
