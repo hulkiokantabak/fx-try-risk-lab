@@ -177842,6 +177842,1999 @@
       "outcome": false,
       "issued_probability": 6.4,
       "model_version": "empirical-regime-v2.2.0"
+    },
+    {
+      "event_type": "forecast_issued",
+      "event_id": "fxtry-2026-11-20T00:00:00Z-540e1859acb17107d69d0fd4:issued",
+      "forecast_id": "fxtry-2026-11-20T00:00:00Z-540e1859acb17107d69d0fd4",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "identity": {
+        "version": "sha256-canonical-json-v3",
+        "content_sha256": "540e1859acb17107d69d0fd44564ab5412d32697eee7c39d4bbb7b92db1b3ca4"
+      },
+      "model_version": "empirical-regime-v2.2.0",
+      "baseline": {
+        "observation_date": "2026-11-20",
+        "observed_at": "2026-11-20T00:00:00Z",
+        "pair": "USD/TRY",
+        "price_type": "daily reference rate",
+        "source": "ECB reference rates, USD/TRY derived as EUR/TRY divided by EUR/USD",
+        "spot": 50.572157,
+        "value": 50.572157
+      },
+      "data_cutoff": "2026-11-20T00:00:00Z",
+      "event_definition": {
+        "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+        "direction": "TRY depreciation / USD/TRY increase",
+        "event_type": "exact_terminal",
+        "horizon_sessions": {
+          "1m": 22,
+          "1w": 5,
+          "1y": 264,
+          "3m": 66,
+          "6m": 132
+        },
+        "measurement": "ECB reference-rate change over an exact count of aligned observations",
+        "pair": "USD/TRY",
+        "primary": true,
+        "statement": "For each horizon, the event occurs when the future USD/TRY reference rate is greater than or equal to the baseline multiplied by one plus that horizon's threshold.",
+        "target_rule": "observation exactly h ECB trading observations after baseline",
+        "thresholds": {
+          "1m": 5,
+          "1w": 2,
+          "1y": 25,
+          "3m": 10,
+          "6m": 15
+        },
+        "thresholds_percent": {
+          "1m": 5,
+          "1w": 2,
+          "1y": 25,
+          "3m": 10,
+          "6m": 15
+        }
+      },
+      "horizons": {
+        "1m": {
+          "calibration": {
+            "brier_score": 0.1221,
+            "brier_skill_vs_climatology": 0.0223,
+            "calibration_error": 0.0052,
+            "climatology_brier_score": 0.1249,
+            "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+            "evaluation_cadence_sessions": 22,
+            "event_count": 29,
+            "event_rate": 0.1436,
+            "first_forecast_date_index": 520,
+            "forecast_count": 202,
+            "last_forecast_date_index": 4942,
+            "log_loss": 0.4117,
+            "status": "available"
+          },
+          "calibration_status": "calibrated",
+          "challenger": {
+            "delta_model_minus_benchmark_percentage_points": -7.3,
+            "delta_model_minus_challenger_percentage_points": -7.3,
+            "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+            "name": "Current target-purged climatology",
+            "probability": 15.4,
+            "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+            "role": "challenger",
+            "training_examples": 4936
+          },
+          "event": {
+            "baseline_value": 50.572157,
+            "contract_text": "Resolve to 1 only if the derived ECB USD/TRY observation exactly at t+22 is at least 5.000000% above USD/TRY at t; otherwise resolve to 0.",
+            "event_type": "exact_terminal",
+            "formula": "USDTRY[t+22] / USDTRY[t] - 1 >= 0.050000",
+            "observation_offset": 22,
+            "operator": ">=",
+            "primary": true,
+            "threshold_value": 53.100764
+          },
+          "horizon": "1m",
+          "probability": 8.2,
+          "raw_probability": 6.0,
+          "sample": {
+            "calibration_examples": 127,
+            "conditional_examples": 507,
+            "regime": "momentum tertile + volatility tertile + acceleration sign",
+            "training_examples": 4936
+          },
+          "sessions": 22,
+          "signed_drivers": [
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 5.0,
+              "historical_median": 1.156,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 2.6,
+              "historical_median": 0.286,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -2.5,
+              "historical_median": 9.707,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.7,
+              "historical_median": -0.001,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            }
+          ],
+          "threshold_percent": 5.0,
+          "uncertainty": {
+            "block_length_sessions": 22,
+            "calibration_block_length_forecasts": 1,
+            "calibration_evidence_count": 127,
+            "effective_sample_size": 58,
+            "level": 90,
+            "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+            "lower": 4.7,
+            "lower_probability": 4.7,
+            "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+            "upper": 11.7,
+            "upper_probability": 11.7
+          }
+        },
+        "1w": {
+          "calibration": {
+            "brier_score": 0.1078,
+            "brier_skill_vs_climatology": 0.0166,
+            "calibration_error": 0.0025,
+            "climatology_brier_score": 0.1097,
+            "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+            "evaluation_cadence_sessions": 5,
+            "event_count": 111,
+            "event_rate": 0.1246,
+            "first_forecast_date_index": 520,
+            "forecast_count": 891,
+            "last_forecast_date_index": 4970,
+            "log_loss": 0.3705,
+            "status": "available"
+          },
+          "calibration_status": "calibrated",
+          "challenger": {
+            "delta_model_minus_benchmark_percentage_points": -6.0,
+            "delta_model_minus_challenger_percentage_points": -6.0,
+            "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+            "name": "Current target-purged climatology",
+            "probability": 13.0,
+            "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+            "role": "challenger",
+            "training_examples": 4953
+          },
+          "event": {
+            "baseline_value": 50.572157,
+            "contract_text": "Resolve to 1 only if the derived ECB USD/TRY observation exactly at t+5 is at least 2.000000% above USD/TRY at t; otherwise resolve to 0.",
+            "event_type": "exact_terminal",
+            "formula": "USDTRY[t+5] / USDTRY[t] - 1 >= 0.020000",
+            "observation_offset": 5,
+            "operator": ">=",
+            "primary": true,
+            "threshold_value": 51.5836
+          },
+          "horizon": "1w",
+          "probability": 7.0,
+          "raw_probability": 2.9,
+          "sample": {
+            "calibration_examples": 482,
+            "conditional_examples": 509,
+            "regime": "momentum tertile + volatility tertile + acceleration sign",
+            "training_examples": 4953
+          },
+          "sessions": 5,
+          "signed_drivers": [
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -4.7,
+              "historical_median": 9.688,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2476,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 3.2,
+              "historical_median": 1.167,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2477,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 2.2,
+              "historical_median": 0.288,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2477,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.8,
+              "historical_median": -0.001,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2476,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            }
+          ],
+          "threshold_percent": 2.0,
+          "uncertainty": {
+            "block_length_sessions": 5,
+            "calibration_block_length_forecasts": 1,
+            "calibration_evidence_count": 482,
+            "effective_sample_size": 156,
+            "level": 90,
+            "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+            "lower": 5.3,
+            "lower_probability": 5.3,
+            "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+            "upper": 8.8,
+            "upper_probability": 8.8
+          }
+        },
+        "1y": {
+          "calibration": {
+            "brier_score": 0.2592,
+            "brier_skill_vs_climatology": -0.0611,
+            "calibration_error": 0.2331,
+            "climatology_brier_score": 0.2443,
+            "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+            "evaluation_cadence_sessions": 22,
+            "event_count": 65,
+            "event_rate": 0.3533,
+            "first_forecast_date_index": 684,
+            "forecast_count": 184,
+            "last_forecast_date_index": 4710,
+            "log_loss": 0.7312,
+            "status": "available"
+          },
+          "calibration_status": "experimental",
+          "challenger": {
+            "delta_model_minus_benchmark_percentage_points": 11.0,
+            "delta_model_minus_challenger_percentage_points": 11.0,
+            "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+            "name": "Current target-purged climatology",
+            "probability": 35.1,
+            "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+            "role": "challenger",
+            "training_examples": 4694
+          },
+          "event": {
+            "baseline_value": 50.572157,
+            "contract_text": "Resolve to 1 only if the derived ECB USD/TRY observation exactly at t+264 is at least 25.000000% above USD/TRY at t; otherwise resolve to 0.",
+            "event_type": "exact_terminal",
+            "formula": "USDTRY[t+264] / USDTRY[t] - 1 >= 0.250000",
+            "observation_offset": 264,
+            "operator": ">=",
+            "primary": true,
+            "threshold_value": 63.215196
+          },
+          "horizon": "1y",
+          "probability": 46.1,
+          "raw_probability": 31.0,
+          "sample": {
+            "calibration_examples": 77,
+            "conditional_examples": 430,
+            "regime": "momentum tertile + volatility tertile + acceleration sign",
+            "training_examples": 4694
+          },
+          "sessions": 264,
+          "signed_drivers": [
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -3.8,
+              "historical_median": 1.104,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -2.5,
+              "historical_median": 0.27,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.8,
+              "historical_median": 0.001,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.3,
+              "historical_median": 10.016,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            }
+          ],
+          "threshold_percent": 25.0,
+          "uncertainty": {
+            "block_length_sessions": 264,
+            "calibration_block_length_forecasts": 12,
+            "calibration_evidence_count": 77,
+            "effective_sample_size": 12,
+            "level": 90,
+            "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+            "lower": 28.9,
+            "lower_probability": 28.9,
+            "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+            "upper": 64.1,
+            "upper_probability": 64.1
+          }
+        },
+        "3m": {
+          "calibration": {
+            "brier_score": 0.1647,
+            "brier_skill_vs_climatology": -0.0183,
+            "calibration_error": 0.0783,
+            "climatology_brier_score": 0.1618,
+            "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+            "evaluation_cadence_sessions": 22,
+            "event_count": 39,
+            "event_rate": 0.195,
+            "first_forecast_date_index": 520,
+            "forecast_count": 200,
+            "last_forecast_date_index": 4898,
+            "log_loss": 0.5218,
+            "status": "available"
+          },
+          "calibration_status": "experimental",
+          "challenger": {
+            "delta_model_minus_benchmark_percentage_points": -1.4,
+            "delta_model_minus_challenger_percentage_points": -1.4,
+            "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+            "name": "Current target-purged climatology",
+            "probability": 20.4,
+            "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+            "role": "challenger",
+            "training_examples": 4892
+          },
+          "event": {
+            "baseline_value": 50.572157,
+            "contract_text": "Resolve to 1 only if the derived ECB USD/TRY observation exactly at t+66 is at least 10.000000% above USD/TRY at t; otherwise resolve to 0.",
+            "event_type": "exact_terminal",
+            "formula": "USDTRY[t+66] / USDTRY[t] - 1 >= 0.100000",
+            "observation_offset": 66,
+            "operator": ">=",
+            "primary": true,
+            "threshold_value": 55.629372
+          },
+          "horizon": "3m",
+          "probability": 19.0,
+          "raw_probability": 15.6,
+          "sample": {
+            "calibration_examples": 158,
+            "conditional_examples": 487,
+            "regime": "momentum tertile + volatility tertile + acceleration sign",
+            "training_examples": 4892
+          },
+          "sessions": 66,
+          "signed_drivers": [
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 1.2,
+              "historical_median": 0.281,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -1.2,
+              "historical_median": 0.0,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 1.0,
+              "historical_median": 1.135,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 0.3,
+              "historical_median": 9.761,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            }
+          ],
+          "threshold_percent": 10.0,
+          "uncertainty": {
+            "block_length_sessions": 66,
+            "calibration_block_length_forecasts": 3,
+            "calibration_evidence_count": 158,
+            "effective_sample_size": 25,
+            "level": 90,
+            "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+            "lower": 13.2,
+            "lower_probability": 13.2,
+            "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+            "upper": 24.9,
+            "upper_probability": 24.9
+          }
+        },
+        "6m": {
+          "calibration": {
+            "brier_score": 0.2222,
+            "brier_skill_vs_climatology": -0.035,
+            "calibration_error": 0.1252,
+            "climatology_brier_score": 0.2147,
+            "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+            "evaluation_cadence_sessions": 22,
+            "event_count": 56,
+            "event_rate": 0.2857,
+            "first_forecast_date_index": 552,
+            "forecast_count": 196,
+            "last_forecast_date_index": 4842,
+            "log_loss": 0.6514,
+            "status": "available"
+          },
+          "calibration_status": "experimental",
+          "challenger": {
+            "delta_model_minus_benchmark_percentage_points": 1.3,
+            "delta_model_minus_challenger_percentage_points": 1.3,
+            "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+            "name": "Current target-purged climatology",
+            "probability": 26.9,
+            "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+            "role": "challenger",
+            "training_examples": 4826
+          },
+          "event": {
+            "baseline_value": 50.572157,
+            "contract_text": "Resolve to 1 only if the derived ECB USD/TRY observation exactly at t+132 is at least 15.000000% above USD/TRY at t; otherwise resolve to 0.",
+            "event_type": "exact_terminal",
+            "formula": "USDTRY[t+132] / USDTRY[t] - 1 >= 0.150000",
+            "observation_offset": 132,
+            "operator": ">=",
+            "primary": true,
+            "threshold_value": 58.15798
+          },
+          "horizon": "6m",
+          "probability": 28.2,
+          "raw_probability": 17.8,
+          "sample": {
+            "calibration_examples": 138,
+            "conditional_examples": 456,
+            "regime": "momentum tertile + volatility tertile + acceleration sign",
+            "training_examples": 4826
+          },
+          "sessions": 132,
+          "signed_drivers": [
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.9,
+              "historical_median": 0.003,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 0.5,
+              "historical_median": 0.274,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 0.4,
+              "historical_median": 1.105,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.4,
+              "historical_median": 9.838,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            }
+          ],
+          "threshold_percent": 15.0,
+          "uncertainty": {
+            "block_length_sessions": 132,
+            "calibration_block_length_forecasts": 6,
+            "calibration_evidence_count": 138,
+            "effective_sample_size": 17,
+            "level": 90,
+            "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+            "lower": 18.8,
+            "lower_probability": 18.8,
+            "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+            "upper": 37.3,
+            "upper_probability": 37.3
+          }
+        }
+      },
+      "model": {
+        "excluded_context": "Contemporaneous macro, reserve, volatility and news inputs are contextual only and do not alter the probability until point-in-time histories with release timestamps are available.",
+        "is_calibrated": false,
+        "limitations": [
+          "The reference rate is derived from ECB EUR/TRY and EUR/USD observations, not an executable quote.",
+          "Long-horizon backtest outcomes overlap even though evaluation forecasts are sampled no more often than monthly.",
+          "Moving-block intervals retain observed target-window dependence but describe sampling uncertainty, not structural breaks.",
+          "Backtest metrics are research evidence, not a guarantee of future performance.",
+          "Any-time-breach estimates use observed ECB daily reference-rate observations only; intraday breaches are not observed."
+        ],
+        "method": "Expanding-window historical event rate conditioned on as-of 5-session momentum, 20-session momentum, realized volatility and acceleration; Bayesian shrinkage to the as-of climatology; rolling reliability recalibration. Exact-terminal and any-time-breach contracts are estimated separately from their own labels.",
+        "name": "Empirical regime-conditioned USD/TRY model",
+        "output_type": "experimental_probability",
+        "predictors": [
+          "USD/TRY 5-session percentage change",
+          "USD/TRY 20-session percentage change",
+          "USD/TRY 20-session annualized realized volatility",
+          "5-session acceleration relative to the 20-session trend"
+        ],
+        "primary_contract": "exact_terminal",
+        "probability_scale": "0-100 percent",
+        "secondary_contract": "any_time_breach",
+        "status": "experimental",
+        "training_protocol": "For every historical forecast, training labels are admitted only after their complete target window ends. Calibration uses only earlier forecasts whose outcomes were observable at that time.",
+        "version": "empirical-regime-v2.2.0"
+      },
+      "path_risk": {
+        "backtest": {
+          "metric_definitions": {
+            "brier_score": "mean squared probability error; lower is better",
+            "brier_skill_vs_climatology": "1 - touch-model Brier / target-purged touch-climatology Brier; each benchmark probability is stored when its forecast is formed; positive is better",
+            "calibration_error": "weighted absolute forecast-vs-outcome gap across probability bins; lower is better",
+            "log_loss": "mean negative Bernoulli log likelihood; lower is better"
+          },
+          "metrics": {
+            "1m": {
+              "brier_score": 0.1578,
+              "brier_skill_vs_climatology": 0.0407,
+              "calibration_error": 0.0238,
+              "climatology_brier_score": 0.1645,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 2,
+              "coherence_max_adjustment_percentage_points": 0.6443,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 40,
+              "event_rate": 0.198,
+              "first_forecast_date_index": 520,
+              "forecast_count": 202,
+              "last_forecast_date_index": 4942,
+              "log_loss": 0.496,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.1578,
+                "brier_skill_vs_climatology": 0.041,
+                "calibration_error": 0.0239,
+                "climatology_brier_score": 0.1645,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 40,
+                "event_rate": 0.198,
+                "first_forecast_date_index": 520,
+                "forecast_count": 202,
+                "last_forecast_date_index": 4942,
+                "log_loss": 0.4959,
+                "status": "available"
+              }
+            },
+            "1w": {
+              "brier_score": 0.1233,
+              "brier_skill_vs_climatology": 0.0463,
+              "calibration_error": 0.0117,
+              "climatology_brier_score": 0.1293,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 103,
+              "coherence_max_adjustment_percentage_points": 4.4559,
+              "evaluation_cadence_sessions": 5,
+              "event_count": 131,
+              "event_rate": 0.147,
+              "first_forecast_date_index": 520,
+              "forecast_count": 891,
+              "last_forecast_date_index": 4970,
+              "log_loss": 0.4078,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.1228,
+                "brier_skill_vs_climatology": 0.0504,
+                "calibration_error": 0.0085,
+                "climatology_brier_score": 0.1293,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 5,
+                "event_count": 131,
+                "event_rate": 0.147,
+                "first_forecast_date_index": 520,
+                "forecast_count": 891,
+                "last_forecast_date_index": 4970,
+                "log_loss": 0.4043,
+                "status": "available"
+              }
+            },
+            "1y": {
+              "brier_score": 0.2728,
+              "brier_skill_vs_climatology": -0.0197,
+              "calibration_error": 0.1848,
+              "climatology_brier_score": 0.2675,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 0,
+              "coherence_max_adjustment_percentage_points": 0.0,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 87,
+              "event_rate": 0.4728,
+              "first_forecast_date_index": 684,
+              "forecast_count": 184,
+              "last_forecast_date_index": 4710,
+              "log_loss": 0.7475,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.2728,
+                "brier_skill_vs_climatology": -0.0197,
+                "calibration_error": 0.1848,
+                "climatology_brier_score": 0.2675,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 87,
+                "event_rate": 0.4728,
+                "first_forecast_date_index": 684,
+                "forecast_count": 184,
+                "last_forecast_date_index": 4710,
+                "log_loss": 0.7475,
+                "status": "available"
+              }
+            },
+            "3m": {
+              "brier_score": 0.195,
+              "brier_skill_vs_climatology": 0.0277,
+              "calibration_error": 0.0739,
+              "climatology_brier_score": 0.2006,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 19,
+              "coherence_max_adjustment_percentage_points": 5.018,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 52,
+              "event_rate": 0.26,
+              "first_forecast_date_index": 520,
+              "forecast_count": 200,
+              "last_forecast_date_index": 4898,
+              "log_loss": 0.5844,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.1945,
+                "brier_skill_vs_climatology": 0.0305,
+                "calibration_error": 0.0744,
+                "climatology_brier_score": 0.2006,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 52,
+                "event_rate": 0.26,
+                "first_forecast_date_index": 520,
+                "forecast_count": 200,
+                "last_forecast_date_index": 4898,
+                "log_loss": 0.5826,
+                "status": "available"
+              }
+            },
+            "6m": {
+              "brier_score": 0.2605,
+              "brier_skill_vs_climatology": -0.0295,
+              "calibration_error": 0.1369,
+              "climatology_brier_score": 0.253,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 1,
+              "coherence_max_adjustment_percentage_points": 0.4649,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 77,
+              "event_rate": 0.3929,
+              "first_forecast_date_index": 552,
+              "forecast_count": 196,
+              "last_forecast_date_index": 4842,
+              "log_loss": 0.7233,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.2604,
+                "brier_skill_vs_climatology": -0.0295,
+                "calibration_error": 0.1369,
+                "climatology_brier_score": 0.253,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 77,
+                "event_rate": 0.3929,
+                "first_forecast_date_index": 552,
+                "forecast_count": 196,
+                "last_forecast_date_index": 4842,
+                "log_loss": 0.7232,
+                "status": "available"
+              }
+            }
+          },
+          "protocol": "strict expanding-window, complete-touch-window-purged training and as-of reliability calibration"
+        },
+        "coherence_constraint": {
+          "backtest_application": "Applied to matched same-forecast-index walk-forward probabilities before touch metrics and calibration-status gates are computed.",
+          "rationale": "The exact-terminal event is a subset of the inclusive any-time-breach event, so its probability is a mathematical lower bound on path risk.",
+          "rule": "P(any-time breach by h) = max(unconstrained path estimate, P(exact-terminal breach at h))"
+        },
+        "contract": "any_time_breach",
+        "event_definition": {
+          "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+          "direction": "TRY depreciation / USD/TRY increase",
+          "event_type": "any_time_breach",
+          "horizon_sessions": {
+            "1m": 22,
+            "1w": 5,
+            "1y": 264,
+            "3m": 66,
+            "6m": 132
+          },
+          "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+          "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+          "pair": "USD/TRY",
+          "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+          "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+          "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+          "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+          "thresholds_percent": {
+            "1m": 5,
+            "1w": 2,
+            "1y": 25,
+            "3m": 10,
+            "6m": 15
+          },
+          "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+        },
+        "horizons": {
+          "1m": {
+            "benchmark": {
+              "delta_model_minus_benchmark_percentage_points": -9.0,
+              "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+              "name": "Current target-purged climatology",
+              "probability": 22.4,
+              "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+              "role": "challenger",
+              "training_examples": 4936
+            },
+            "calibration": {
+              "brier_score": 0.1578,
+              "brier_skill_vs_climatology": 0.0407,
+              "calibration_error": 0.0238,
+              "climatology_brier_score": 0.1645,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 2,
+              "coherence_max_adjustment_percentage_points": 0.6443,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 40,
+              "event_rate": 0.198,
+              "first_forecast_date_index": 520,
+              "forecast_count": 202,
+              "last_forecast_date_index": 4942,
+              "log_loss": 0.496,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.1578,
+                "brier_skill_vs_climatology": 0.041,
+                "calibration_error": 0.0239,
+                "climatology_brier_score": 0.1645,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 40,
+                "event_rate": 0.198,
+                "first_forecast_date_index": 520,
+                "forecast_count": 202,
+                "last_forecast_date_index": 4942,
+                "log_loss": 0.4959,
+                "status": "available"
+              }
+            },
+            "calibration_status": "calibrated",
+            "coherence_constraint": {
+              "adjustment_percentage_points": 0.0,
+              "backtest_adjusted_forecast_count": 2,
+              "backtest_max_adjustment_percentage_points": 0.6443,
+              "binding": false,
+              "metrics_probability_series": "coherence_constrained_any_time_breach",
+              "rule": "touch probability is floored by the matched exact-terminal probability",
+              "terminal_floor_probability": 8.2
+            },
+            "event": {
+              "baseline_value": 50.572157,
+              "contract_text": "Resolve to 1 if any derived ECB USD/TRY observation from t+1 through t+22, inclusive, touches or exceeds 5.000000% above USD/TRY at t; otherwise resolve to 0 only after observation t+22 is available.",
+              "event_type": "any_time_breach",
+              "formula": "max(USDTRY[t+1], ..., USDTRY[t+22]) / USDTRY[t] - 1 >= 0.050000",
+              "operator": ">=",
+              "primary": false,
+              "threshold_value": 53.100764,
+              "window_end_offset": 22,
+              "window_inclusive": true,
+              "window_start_offset": 1
+            },
+            "horizon": "1m",
+            "probability": 13.3,
+            "raw_probability": 7.4,
+            "sample": {
+              "calibration_examples": 69,
+              "conditional_examples": 507,
+              "regime": "momentum tertile + volatility tertile + acceleration sign",
+              "training_examples": 4936
+            },
+            "sessions": 22,
+            "signed_drivers": [
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 5.9,
+                "historical_median": 1.156,
+                "id": "momentum_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session USD/TRY momentum",
+                "sample_count": 2468,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 1.678
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -5.9,
+                "historical_median": 9.707,
+                "id": "realized_volatility_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session realized volatility",
+                "sample_count": 2468,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "% annualized",
+                "value": 1.231
+              },
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 3.5,
+                "historical_median": 0.286,
+                "id": "momentum_5d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "5-session USD/TRY momentum",
+                "sample_count": 2468,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 0.405
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -0.9,
+                "historical_median": -0.001,
+                "id": "acceleration",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "Short-trend acceleration",
+                "sample_count": 2468,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "percentage points",
+                "value": -0.014
+              }
+            ],
+            "threshold_percent": 5.0,
+            "uncertainty": {
+              "block_length_sessions": 22,
+              "calibration_block_length_forecasts": 1,
+              "calibration_evidence_count": 69,
+              "effective_sample_size": 58,
+              "level": 90,
+              "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+              "lower": 8.8,
+              "lower_probability": 8.8,
+              "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+              "upper": 18.6,
+              "upper_probability": 18.6
+            },
+            "unconstrained_probability": 13.3
+          },
+          "1w": {
+            "benchmark": {
+              "delta_model_minus_benchmark_percentage_points": -10.5,
+              "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+              "name": "Current target-purged climatology",
+              "probability": 17.5,
+              "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+              "role": "challenger",
+              "training_examples": 4953
+            },
+            "calibration": {
+              "brier_score": 0.1233,
+              "brier_skill_vs_climatology": 0.0463,
+              "calibration_error": 0.0117,
+              "climatology_brier_score": 0.1293,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 103,
+              "coherence_max_adjustment_percentage_points": 4.4559,
+              "evaluation_cadence_sessions": 5,
+              "event_count": 131,
+              "event_rate": 0.147,
+              "first_forecast_date_index": 520,
+              "forecast_count": 891,
+              "last_forecast_date_index": 4970,
+              "log_loss": 0.4078,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.1228,
+                "brier_skill_vs_climatology": 0.0504,
+                "calibration_error": 0.0085,
+                "climatology_brier_score": 0.1293,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 5,
+                "event_count": 131,
+                "event_rate": 0.147,
+                "first_forecast_date_index": 520,
+                "forecast_count": 891,
+                "last_forecast_date_index": 4970,
+                "log_loss": 0.4043,
+                "status": "available"
+              }
+            },
+            "calibration_status": "calibrated",
+            "coherence_constraint": {
+              "adjustment_percentage_points": 2.7,
+              "backtest_adjusted_forecast_count": 103,
+              "backtest_max_adjustment_percentage_points": 4.4559,
+              "binding": true,
+              "metrics_probability_series": "coherence_constrained_any_time_breach",
+              "rule": "touch probability is floored by the matched exact-terminal probability",
+              "terminal_floor_probability": 7.0
+            },
+            "event": {
+              "baseline_value": 50.572157,
+              "contract_text": "Resolve to 1 if any derived ECB USD/TRY observation from t+1 through t+5, inclusive, touches or exceeds 2.000000% above USD/TRY at t; otherwise resolve to 0 only after observation t+5 is available.",
+              "event_type": "any_time_breach",
+              "formula": "max(USDTRY[t+1], ..., USDTRY[t+5]) / USDTRY[t] - 1 >= 0.020000",
+              "operator": ">=",
+              "primary": false,
+              "threshold_value": 51.5836,
+              "window_end_offset": 5,
+              "window_inclusive": true,
+              "window_start_offset": 1
+            },
+            "horizon": "1w",
+            "probability": 7.0,
+            "raw_probability": 3.2,
+            "sample": {
+              "calibration_examples": 273,
+              "conditional_examples": 509,
+              "regime": "momentum tertile + volatility tertile + acceleration sign",
+              "training_examples": 4953
+            },
+            "sessions": 5,
+            "signed_drivers": [
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -7.0,
+                "historical_median": 9.688,
+                "id": "realized_volatility_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session realized volatility",
+                "sample_count": 2476,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "% annualized",
+                "value": 1.231
+              },
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 4.2,
+                "historical_median": 1.167,
+                "id": "momentum_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session USD/TRY momentum",
+                "sample_count": 2477,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 1.678
+              },
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 3.4,
+                "historical_median": 0.288,
+                "id": "momentum_5d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "5-session USD/TRY momentum",
+                "sample_count": 2477,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 0.405
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -1.6,
+                "historical_median": -0.001,
+                "id": "acceleration",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "Short-trend acceleration",
+                "sample_count": 2476,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "percentage points",
+                "value": -0.014
+              }
+            ],
+            "threshold_percent": 2.0,
+            "uncertainty": {
+              "block_length_sessions": 5,
+              "calibration_block_length_forecasts": 1,
+              "calibration_evidence_count": 273,
+              "effective_sample_size": 156,
+              "level": 90,
+              "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+              "lower": 2.3,
+              "lower_probability": 2.3,
+              "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+              "upper": 7.0,
+              "upper_probability": 7.0
+            },
+            "unconstrained_probability": 4.3
+          },
+          "1y": {
+            "benchmark": {
+              "delta_model_minus_benchmark_percentage_points": 12.8,
+              "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+              "name": "Current target-purged climatology",
+              "probability": 46.8,
+              "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+              "role": "challenger",
+              "training_examples": 4694
+            },
+            "calibration": {
+              "brier_score": 0.2728,
+              "brier_skill_vs_climatology": -0.0197,
+              "calibration_error": 0.1848,
+              "climatology_brier_score": 0.2675,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 0,
+              "coherence_max_adjustment_percentage_points": 0.0,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 87,
+              "event_rate": 0.4728,
+              "first_forecast_date_index": 684,
+              "forecast_count": 184,
+              "last_forecast_date_index": 4710,
+              "log_loss": 0.7475,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.2728,
+                "brier_skill_vs_climatology": -0.0197,
+                "calibration_error": 0.1848,
+                "climatology_brier_score": 0.2675,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 87,
+                "event_rate": 0.4728,
+                "first_forecast_date_index": 684,
+                "forecast_count": 184,
+                "last_forecast_date_index": 4710,
+                "log_loss": 0.7475,
+                "status": "available"
+              }
+            },
+            "calibration_status": "experimental",
+            "coherence_constraint": {
+              "adjustment_percentage_points": 0.0,
+              "backtest_adjusted_forecast_count": 0,
+              "backtest_max_adjustment_percentage_points": 0.0,
+              "binding": false,
+              "metrics_probability_series": "coherence_constrained_any_time_breach",
+              "rule": "touch probability is floored by the matched exact-terminal probability",
+              "terminal_floor_probability": 46.1
+            },
+            "event": {
+              "baseline_value": 50.572157,
+              "contract_text": "Resolve to 1 if any derived ECB USD/TRY observation from t+1 through t+264, inclusive, touches or exceeds 25.000000% above USD/TRY at t; otherwise resolve to 0 only after observation t+264 is available.",
+              "event_type": "any_time_breach",
+              "formula": "max(USDTRY[t+1], ..., USDTRY[t+264]) / USDTRY[t] - 1 >= 0.250000",
+              "operator": ">=",
+              "primary": false,
+              "threshold_value": 63.215196,
+              "window_end_offset": 264,
+              "window_inclusive": true,
+              "window_start_offset": 1
+            },
+            "horizon": "1y",
+            "probability": 59.5,
+            "raw_probability": 43.1,
+            "sample": {
+              "calibration_examples": 69,
+              "conditional_examples": 430,
+              "regime": "momentum tertile + volatility tertile + acceleration sign",
+              "training_examples": 4694
+            },
+            "sessions": 264,
+            "signed_drivers": [
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -3.3,
+                "historical_median": 1.104,
+                "id": "momentum_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session USD/TRY momentum",
+                "sample_count": 2347,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 1.678
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -1.9,
+                "historical_median": 0.001,
+                "id": "acceleration",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "Short-trend acceleration",
+                "sample_count": 2347,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "percentage points",
+                "value": -0.014
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -1.4,
+                "historical_median": 0.27,
+                "id": "momentum_5d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "5-session USD/TRY momentum",
+                "sample_count": 2347,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 0.405
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -0.8,
+                "historical_median": 10.016,
+                "id": "realized_volatility_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session realized volatility",
+                "sample_count": 2347,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "% annualized",
+                "value": 1.231
+              }
+            ],
+            "threshold_percent": 25.0,
+            "uncertainty": {
+              "block_length_sessions": 264,
+              "calibration_block_length_forecasts": 12,
+              "calibration_evidence_count": 69,
+              "effective_sample_size": 12,
+              "level": 90,
+              "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+              "lower": 46.5,
+              "lower_probability": 46.5,
+              "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+              "upper": 72.6,
+              "upper_probability": 72.6
+            },
+            "unconstrained_probability": 59.5
+          },
+          "3m": {
+            "benchmark": {
+              "delta_model_minus_benchmark_percentage_points": -3.4,
+              "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+              "name": "Current target-purged climatology",
+              "probability": 28.4,
+              "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+              "role": "challenger",
+              "training_examples": 4892
+            },
+            "calibration": {
+              "brier_score": 0.195,
+              "brier_skill_vs_climatology": 0.0277,
+              "calibration_error": 0.0739,
+              "climatology_brier_score": 0.2006,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 19,
+              "coherence_max_adjustment_percentage_points": 5.018,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 52,
+              "event_rate": 0.26,
+              "first_forecast_date_index": 520,
+              "forecast_count": 200,
+              "last_forecast_date_index": 4898,
+              "log_loss": 0.5844,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.1945,
+                "brier_skill_vs_climatology": 0.0305,
+                "calibration_error": 0.0744,
+                "climatology_brier_score": 0.2006,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 52,
+                "event_rate": 0.26,
+                "first_forecast_date_index": 520,
+                "forecast_count": 200,
+                "last_forecast_date_index": 4898,
+                "log_loss": 0.5826,
+                "status": "available"
+              }
+            },
+            "calibration_status": "calibrated",
+            "coherence_constraint": {
+              "adjustment_percentage_points": 0.0,
+              "backtest_adjusted_forecast_count": 19,
+              "backtest_max_adjustment_percentage_points": 5.018,
+              "binding": false,
+              "metrics_probability_series": "coherence_constrained_any_time_breach",
+              "rule": "touch probability is floored by the matched exact-terminal probability",
+              "terminal_floor_probability": 19.0
+            },
+            "event": {
+              "baseline_value": 50.572157,
+              "contract_text": "Resolve to 1 if any derived ECB USD/TRY observation from t+1 through t+66, inclusive, touches or exceeds 10.000000% above USD/TRY at t; otherwise resolve to 0 only after observation t+66 is available.",
+              "event_type": "any_time_breach",
+              "formula": "max(USDTRY[t+1], ..., USDTRY[t+66]) / USDTRY[t] - 1 >= 0.100000",
+              "operator": ">=",
+              "primary": false,
+              "threshold_value": 55.629372,
+              "window_end_offset": 66,
+              "window_inclusive": true,
+              "window_start_offset": 1
+            },
+            "horizon": "3m",
+            "probability": 25.0,
+            "raw_probability": 17.6,
+            "sample": {
+              "calibration_examples": 115,
+              "conditional_examples": 487,
+              "regime": "momentum tertile + volatility tertile + acceleration sign",
+              "training_examples": 4892
+            },
+            "sessions": 66,
+            "signed_drivers": [
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 4.0,
+                "historical_median": 1.135,
+                "id": "momentum_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session USD/TRY momentum",
+                "sample_count": 2446,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 1.678
+              },
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 2.8,
+                "historical_median": 0.281,
+                "id": "momentum_5d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "5-session USD/TRY momentum",
+                "sample_count": 2446,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 0.405
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -1.4,
+                "historical_median": 0.0,
+                "id": "acceleration",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "Short-trend acceleration",
+                "sample_count": 2446,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "percentage points",
+                "value": -0.014
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -1.3,
+                "historical_median": 9.761,
+                "id": "realized_volatility_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session realized volatility",
+                "sample_count": 2446,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "% annualized",
+                "value": 1.231
+              }
+            ],
+            "threshold_percent": 10.0,
+            "uncertainty": {
+              "block_length_sessions": 66,
+              "calibration_block_length_forecasts": 3,
+              "calibration_evidence_count": 115,
+              "effective_sample_size": 25,
+              "level": 90,
+              "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+              "lower": 18.8,
+              "lower_probability": 18.8,
+              "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+              "upper": 32.7,
+              "upper_probability": 32.7
+            },
+            "unconstrained_probability": 25.0
+          },
+          "6m": {
+            "benchmark": {
+              "delta_model_minus_benchmark_percentage_points": 2.2,
+              "method": "Laplace-smoothed event rate from labels whose complete target window has resolved",
+              "name": "Current target-purged climatology",
+              "probability": 37.1,
+              "purge_rule": "target_index <= current forecast index; no partial target windows admitted",
+              "role": "challenger",
+              "training_examples": 4826
+            },
+            "calibration": {
+              "brier_score": 0.2605,
+              "brier_skill_vs_climatology": -0.0295,
+              "calibration_error": 0.1369,
+              "climatology_brier_score": 0.253,
+              "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+              "coherence_adjusted_forecast_count": 1,
+              "coherence_max_adjustment_percentage_points": 0.4649,
+              "evaluation_cadence_sessions": 22,
+              "event_count": 77,
+              "event_rate": 0.3929,
+              "first_forecast_date_index": 552,
+              "forecast_count": 196,
+              "last_forecast_date_index": 4842,
+              "log_loss": 0.7233,
+              "probability_series": "coherence_constrained_any_time_breach",
+              "status": "available",
+              "unconstrained_metrics": {
+                "brier_score": 0.2604,
+                "brier_skill_vs_climatology": -0.0295,
+                "calibration_error": 0.1369,
+                "climatology_brier_score": 0.253,
+                "climatology_protocol": "Laplace-smoothed event rate from labels with target_index before forecast_index; the benchmark probability is stored at forecast formation",
+                "evaluation_cadence_sessions": 22,
+                "event_count": 77,
+                "event_rate": 0.3929,
+                "first_forecast_date_index": 552,
+                "forecast_count": 196,
+                "last_forecast_date_index": 4842,
+                "log_loss": 0.7232,
+                "status": "available"
+              }
+            },
+            "calibration_status": "experimental",
+            "coherence_constraint": {
+              "adjustment_percentage_points": 0.0,
+              "backtest_adjusted_forecast_count": 1,
+              "backtest_max_adjustment_percentage_points": 0.4649,
+              "binding": false,
+              "metrics_probability_series": "coherence_constrained_any_time_breach",
+              "rule": "touch probability is floored by the matched exact-terminal probability",
+              "terminal_floor_probability": 28.2
+            },
+            "event": {
+              "baseline_value": 50.572157,
+              "contract_text": "Resolve to 1 if any derived ECB USD/TRY observation from t+1 through t+132, inclusive, touches or exceeds 15.000000% above USD/TRY at t; otherwise resolve to 0 only after observation t+132 is available.",
+              "event_type": "any_time_breach",
+              "formula": "max(USDTRY[t+1], ..., USDTRY[t+132]) / USDTRY[t] - 1 >= 0.150000",
+              "operator": ">=",
+              "primary": false,
+              "threshold_value": 58.15798,
+              "window_end_offset": 132,
+              "window_inclusive": true,
+              "window_start_offset": 1
+            },
+            "horizon": "6m",
+            "probability": 39.3,
+            "raw_probability": 25.3,
+            "sample": {
+              "calibration_examples": 114,
+              "conditional_examples": 456,
+              "regime": "momentum tertile + volatility tertile + acceleration sign",
+              "training_examples": 4826
+            },
+            "sessions": 132,
+            "signed_drivers": [
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -2.2,
+                "historical_median": 9.838,
+                "id": "realized_volatility_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session realized volatility",
+                "sample_count": 2413,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "% annualized",
+                "value": 1.231
+              },
+              {
+                "direction": "relief",
+                "estimated_effect_percentage_points": -0.8,
+                "historical_median": 0.003,
+                "id": "acceleration",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "Short-trend acceleration",
+                "sample_count": 2413,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "percentage points",
+                "value": -0.014
+              },
+              {
+                "direction": "pressure",
+                "estimated_effect_percentage_points": 0.3,
+                "historical_median": 0.274,
+                "id": "momentum_5d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "5-session USD/TRY momentum",
+                "sample_count": 2413,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 0.405
+              },
+              {
+                "direction": "neutral",
+                "estimated_effect_percentage_points": 0.0,
+                "historical_median": 1.105,
+                "id": "momentum_20d",
+                "interpretation": "marginal historical association; effects are not additive or causal",
+                "label": "20-session USD/TRY momentum",
+                "sample_count": 2413,
+                "source": "ECB-derived USD/TRY history",
+                "unit": "%",
+                "value": 1.678
+              }
+            ],
+            "threshold_percent": 15.0,
+            "uncertainty": {
+              "block_length_sessions": 132,
+              "calibration_block_length_forecasts": 6,
+              "calibration_evidence_count": 114,
+              "effective_sample_size": 17,
+              "level": 90,
+              "limitations": "Sampling uncertainty conditional on the fixed feature and regime definitions; it does not quantify structural breaks, source error or tail-model risk.",
+              "lower": 30.5,
+              "lower_probability": 30.5,
+              "method": "399-replicate deterministic circular moving-block bootstrap of strictly resolved as-of regime and reliability-calibration evidence; 90% percentile interval",
+              "upper": 50.1,
+              "upper_probability": 50.1
+            },
+            "unconstrained_probability": 39.3
+          }
+        },
+        "primary": false,
+        "signed_drivers": {
+          "1m": [
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 5.9,
+              "historical_median": 1.156,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -5.9,
+              "historical_median": 9.707,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 3.5,
+              "historical_median": 0.286,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.9,
+              "historical_median": -0.001,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2468,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            }
+          ],
+          "1w": [
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -7.0,
+              "historical_median": 9.688,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2476,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 4.2,
+              "historical_median": 1.167,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2477,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 3.4,
+              "historical_median": 0.288,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2477,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -1.6,
+              "historical_median": -0.001,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2476,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            }
+          ],
+          "1y": [
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -3.3,
+              "historical_median": 1.104,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -1.9,
+              "historical_median": 0.001,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -1.4,
+              "historical_median": 0.27,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.8,
+              "historical_median": 10.016,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2347,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            }
+          ],
+          "3m": [
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 4.0,
+              "historical_median": 1.135,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 2.8,
+              "historical_median": 0.281,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -1.4,
+              "historical_median": 0.0,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -1.3,
+              "historical_median": 9.761,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2446,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            }
+          ],
+          "6m": [
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -2.2,
+              "historical_median": 9.838,
+              "id": "realized_volatility_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session realized volatility",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "% annualized",
+              "value": 1.231
+            },
+            {
+              "direction": "relief",
+              "estimated_effect_percentage_points": -0.8,
+              "historical_median": 0.003,
+              "id": "acceleration",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "Short-trend acceleration",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "percentage points",
+              "value": -0.014
+            },
+            {
+              "direction": "pressure",
+              "estimated_effect_percentage_points": 0.3,
+              "historical_median": 0.274,
+              "id": "momentum_5d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "5-session USD/TRY momentum",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 0.405
+            },
+            {
+              "direction": "neutral",
+              "estimated_effect_percentage_points": 0.0,
+              "historical_median": 1.105,
+              "id": "momentum_20d",
+              "interpretation": "marginal historical association; effects are not additive or causal",
+              "label": "20-session USD/TRY momentum",
+              "sample_count": 2413,
+              "source": "ECB-derived USD/TRY history",
+              "unit": "%",
+              "value": 1.678
+            }
+          ]
+        }
+      },
+      "target": {
+        "direction": "TRY depreciation / USD/TRY increase",
+        "horizon_unit": "ECB trading observations",
+        "variable": "future derived ECB USD/TRY daily reference rate"
+      }
+    },
+    {
+      "event_type": "outcome_resolved",
+      "event_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366:3m:resolved",
+      "forecast_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366",
+      "horizon": "3m",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "target_observation_date": "2026-11-20",
+      "target_value": 50.572157,
+      "realized_move_percent": 5.460794,
+      "threshold_percent": 10.0,
+      "outcome": 0,
+      "issued_probability": 19.4,
+      "model_version": "empirical-regime-v2.2.0"
+    },
+    {
+      "event_type": "path_outcome_resolved",
+      "event_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366:path:3m:resolved",
+      "forecast_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366",
+      "horizon": "3m",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "contract": "any_time_breach",
+      "event_definition": {
+        "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+        "direction": "TRY depreciation / USD/TRY increase",
+        "event_type": "any_time_breach",
+        "horizon_sessions": {
+          "1m": 22,
+          "1w": 5,
+          "1y": 264,
+          "3m": 66,
+          "6m": 132
+        },
+        "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+        "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+        "pair": "USD/TRY",
+        "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+        "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+        "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+        "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+        "thresholds_percent": {
+          "1m": 5,
+          "1w": 2,
+          "1y": 25,
+          "3m": 10,
+          "6m": 15
+        },
+        "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+      },
+      "window_sessions": 66,
+      "window_start_observation_date": "2026-08-21",
+      "window_end_observation_date": "2026-11-20",
+      "peak_observation_date": "2026-11-20",
+      "peak_value": 50.572157,
+      "max_move_percent": 5.460794,
+      "threshold_percent": 10.0,
+      "outcome": false,
+      "issued_probability": 27.1,
+      "model_version": "empirical-regime-v2.2.0"
+    },
+    {
+      "event_type": "outcome_resolved",
+      "event_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa:1m:resolved",
+      "forecast_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa",
+      "horizon": "1m",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "target_observation_date": "2026-11-20",
+      "target_value": 50.572157,
+      "realized_move_percent": 1.955125,
+      "threshold_percent": 5.0,
+      "outcome": 0,
+      "issued_probability": 8.8,
+      "model_version": "empirical-regime-v2.2.0"
+    },
+    {
+      "event_type": "path_outcome_resolved",
+      "event_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa:path:1m:resolved",
+      "forecast_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa",
+      "horizon": "1m",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "contract": "any_time_breach",
+      "event_definition": {
+        "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+        "direction": "TRY depreciation / USD/TRY increase",
+        "event_type": "any_time_breach",
+        "horizon_sessions": {
+          "1m": 22,
+          "1w": 5,
+          "1y": 264,
+          "3m": 66,
+          "6m": 132
+        },
+        "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+        "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+        "pair": "USD/TRY",
+        "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+        "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+        "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+        "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+        "thresholds_percent": {
+          "1m": 5,
+          "1w": 2,
+          "1y": 25,
+          "3m": 10,
+          "6m": 15
+        },
+        "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+      },
+      "window_sessions": 22,
+      "window_start_observation_date": "2026-10-22",
+      "window_end_observation_date": "2026-11-20",
+      "peak_observation_date": "2026-11-20",
+      "peak_value": 50.572157,
+      "max_move_percent": 1.955125,
+      "threshold_percent": 5.0,
+      "outcome": false,
+      "issued_probability": 12.9,
+      "model_version": "empirical-regime-v2.2.0"
+    },
+    {
+      "event_type": "outcome_resolved",
+      "event_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86:1w:resolved",
+      "forecast_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86",
+      "horizon": "1w",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "target_observation_date": "2026-11-20",
+      "target_value": 50.572157,
+      "realized_move_percent": 0.405354,
+      "threshold_percent": 2.0,
+      "outcome": 0,
+      "issued_probability": 10.2,
+      "model_version": "empirical-regime-v2.2.0"
+    },
+    {
+      "event_type": "path_outcome_resolved",
+      "event_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86:path:1w:resolved",
+      "forecast_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86",
+      "horizon": "1w",
+      "recorded_at": "2026-11-20T15:28:21Z",
+      "contract": "any_time_breach",
+      "event_definition": {
+        "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+        "direction": "TRY depreciation / USD/TRY increase",
+        "event_type": "any_time_breach",
+        "horizon_sessions": {
+          "1m": 22,
+          "1w": 5,
+          "1y": 264,
+          "3m": 66,
+          "6m": 132
+        },
+        "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+        "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+        "pair": "USD/TRY",
+        "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+        "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+        "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+        "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+        "thresholds_percent": {
+          "1m": 5,
+          "1w": 2,
+          "1y": 25,
+          "3m": 10,
+          "6m": 15
+        },
+        "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+      },
+      "window_sessions": 5,
+      "window_start_observation_date": "2026-11-16",
+      "window_end_observation_date": "2026-11-20",
+      "peak_observation_date": "2026-11-20",
+      "peak_value": 50.572157,
+      "max_move_percent": 0.405354,
+      "threshold_percent": 2.0,
+      "outcome": false,
+      "issued_probability": 10.2,
+      "model_version": "empirical-regime-v2.2.0"
     }
   ],
   "entries": [
@@ -185629,6 +187622,20 @@
             "outcome": 0,
             "issued_probability": 9.3,
             "model_version": "empirical-regime-v2.2.0"
+          },
+          "3m": {
+            "event_type": "outcome_resolved",
+            "event_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366:3m:resolved",
+            "forecast_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366",
+            "horizon": "3m",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "target_observation_date": "2026-11-20",
+            "target_value": 50.572157,
+            "realized_move_percent": 5.460794,
+            "threshold_percent": 10.0,
+            "outcome": 0,
+            "issued_probability": 19.4,
+            "model_version": "empirical-regime-v2.2.0"
           }
         }
       },
@@ -185661,6 +187668,20 @@
             "threshold_percent": 5.0,
             "outcome": 0,
             "issued_probability": 9.3,
+            "model_version": "empirical-regime-v2.2.0"
+          },
+          "3m": {
+            "event_type": "outcome_resolved",
+            "event_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366:3m:resolved",
+            "forecast_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366",
+            "horizon": "3m",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "target_observation_date": "2026-11-20",
+            "target_value": 50.572157,
+            "realized_move_percent": 5.460794,
+            "threshold_percent": 10.0,
+            "outcome": 0,
+            "issued_probability": 19.4,
             "model_version": "empirical-regime-v2.2.0"
           }
         }
@@ -185756,6 +187777,51 @@
             "threshold_percent": 5.0,
             "outcome": false,
             "issued_probability": 11.7,
+            "model_version": "empirical-regime-v2.2.0"
+          },
+          "3m": {
+            "event_type": "path_outcome_resolved",
+            "event_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366:path:3m:resolved",
+            "forecast_id": "fxtry-2026-08-20T00:00:00Z-e925eb79f8a097983f898366",
+            "horizon": "3m",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "contract": "any_time_breach",
+            "event_definition": {
+              "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+              "direction": "TRY depreciation / USD/TRY increase",
+              "event_type": "any_time_breach",
+              "horizon_sessions": {
+                "1m": 22,
+                "1w": 5,
+                "1y": 264,
+                "3m": 66,
+                "6m": 132
+              },
+              "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+              "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+              "pair": "USD/TRY",
+              "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+              "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+              "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+              "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+              "thresholds_percent": {
+                "1m": 5,
+                "1w": 2,
+                "1y": 25,
+                "3m": 10,
+                "6m": 15
+              },
+              "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+            },
+            "window_sessions": 66,
+            "window_start_observation_date": "2026-08-21",
+            "window_end_observation_date": "2026-11-20",
+            "peak_observation_date": "2026-11-20",
+            "peak_value": 50.572157,
+            "max_move_percent": 5.460794,
+            "threshold_percent": 10.0,
+            "outcome": false,
+            "issued_probability": 27.1,
             "model_version": "empirical-regime-v2.2.0"
           }
         }
@@ -193623,6 +195689,20 @@
             "outcome": 0,
             "issued_probability": 8.6,
             "model_version": "empirical-regime-v2.2.0"
+          },
+          "1m": {
+            "event_type": "outcome_resolved",
+            "event_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa:1m:resolved",
+            "forecast_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa",
+            "horizon": "1m",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "target_observation_date": "2026-11-20",
+            "target_value": 50.572157,
+            "realized_move_percent": 1.955125,
+            "threshold_percent": 5.0,
+            "outcome": 0,
+            "issued_probability": 8.8,
+            "model_version": "empirical-regime-v2.2.0"
           }
         }
       },
@@ -193641,6 +195721,20 @@
             "threshold_percent": 2.0,
             "outcome": 0,
             "issued_probability": 8.6,
+            "model_version": "empirical-regime-v2.2.0"
+          },
+          "1m": {
+            "event_type": "outcome_resolved",
+            "event_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa:1m:resolved",
+            "forecast_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa",
+            "horizon": "1m",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "target_observation_date": "2026-11-20",
+            "target_value": 50.572157,
+            "realized_move_percent": 1.955125,
+            "threshold_percent": 5.0,
+            "outcome": 0,
+            "issued_probability": 8.8,
             "model_version": "empirical-regime-v2.2.0"
           }
         }
@@ -193691,6 +195785,51 @@
             "threshold_percent": 2.0,
             "outcome": false,
             "issued_probability": 8.6,
+            "model_version": "empirical-regime-v2.2.0"
+          },
+          "1m": {
+            "event_type": "path_outcome_resolved",
+            "event_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa:path:1m:resolved",
+            "forecast_id": "fxtry-2026-10-21T00:00:00Z-82fca544b05232262e04b1aa",
+            "horizon": "1m",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "contract": "any_time_breach",
+            "event_definition": {
+              "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+              "direction": "TRY depreciation / USD/TRY increase",
+              "event_type": "any_time_breach",
+              "horizon_sessions": {
+                "1m": 22,
+                "1w": 5,
+                "1y": 264,
+                "3m": 66,
+                "6m": 132
+              },
+              "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+              "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+              "pair": "USD/TRY",
+              "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+              "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+              "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+              "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+              "thresholds_percent": {
+                "1m": 5,
+                "1w": 2,
+                "1y": 25,
+                "3m": 10,
+                "6m": 15
+              },
+              "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+            },
+            "window_sessions": 22,
+            "window_start_observation_date": "2026-10-22",
+            "window_end_observation_date": "2026-11-20",
+            "peak_observation_date": "2026-11-20",
+            "peak_value": 50.572157,
+            "max_move_percent": 1.955125,
+            "threshold_percent": 5.0,
+            "outcome": false,
+            "issued_probability": 12.9,
             "model_version": "empirical-regime-v2.2.0"
           }
         }
@@ -195134,16 +197273,92 @@
         "6m": 36.6
       },
       "outcome": {
-        "status": "pending",
-        "horizons": {}
+        "status": "partially_resolved",
+        "horizons": {
+          "1w": {
+            "event_type": "outcome_resolved",
+            "event_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86:1w:resolved",
+            "forecast_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86",
+            "horizon": "1w",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "target_observation_date": "2026-11-20",
+            "target_value": 50.572157,
+            "realized_move_percent": 0.405354,
+            "threshold_percent": 2.0,
+            "outcome": 0,
+            "issued_probability": 10.2,
+            "model_version": "empirical-regime-v2.2.0"
+          }
+        }
       },
       "terminal_outcome": {
-        "status": "pending",
-        "horizons": {}
+        "status": "partially_resolved",
+        "horizons": {
+          "1w": {
+            "event_type": "outcome_resolved",
+            "event_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86:1w:resolved",
+            "forecast_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86",
+            "horizon": "1w",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "target_observation_date": "2026-11-20",
+            "target_value": 50.572157,
+            "realized_move_percent": 0.405354,
+            "threshold_percent": 2.0,
+            "outcome": 0,
+            "issued_probability": 10.2,
+            "model_version": "empirical-regime-v2.2.0"
+          }
+        }
       },
       "path_outcome": {
-        "status": "pending",
-        "horizons": {}
+        "status": "partially_resolved",
+        "horizons": {
+          "1w": {
+            "event_type": "path_outcome_resolved",
+            "event_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86:path:1w:resolved",
+            "forecast_id": "fxtry-2026-11-13T00:00:00Z-3026a5f1066eb053c1a2dd86",
+            "horizon": "1w",
+            "recorded_at": "2026-11-20T15:28:21Z",
+            "contract": "any_time_breach",
+            "event_definition": {
+              "baseline_rule": "latest common-date ECB EUR/TRY and EUR/USD observation available at publication",
+              "direction": "TRY depreciation / USD/TRY increase",
+              "event_type": "any_time_breach",
+              "horizon_sessions": {
+                "1m": 22,
+                "1w": 5,
+                "1y": 264,
+                "3m": 66,
+                "6m": 132
+              },
+              "measurement": "maximum derived ECB USD/TRY reference rate across observations t+1 through t+h, inclusive",
+              "observation_limit": "Observed ECB daily reference-rate observations only; intraday threshold breaches are outside the contract.",
+              "pair": "USD/TRY",
+              "relationship_to_terminal": "This is a separate path-dependent contract. It can resolve to 1 even when the primary exact-terminal contract resolves to 0; the exact-terminal forecast remains primary.",
+              "resolution_rule": "Resolve to 1 if any in-window observation touches or exceeds the threshold; otherwise resolve to 0 only when the complete h-observation window has ended.",
+              "statement": "For each horizon, the any-time-breach event occurs when at least one derived ECB USD/TRY daily reference-rate observation from t+1 through t+h, inclusive, is greater than or equal to the baseline multiplied by one plus that horizon's threshold. The outcome is zero only after observation t+h is available.",
+              "target_rule": "all derived ECB USD/TRY observations t+1 through t+h, inclusive",
+              "thresholds_percent": {
+                "1m": 5,
+                "1w": 2,
+                "1y": 25,
+                "3m": 10,
+                "6m": 15
+              },
+              "window_start_rule": "first derived ECB USD/TRY observation after baseline (t+1)"
+            },
+            "window_sessions": 5,
+            "window_start_observation_date": "2026-11-16",
+            "window_end_observation_date": "2026-11-20",
+            "peak_observation_date": "2026-11-20",
+            "peak_value": 50.572157,
+            "max_move_percent": 0.405354,
+            "threshold_percent": 2.0,
+            "outcome": false,
+            "issued_probability": 10.2,
+            "model_version": "empirical-regime-v2.2.0"
+          }
+        }
       }
     },
     {
@@ -195244,7 +197459,40 @@
         "status": "pending",
         "horizons": {}
       }
+    },
+    {
+      "forecast_id": "fxtry-2026-11-20T00:00:00Z-540e1859acb17107d69d0fd4",
+      "issued_at": "2026-11-20T15:28:21Z",
+      "data_cutoff": "2026-11-20T00:00:00Z",
+      "model_version": "empirical-regime-v2.2.0",
+      "primary_horizon": "1m",
+      "curve": {
+        "1m": 8.2,
+        "1w": 7.0,
+        "1y": 46.1,
+        "3m": 19.0,
+        "6m": 28.2
+      },
+      "path_curve": {
+        "1m": 13.3,
+        "1w": 7.0,
+        "1y": 59.5,
+        "3m": 25.0,
+        "6m": 39.3
+      },
+      "outcome": {
+        "status": "pending",
+        "horizons": {}
+      },
+      "terminal_outcome": {
+        "status": "pending",
+        "horizons": {}
+      },
+      "path_outcome": {
+        "status": "pending",
+        "horizons": {}
+      }
     }
   ],
-  "updated_at": "2026-11-19T15:45:34Z"
+  "updated_at": "2026-11-20T15:28:21Z"
 }
