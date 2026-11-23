@@ -3008,5 +3008,26 @@
     "forecast_id": "fxtry-2026-11-20T00:00:00Z-540e1859acb17107d69d0fd4",
     "model_version": "empirical-regime-v2.2.0",
     "data_cutoff": "2026-11-20T00:00:00Z"
+  },
+  {
+    "as_of": "2026-11-23T18:11:20Z",
+    "primary_horizon": "1m",
+    "primary_score": 8.7,
+    "curve": {
+      "1w": 7.6,
+      "1m": 8.7,
+      "3m": 21.4,
+      "6m": 27.6,
+      "1y": 49.4
+    },
+    "market_regime": "Market pressure contained",
+    "macro_regime": "Domestic support is mixed",
+    "headline": "The primary exact-terminal estimate is 8.7% (contained depreciation risk). Material contextual evidence is unavailable and remains UNKNOWN; inspect source health before drawing a macro conclusion.",
+    "stance": "Contained depreciation",
+    "evidence_coverage": "low",
+    "confidence": "low",
+    "forecast_id": "fxtry-2026-11-23T00:00:00Z-f5f85b638451480f990e3802",
+    "model_version": "empirical-regime-v2.2.0",
+    "data_cutoff": "2026-11-23T00:00:00Z"
   }
 ]
